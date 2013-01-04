@@ -843,9 +843,16 @@ public class DeckTask extends
 
 		// from anki2.py
 		String colFile = fileDir + "/collection.anki2";
-		if (!Utils.unzip(path, fileDir) || !(new File(colFile)).exists() || !Storage.Collection(colFile).validCollection()) {
-			return new TaskData(-2, null, true);
+		if (!Utils.unzip(path, fileDir) || !(new File(colFile)).exists()) {
+			return new TaskData(-2, null, false);
 		}
+
+		Collection tmpCol = Storage.Collection(colFile);
+		if (!tmpCol.validCollection()) {
+			tmpCol.close();
+			return new TaskData(-2, null, false);
+		}
+		tmpCol.close();
 
 		String colPath = col.getPath();
 		// unload collection and trigger a backup
