@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -498,6 +499,7 @@ public class Media {
 
         try {
             ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(f)));
+            zos.setLevel(8);
 
             JSONObject files = new JSONObject();
             int cnt = 0;
@@ -514,6 +516,7 @@ public class Media {
                 while ((count = bis.read(buffer, 0, 2048)) != -1) {
                     zos.write(buffer, 0, count);
                 }
+                zos.closeEntry();
                 bis.close();
                 files.put(Integer.toString(cnt), fname);
                 sz += file.length();
@@ -525,6 +528,7 @@ public class Media {
             }
             if (finished) {
                 zos.putNextEntry(new ZipEntry("_finished"));
+                zos.closeEntry();
             }
             zos.putNextEntry(new ZipEntry("_meta"));
             zos.write(files.toString().getBytes());
@@ -738,5 +742,18 @@ public class Media {
     public AnkiDb getMediaDb() {
         return mMediaDb;
     }
+
+    /**
+     * Remove media that is no longer being used from the SD-card.
+     */
+	public void removeUnusedImages() {
+		List<String> listOfUnusedMedia = check().get(1); // Returns two lists, 2nd is unused media.
+		for (String mediaName : listOfUnusedMedia) {
+			File mediaFile = new File(mDir + "/" + mediaName);
+			if (mediaFile.exists()) {
+				mediaFile.delete();
+			}
+		}
+	}
 
 }

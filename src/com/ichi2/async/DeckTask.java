@@ -18,6 +18,9 @@
 
 package com.ichi2.async;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,6 +43,7 @@ import com.ichi2.libanki.Collection;
 import com.ichi2.libanki.Note;
 import com.ichi2.libanki.Sched;
 import com.ichi2.libanki.Stats;
+import com.ichi2.libanki.Storage;
 import com.ichi2.libanki.Utils;
 import com.ichi2.libanki.importer.Anki2Importer;
 import com.ichi2.widget.WidgetStatus;
@@ -80,7 +84,8 @@ public class DeckTask extends
 	public static final int TASK_TYPE_REBUILD_CRAM = 26;
 	public static final int TASK_TYPE_EMPTY_CRAM = 27;
 	public static final int TASK_TYPE_IMPORT = 28;
-    public static final int TASK_TYPE_SEARCH_CARDS = 29;
+	public static final int TASK_TYPE_IMPORT_REPLACE = 29;
+    public static final int TASK_TYPE_SEARCH_CARDS = 30;
     
 	private static DeckTask sInstance;
 	private static DeckTask sOldInstance;
@@ -243,6 +248,9 @@ public class DeckTask extends
 
 		case TASK_TYPE_IMPORT:
 			return doInBackgroundImport(params);
+			
+		case TASK_TYPE_IMPORT_REPLACE:
+			return doInBackgroundImportReplace(params);
 			
 		default:
 			return null;
@@ -444,8 +452,7 @@ public class DeckTask extends
 				doInBackgroundLoadTutorial(new TaskData(col));
 			}
 		} else {
-			Log.i(AnkiDroidApp.TAG,
-					"doInBackgroundOpenCollection: collection still open - reusing it");
+			Log.i(AnkiDroidApp.TAG, "doInBackgroundOpenCollection: collection still open - reusing it");
 			col = oldCol;
 		}
 		Object[] counts = null;
@@ -648,7 +655,7 @@ public class DeckTask extends
         } else {
             publishProgress(result);
         }
-        return new TaskData(col.cardCount(col.getDecks().active()));
+        return new TaskData(col.cardCount(col.getDecks().allIds()));
     }
 
 
@@ -709,8 +716,7 @@ public class DeckTask extends
 				AnkiDroidApp.closeCollection(true);
 				BackupManager.performBackup(path);
 			} catch (RuntimeException e) {
-				Log.i(AnkiDroidApp.TAG,
-						"doInBackgroundCloseCollection: error occurred - collection not properly closed");
+				Log.i(AnkiDroidApp.TAG, "doInBackgroundCloseCollection: error occurred - collection not properly closed");
 			}
 		}
 		return null;
@@ -726,7 +732,7 @@ public class DeckTask extends
 				sched.reset();
 			}
 			int[] counts = sched.counts();
-			int totalNewCount = sched.newCount();
+			int totalNewCount = sched.totalNewForCurrentDeck();
 			int totalCount = sched.cardCount();
 			double progressMature = ((double) sched.matureCount()) / ((double) totalCount);
 			double progressAll = 1 - (((double) (totalNewCount + counts[1])) / ((double) totalCount));
@@ -761,6 +767,7 @@ public class DeckTask extends
 		Collection col = params[0].getCollection();
 		long did = params[0].getLong();
 		col.getDecks().rem(did, true);
+		col.getMedia().removeUnusedImages();		
 		return doInBackgroundLoadDeckCounts(new TaskData(col));
 	}
 
@@ -818,6 +825,86 @@ public class DeckTask extends
 					"doInBackgroundImport - RuntimeException on importing cards: "
 							+ e);
 			AnkiDroidApp.saveExceptionReportFile(e, "doInBackgroundImport");
+			return new TaskData(false);
+		}
+	}
+
+	private TaskData doInBackgroundImportReplace(TaskData... params) {
+		Log.i(AnkiDroidApp.TAG, "doInBackgroundImportReplace");
+		Collection col = params[0].getCollection();
+		String path = params[0].getString();
+
+		// extract the deck from the zip file
+		String fileDir = AnkiDroidApp.getCurrentAnkiDroidDirectory() + "/tmpzip";
+    	File dir = new File(fileDir);
+    	if (dir.exists()) {
+    		BackupManager.removeDir(dir);
+    	}
+
+		// from anki2.py
+		String colFile = fileDir + "/collection.anki2";
+		if (!Utils.unzip(path, fileDir) || !(new File(colFile)).exists() || !Storage.Collection(colFile).validCollection()) {
+			return new TaskData(-2, null, true);
+		}
+
+		String colPath = col.getPath();
+		// unload collection and trigger a backup
+		AnkiDroidApp.closeCollection(true);
+		BackupManager.performBackup(colPath, true);
+		// overwrite collection
+		File f = new File(colFile);
+		f.renameTo(new File(colPath));
+		
+		int addedCount = -1;
+		try {
+			col = AnkiDroidApp.openCollection(colPath);
+			
+			// because users don't have a backup of media, it's safer to import new
+			// data and rely on them running a media db check to get rid of any
+			// unwanted media. in the future we might also want to duplicate this step
+			// import media
+			JSONObject media = new JSONObject(Utils.convertStreamToString(new FileInputStream(fileDir + "/media")));
+			String mediaDir = col.getMedia().getDir() + "/";
+			JSONArray names = media.names();
+			if (names != null) {
+				for (int i = 0; i < names.length(); i++) {
+					String n = names.getString(i);
+					String o = media.getString(n);
+					File of = new File(mediaDir + o);
+					if (!of.exists()) {
+						of.delete();
+					}
+					File newFile = new File(fileDir + "/" + n);
+					newFile.renameTo(of);
+				}
+			}
+			// delete tmp dir
+			BackupManager.removeDir(dir);
+			
+			// actualize counts
+			Object[] counts = null;
+			DeckTask.TaskData result = doInBackgroundLoadDeckCounts(new TaskData(col));
+			if (result != null) {
+				counts = result.getObjArray();
+			}			
+			return new TaskData(addedCount, counts, true);
+		} catch (RuntimeException e) {
+			Log.e(AnkiDroidApp.TAG,
+					"doInBackgroundImportReplace - RuntimeException on reopening collection: "
+							+ e);
+			AnkiDroidApp.saveExceptionReportFile(e, "doInBackgroundImportReplace1");
+			return new TaskData(false);
+		} catch (FileNotFoundException e) {
+			Log.e(AnkiDroidApp.TAG,
+					"doInBackgroundImportReplace - RuntimeException on reopening collection: "
+							+ e);
+			AnkiDroidApp.saveExceptionReportFile(e, "doInBackgroundImportReplace2");
+			return new TaskData(false);
+		} catch (JSONException e) {
+			Log.e(AnkiDroidApp.TAG,
+					"doInBackgroundImportReplace - RuntimeException on reopening collection: "
+							+ e);
+			AnkiDroidApp.saveExceptionReportFile(e, "doInBackgroundImportReplace3");
 			return new TaskData(false);
 		}
 	}

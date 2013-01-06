@@ -23,7 +23,7 @@
   <string name="CardEditorCancelButton">Zrušit</string>
   <string name="CardEditorSaveButton">Uložit</string>
   <string name="CardEditorLaterButton">Později</string>
-  <string name="CardEditorLaterMessage">Saved information for later</string>
+  <string name="CardEditorLaterMessage">Uložené informace na později</string>
   <string name="CardEditorCardDeck">Karta balíčku: %s</string>
   <string name="CardEditorNoteDeck">Poznámka balíčku: %s</string>
   <string name="CardEditorModel">Typ poznámky:%s</string>
@@ -40,7 +40,7 @@
   <string name="suspend_leeches">Vyřadit pijavice</string>
   <string name="leech_suspend_notification">Karta označena jako pijavice a vyřazena</string>
   <string name="leech_notification">Karta byla označena jako pijavice</string>
-  <string name="corrupt_font">Corrupt font file %s</string>
+  <string name="corrupt_font">Poškozený soubor písma %s</string>
   <string name="about_title">O aplikaci</string>
   <string name="cardeditor_title_add_note">Přidat poznámku</string>
   <string name="cardeditor_title_edit_card">Upravit poznámku</string>
@@ -52,7 +52,7 @@
   <string name="close">Zavřít</string>
   <string name="select">Vybrat</string>
   <string name="saving_changes">Ukládání změn ...</string>
-  <string name="timebox_reached">Timebox reached!</string>
+  <string name="timebox_reached">Dosažen čas!</string>
   <string name="studyoptions_welcome_title">Vítejte v AnkiDroid</string>
   <string name="studyoptions_no_external_storage_title">Není k dispozici externí paměť</string>
   <string name="studyoptions_no_external_storage_message">Žádná externí paměť není momentálně k dispozici. AnkiDroid potřebuje přistupovat k SD kartě, aby mohl načíst Anki balíčky. Zkontrolujte, zda je vaše SD karta připojena a akci opakujte.</string>
@@ -82,21 +82,26 @@
   <string name="pref_lang_other">Předvolby jazyka</string>
   <string name="pref_font_UI">Vlastní písmo</string>
   <string name="info_rate">Ohodnotit AnkiDroid</string>
-  <string name="col_load_failed">Collection loading failed.\nPress back to close AnkiDroid.</string>
-  <string name="import_title">Import Cards</string>
-  <string name="import_message">Do you really want to import all cards of file %s?</string>
-  <string name="import_log_success">Successfully imported %d cards</string>
-  <string name="import_log_error">Import failed</string>
-  <string name="import_log_no_apkg">This is not a valid apkg file</string>
-  <string name="import_importing">Importing cards.\nPlease wait...</string>
-  <string name="import_hint">To import cards, place the apkg file in directory %s and press ok</string>
-  <string name="import_no_file_found">No importable apkg file found</string>
+  <string name="col_load_failed">Načítání kolekce se nezdařilo.\nStiskněte zpět pro zavření AnkiDroid.</string>
+  <string name="import_title">Import karet</string>
+  <string name="import_message">Chcete přidat obsah souboru %s do své sbírky, nebo sbírku nahradit?</string>
+  <string name="import_message_add">Přidat</string>
+  <string name="import_message_replace">Nahradit</string>
+  <string name="import_message_replace_confirm">Tímto vymažete vaši stávající sbírku a nahradíte jí daty ze souboru %s. Jste si jistý?</string>
+  <string name="import_log_success">Importováno %d karet</string>
+  <string name="import_log_error">Import se nezdařil</string>
+  <string name="import_log_no_apkg">Toto není platný apkg soubor</string>
+  <string name="import_importing">Import karet.\nProsím čekejte...</string>
+  <string name="import_hint">Pro import karet umístěte soubor apkg do adresáře %s a stiskněte ok</string>
+  <string name="import_no_file_found">Nebyl nalezen žádný soubor apkg pro import</string>
+  <string name="custom_study">Vlastní učení</string>
+  <string name="dyn_deck_desc">Toto je speciální balíček pro studium mimo normální plán. Karty se automaticky po opakování vrátí do svého původního balíčku. Odstraněním tohoto balíčku ze seznamu se všechny zbývající karty vrátí to jejich původního balíčku.</string>
   <string-array name="dynOrderLabels">
     <item>Nejstarší první</item>
     <item>Náhodně</item>
     <item>Rostoucí intervaly</item>
     <item>Klesající intervaly</item>
-    <item>Most lapses</item>
+    <item>Nejvíce zapomínané</item>
     <item>V pořádí přidání</item>
     <item>V pořadí zkoušení</item>
   </string-array>

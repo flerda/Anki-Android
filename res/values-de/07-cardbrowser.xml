@@ -22,7 +22,7 @@
 <resources>
   <string name="card_browser_all_decks">Alle Stapel</string>
   <string name="card_browser_load">Lade Karten.\nBitte warten...</string>
-  <string name="card_browser_cardloading_error">Fehler beim Laden der Karten. Vermutlich hängt dies mit einem zu geringen Gerätespeicher zusammen. Versuchen Sie es mit einer kleineren Stapel</string>
+  <string name="card_browser_cardloading_error">Fehler beim Laden der Karten. Vermutlich hängt dies mit einem zu geringen Gerätespeicher zusammen. Versuchen Sie es mit einem kleineren Stapel</string>
   <string name="card_browser_delete_card">Notiz löschen</string>
   <string name="card_browser_suspend_card">Karte aussetzen</string>
   <string name="card_browser_unsuspend_card">Aussetzen aufheben</string>
@@ -38,6 +38,8 @@
   <string name="card_browser_tags_shown">Schlagworte: %1$s</string>
   <string name="card_browser_change_display_order">Anzeigereihenfolge</string>
   <string name="card_browser_change_display_order_title">Anzeigereihenfolge</string>
+  <string name="card_browser_change_display_order_reverse">Zum Umkehren ein Feld zweimal wählen.</string>
+  <string name="card_browser_order_reverse">(umkehren)</string>
   <string name="card_browser_card_details">Kartendetails</string>
   <string name="card_details_question">Frage</string>
   <string name="card_details_answer">Antwort</string>
@@ -61,6 +63,13 @@
     <item>Keine Sortierung (schneller)</item>
     <item>Nach Suchfeld</item>
     <item>Nach Fälligkeit</item>
+    <item>Nach Änderungsdatum</item>
+    <item>Nach letzter Veränderung</item>
+    <item>Nach Fälligkeit</item>
+    <item>Nach Intervall</item>
+    <item>Nach Leichtigkeit</item>
+    <item>Nach Wiederholungen</item>
+    <item>Nach Anzahl falscher Antworten</item>
   </string-array>
   <plurals name="card_browser_subtitle">
     <item quantity="one">1 von %2$d Karten angezeigt</item>

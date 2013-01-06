@@ -45,8 +45,8 @@
   <string name="connection_error_message">Telah terjadi ralat jaringan.</string>
   <string name="sync_log_db_error">Satu ralat database berlaku.</string>
   <string name="no_user_password_error_message">In order to proceed with this operation, you need to have an AnkiWeb account and be logged in.</string>
-  <string name="username">Nama</string>
-  <string name="username_repeat">Repeat username</string>
+  <string name="username">Email address</string>
+  <string name="username_repeat">Repeat email address</string>
   <string name="password">Kata laluan</string>
   <string name="password_repeat">Repeat password</string>
   <string name="log_in">Log in</string>
@@ -55,7 +55,7 @@
   <string name="logged_as">Login sebagai</string>
   <string name="log_out">Log keluar</string>
   <string name="alert_logging_message">Login, harap tunggu …</string>
-  <string name="invalid_username_password">Username atau password tidak valid.</string>
+  <string name="invalid_username_password">Invalid email address or password.</string>
   <string name="login_generic_error">Gagal untuk login.</string>
   <string name="download_finished">Muat turun selesai</string>
   <string name="personaldeckpicker_title">Buka Deck Online</string>
@@ -66,6 +66,8 @@
   <string name="sync_conflict_message">Your decks here and on AnkiWeb differ in such a way that they can\'t be merged together, so it\'s necessary to overwrite the decks on one side with the decks from the other.\n\nDo you want to upload the decks from here, or download the decks from AnkiWeb?</string>
   <string name="sync_conflict_local">Upload</string>
   <string name="sync_conflict_remote">Download</string>
+  <string name="sync_conflict_remote_confirm">Do you really want to download the server\'s collection? Be aware that this will overwrite your local collection.</string>
+  <string name="sync_conflict_local_confirm">Do you really want to upload the local collection? Be aware that this will overwrite your collection on the server.</string>
   <string name="sync_conflict_cancel">Batal Sinkronisasi</string>
   <string name="sync_prepare_syncing">Mempersiapkan sinkronisasi…</string>
   <string name="sync_preparing_full_sync_message">Menyiapkan sinkronisasi penuh …</string>
@@ -129,4 +131,5 @@
   <string name="upgrade_decks_button">Upgrade</string>
   <string name="upgrade_decks_failed">These decks could not be upgraded:\n%sPlease open them in Anki Desktop and do a database check. Afterwards you can import them via Anki Desktop.</string>
   <string name="upgrade_decks_media_failed">Copying the media files to the new media folder (%1$s) has failed for these decks:\n%2$sPlease move the media files manually.</string>
+  <string name="download_deck">Downloading deck (%d kb).\nPlease wait...</string>
 </resources>

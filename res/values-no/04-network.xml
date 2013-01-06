@@ -45,8 +45,8 @@
   <string name="connection_error_message">Det oppstod en nettverksfeil.</string>
   <string name="sync_log_db_error">Det oppstod en databasefeil.</string>
   <string name="no_user_password_error_message">For å fortsette må du ha en AnkiWeb-konto og være logget inn.</string>
-  <string name="username">Brukernavn</string>
-  <string name="username_repeat">Gjenta brukernavn</string>
+  <string name="username">Email address</string>
+  <string name="username_repeat">Repeat email address</string>
   <string name="password">Passord</string>
   <string name="password_repeat">Gjenta passord</string>
   <string name="log_in">Logg inn</string>
@@ -55,7 +55,7 @@
   <string name="logged_as">Logget inn som</string>
   <string name="log_out">Logg ut</string>
   <string name="alert_logging_message">Logger inn, vennligst vent...</string>
-  <string name="invalid_username_password">Ugyldig brukernavn eller passord.</string>
+  <string name="invalid_username_password">Invalid email address or password.</string>
   <string name="login_generic_error">Kunne ikke logge inn.</string>
   <string name="download_finished">Nedlasting ferdig</string>
   <string name="personaldeckpicker_title">Åpne Online-kortstokk</string>
@@ -66,6 +66,8 @@
   <string name="sync_conflict_message">Kortstokkene dine her og på AnkiWeb er så ulike at de ikke kan slåes sammen, så kortstokkene på den ene siden må overskrives av kortstokkene fra den andre.\n\nVil du laste opp kortstokkene herfra, eller laste ned kortstokkene fra AnkiWeb?</string>
   <string name="sync_conflict_local">Last opp</string>
   <string name="sync_conflict_remote">Last ned</string>
+  <string name="sync_conflict_remote_confirm">Do you really want to download the server\'s collection? Be aware that this will overwrite your local collection.</string>
+  <string name="sync_conflict_local_confirm">Do you really want to upload the local collection? Be aware that this will overwrite your collection on the server.</string>
   <string name="sync_conflict_cancel">Avbryt synkronisering</string>
   <string name="sync_prepare_syncing">Forbereder synkronisering...</string>
   <string name="sync_preparing_full_sync_message">Forbereder full synkronisering...</string>
@@ -129,4 +131,5 @@
   <string name="upgrade_decks_button">Oppgradere</string>
   <string name="upgrade_decks_failed">Følgende kortstokker kan ikke oppgraderes:\n%sVennligst åpne dem i Anki Desktop og kontroller databasen. Etterpå kan du importere stokkene ved hjelp av Anki Desktop.</string>
   <string name="upgrade_decks_media_failed">Kopiering av mediafiler til ny mediemappe (%1$s) feilet for følgende kortstokker:\n%2$sVennligst flytt mediefilene manuelt.</string>
+  <string name="download_deck">Downloading deck (%d kb).\nPlease wait...</string>
 </resources>

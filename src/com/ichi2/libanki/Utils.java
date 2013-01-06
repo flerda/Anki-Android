@@ -125,6 +125,7 @@ public class Utils {
     private static final Pattern htmlEntitiesPattern = Pattern.compile("&#?\\w+;");
 
     private static final String ALL_CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private static final String BASE91_EXTRA_CHARS = "!#$%&()*+,-./:;<=>?@[]^_`{|}~";
 
     /**The time in integer seconds. Pass scale=1000 to get milliseconds. */
     public static double now() {
@@ -160,7 +161,7 @@ public class Utils {
     	int point = 0;
     	if (Math.abs(time) < 60 || unit < 1) {
     		type = TIME_SECONDS;
-    	} else if (Math.abs(time) < 3599 || unit < 2) {
+    	} else if (Math.abs(time) < 3600 || unit < 2) {
     		type = TIME_MINUTES;
     	} else if (Math.abs(time) < 60 * 60 * 24 || unit < 3) {
     		type = TIME_HOURS;
@@ -462,7 +463,7 @@ public class Utils {
 
     // all printable characters minus quotes, backslash and separators
     public static String base91(int num) {
-    	return base62(num, "!#$%&()*+,-./:;<=>?@[]^_`{|}~");
+    	return base62(num, BASE91_EXTRA_CHARS);
     }
 
 
@@ -471,6 +472,22 @@ public class Utils {
     	return base91((new Random()).nextInt((int) (Math.pow(2, 61) - 1)));
     }
 
+    // increment a guid by one, for note type conflicts
+    public static String incGuid(String guid) {
+    	return new StringBuffer(_incGuid(new StringBuffer(guid).reverse().toString())).reverse().toString();
+    }
+
+    private static String _incGuid(String guid) {
+    	String table = ALL_CHARACTERS + BASE91_EXTRA_CHARS;
+    	int idx = table.indexOf(guid.substring(0, 1));
+    	if (idx + 1 == table.length()) {
+    		// overflow
+    		guid = table.substring(0, 1) + _incGuid(guid.substring(1, guid.length()));
+    	} else {
+    		guid = table.substring(idx + 1) + guid.substring(1, guid.length());
+    	}
+    	return guid;
+    }
 
 //    public static JSONArray listToJSONArray(List<Object> list) {
 //        JSONArray jsonArray = new JSONArray();
@@ -538,11 +555,11 @@ public class Utils {
      */
 
     /**
-     * MD5 checksum.
+     * SHA1 checksum.
      * Equivalent to python sha1.hexdigest()
      *
      * @param data the string to generate hash from
-     * @return A string of length 32 containing the hexadecimal representation of the MD5 checksum of data.
+     * @return A string of length 40 containing the hexadecimal representation of the MD5 checksum of data.
      */
     public static String checksum(String data) {
         String result = "";
@@ -561,9 +578,14 @@ public class Utils {
             }
             BigInteger biginteger = new BigInteger(1, digest);
             result = biginteger.toString(16);
-            // pad with zeros to length of 32
-            if (result.length() < 32) {
-                result = "00000000000000000000000000000000".substring(0, 32 - result.length()) + result;
+            
+            // pad with zeros to length of 40 This method used to pad
+            // to the length of 32. As it turns out, sha1 has a digest
+            // size of 160 bits, leading to a hex digest size of 40,
+            // not 32.
+            if (result.length() < 40) {
+                String zeroes = "0000000000000000000000000000000000000000";
+                result = zeroes.substring(0, zeroes.length() - result.length()) + result;
             }
         }
         return result;
@@ -1055,7 +1077,7 @@ public class Utils {
 
     /** Returns a list of files for the installed custom fonts. */
     public static List<AnkiFont> getCustomFonts(Context context) {
-        String deckPath = AnkiDroidApp.getCurrentAnkiDroidDirectory(context);
+        String deckPath = AnkiDroidApp.getCurrentAnkiDroidDirectory();
         String fontsPath = deckPath + "/fonts/";
         File fontsDir = new File(fontsPath);
         int fontsCount = 0;
@@ -1089,8 +1111,8 @@ public class Utils {
 
     
     /** Returns a list of apkg-files. */
-    public static List<File> getImportableDecks(Context context) {
-        String deckPath = AnkiDroidApp.getCurrentAnkiDroidDirectory(context);
+    public static List<File> getImportableDecks() {
+        String deckPath = AnkiDroidApp.getCurrentAnkiDroidDirectory();
         File dir = new File(deckPath);
         int deckCount = 0;
         File[] deckList = null;

@@ -45,8 +45,8 @@
   <string name="connection_error_message">حدث خطأ في شبكة الاتصال.</string>
   <string name="sync_log_db_error">حدث خطأ في قاعدة البيانات.</string>
   <string name="no_user_password_error_message">من أجل المضي بهذه العملية، تحتاج إلى لحساب أنكي ويب وتسجيل الدخول.</string>
-  <string name="username">اسم المستخدم</string>
-  <string name="username_repeat">تكرار اسم المستخدم</string>
+  <string name="username">Email address</string>
+  <string name="username_repeat">Repeat email address</string>
   <string name="password">كلمة المرور</string>
   <string name="password_repeat">تكرار كلمة السر</string>
   <string name="log_in">تسجيل الدخول</string>
@@ -55,7 +55,7 @@
   <string name="logged_as">تسجيل</string>
   <string name="log_out">تسجيل الخروج</string>
   <string name="alert_logging_message">تسجيل الدخول، الرجاء الانتظار...</string>
-  <string name="invalid_username_password">اسم المستخدم أو كلمة المرور غير صالحة.</string>
+  <string name="invalid_username_password">Invalid email address or password.</string>
   <string name="login_generic_error">فشل في تسجيل الدخول.</string>
   <string name="download_finished">انتهى التنزيل</string>
   <string name="personaldeckpicker_title">افتح رزمة في الانترنت</string>
@@ -66,6 +66,8 @@
   <string name="sync_conflict_message">رزمك الخاص بك هنا وعلى أنكي ويب تختلف بطريقة بحيث لا يمكن دمجهما معا، لذلك من الضروري إحلال الرزم من جهة إلى جهة أخرى .\n\nهل تريد رفع الرزم من هنا، أو تنزيل الرزم من أنكي ويب؟</string>
   <string name="sync_conflict_local">رفع</string>
   <string name="sync_conflict_remote">تنزيل</string>
+  <string name="sync_conflict_remote_confirm">Do you really want to download the server\'s collection? Be aware that this will overwrite your local collection.</string>
+  <string name="sync_conflict_local_confirm">Do you really want to upload the local collection? Be aware that this will overwrite your collection on the server.</string>
   <string name="sync_conflict_cancel">إلغاء المزامنة</string>
   <string name="sync_prepare_syncing">إعداد المزامنة...</string>
   <string name="sync_preparing_full_sync_message">إعداد مزامنة كاملة...</string>
@@ -129,4 +131,5 @@
   <string name="upgrade_decks_button">ترقية</string>
   <string name="upgrade_decks_failed">هذه الرزم لا يمكن أن ترقى:\n%s الرجاء فتحهم في أنكي سطح المكتب وعمل التأكد لقاعدة البيانات. بعد ذلك يمكنك استيرادهم من خلال أنكي سطح المكتب.</string>
   <string name="upgrade_decks_media_failed">نسخ ملفات الوسائط إلى مجلد الوسائط الجديد (%1$s) فشل لهذه الرزم:\n%2$s الرجاء نقل ملفات الوسائط بشكل يدوي.</string>
+  <string name="download_deck">Downloading deck (%d kb).\nPlease wait...</string>
 </resources>

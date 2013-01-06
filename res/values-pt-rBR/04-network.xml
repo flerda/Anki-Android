@@ -45,8 +45,8 @@
   <string name="connection_error_message">Ocorreu um erro de rede.</string>
   <string name="sync_log_db_error">Ocorreu um erro de banco de dados.</string>
   <string name="no_user_password_error_message">Para continuar com esta operação, você precisa ter uma conta AnkiWeb e estar logado.</string>
-  <string name="username">Nome de usuário</string>
-  <string name="username_repeat">Digite novamente o nome do usuário</string>
+  <string name="username">Endereço de e-mail</string>
+  <string name="username_repeat">Repita o endereço de e-mail</string>
   <string name="password">Senha</string>
   <string name="password_repeat">Digite novamente a senha</string>
   <string name="log_in">Logar</string>
@@ -55,7 +55,7 @@
   <string name="logged_as">Logado como</string>
   <string name="log_out">Sair</string>
   <string name="alert_logging_message">Fazendo login, por favor aguarde...</string>
-  <string name="invalid_username_password">Nome de usuário ou senha inválido.</string>
+  <string name="invalid_username_password">Endereço de e-mail ou senha inválido.</string>
   <string name="login_generic_error">Falha ao efetuar login.</string>
   <string name="download_finished">Download concluído</string>
   <string name="personaldeckpicker_title">Abrir Deck Online</string>
@@ -66,6 +66,8 @@
   <string name="sync_conflict_message">Seus decks aqui e em AnkiWeb diferem de tal forma que eles não podem ser mesclados juntos, por isso é necessário substituir os decks de um lado com os decks do outro.\n\nDeseja fazer upload dos decks daqui, ou baixar os decks de AnkiWeb?</string>
   <string name="sync_conflict_local">Fazer upload</string>
   <string name="sync_conflict_remote">Baixar</string>
+  <string name="sync_conflict_remote_confirm">Você realmente quer baixar a coleção do servidor? Isso irá sobrescrever a sua coleção local.</string>
+  <string name="sync_conflict_local_confirm">Você realmente quer fazer upload da coleção local? Isso irá sobrescrever a coleção no servidor.</string>
   <string name="sync_conflict_cancel">Cancelar sincronização</string>
   <string name="sync_prepare_syncing">Preparando sincronização...</string>
   <string name="sync_preparing_full_sync_message">Preparando sincronização completa...</string>
@@ -129,4 +131,5 @@
   <string name="upgrade_decks_button">Atualizar</string>
   <string name="upgrade_decks_failed">Estes decks não puderam ser atualizados\n%sPor favor abra-os no Anki Desktop e faça uma checagem no banco de dados Após você pode importa-los atraves do Anki Desktop.</string>
   <string name="upgrade_decks_media_failed">A copia dos arquivos de mídia ao novo diretório de mídias(%1$s)  falhou para estes decks:\n%2$sPor favor mova os arquivos de mídia manualmente.</string>
+  <string name="download_deck">Baixando deck (%d kb).\nAguarde...</string>
 </resources>

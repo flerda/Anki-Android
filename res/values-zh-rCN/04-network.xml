@@ -45,8 +45,8 @@
   <string name="connection_error_message">出现网络错误。</string>
   <string name="sync_log_db_error">发生数据库错误。</string>
   <string name="no_user_password_error_message">继续此操作，您需要一个AnkiWeb账户，并登陆。</string>
-  <string name="username">用户名</string>
-  <string name="username_repeat">重复用户名</string>
+  <string name="username">电子邮件地址</string>
+  <string name="username_repeat">重复电子邮件地址</string>
   <string name="password">密码</string>
   <string name="password_repeat">重复密码</string>
   <string name="log_in">登入</string>
@@ -55,7 +55,7 @@
   <string name="logged_as">登录为</string>
   <string name="log_out">登出</string>
   <string name="alert_logging_message">登入中，请稍等…</string>
-  <string name="invalid_username_password">无效的用户名或密码。</string>
+  <string name="invalid_username_password">错误的电子邮件地址或密码。</string>
   <string name="login_generic_error">登陆失败。</string>
   <string name="download_finished">下载完成</string>
   <string name="personaldeckpicker_title">打开线上牌组</string>
@@ -66,6 +66,8 @@
   <string name="sync_conflict_message">您本地的牌组和AnkiWeb上的牌组存在冲突，需要以其中一侧覆盖另一侧。\n\n你想上传本地牌组，还是下载AnkiWeb上的牌组？</string>
   <string name="sync_conflict_local">上传</string>
   <string name="sync_conflict_remote">下载</string>
+  <string name="sync_conflict_remote_confirm">确认要下载服务器的牌组集合吗？注意这会覆盖掉本地的牌组集合。</string>
+  <string name="sync_conflict_local_confirm">确认要上传本地牌组集合吗？注意这会覆盖掉服务器端的牌组集合。</string>
   <string name="sync_conflict_cancel">取消同步</string>
   <string name="sync_prepare_syncing">准备同步...</string>
   <string name="sync_preparing_full_sync_message">准备完全同步…</string>
@@ -129,4 +131,5 @@
   <string name="upgrade_decks_button">升级</string>
   <string name="upgrade_decks_failed">这些牌组不能升级：\n%s请在Anki桌面客户端中打开它们，并进行数据库检查。之后可用Anki桌面客户端导入。</string>
   <string name="upgrade_decks_media_failed">复制媒体文件到新的媒体文件夹 （%1$s) 已失败，失败牌组如下：\n%2$s请手动移动媒体文件。</string>
+  <string name="download_deck">下载卡牌组(%d kb).\n 请等待...</string>
 </resources>

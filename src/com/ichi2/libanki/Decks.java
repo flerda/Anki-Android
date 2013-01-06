@@ -223,17 +223,23 @@ public class Decks {
 
 
     public void rem(long did, boolean cardsToo, boolean childrenToo) {
-        if (did == 1) {
-            return;
-        }
-        // log the removal regardless of whether we have the deck or not
-        mCol._logRem(new long[] { did }, Sched.REM_DECK);
-        // do nothing else if doesn't exist
-        if (!mDecks.containsKey(did)) {
-            return;
-        }
-        JSONObject deck = get(did);
         try {
+            if (did == 1) {
+            	// we won't allow the default deck to be deleted, but if it's a child of an existing deck then it needs to be renamed
+            	JSONObject deck = get(did);
+            	if (deck.getString("name").contains("::")) {
+            		deck.put("name", "Default");
+            		save(deck);
+            	}
+                return;
+            }
+            // log the removal regardless of whether we have the deck or not
+            mCol._logRem(new long[] { did }, Sched.REM_DECK);
+            // do nothing else if doesn't exist
+            if (!mDecks.containsKey(did)) {
+                return;
+            }
+            JSONObject deck = get(did);
             if (deck.getInt("dyn") != 0) {
                 // deleting a cramming deck returns cards to their previous deck rather than deleting the cards
                 mCol.getSched().emptyDyn(did);
@@ -322,7 +328,9 @@ public class Decks {
         return ids;
     }
 
-
+    /**
+     * Return the number of decks.
+     */
     public int count() {
         return mDecks.size();
     }
@@ -347,8 +355,19 @@ public class Decks {
         }
     }
 
-
-    // byName
+    /** Get deck by NAME. */
+    public JSONObject byName(String name) {
+		try {
+			for (JSONObject m : mDecks.values()) {
+				if (m.get("name").equals(name)) {
+					return m;
+				}
+			}
+		} catch (JSONException e) {
+			throw new RuntimeException(e);
+		}
+		return null;
+    }
 
     /** Add or update an existing deck. Used for syncing and merging. */
     public void update(JSONObject g) {
@@ -369,6 +388,8 @@ public class Decks {
         if (allNames().contains(newName) || newName.length() == 0) {
             return false;
         }
+        // ensure we have parents
+        newName = _ensureParents(newName);
         // rename children
         String oldName;
         try {
@@ -381,11 +402,11 @@ public class Decks {
                     save(grp);
                 }
             }
-            // adjust name and save
+            // adjust name
             g.put("name", newName);
-            save(g);
-            // ensure we have parents
+            // ensure we have parents again, as we may have renamed parent->child
             newName = _ensureParents(newName);
+            save(g);
             // renaming may have altered active did order
             maybeAddToActive();
         } catch (JSONException e) {
@@ -396,7 +417,7 @@ public class Decks {
 
 
     /** Ensure parents exist, and return name with case matching parents. */
-    private String _ensureParents(String name) {
+    public String _ensureParents(String name) {
         String s = "";
         String[] path = name.split("::");
         if (path.length < 2) {

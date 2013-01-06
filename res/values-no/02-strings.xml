@@ -84,13 +84,18 @@
   <string name="info_rate">Bedøm AnkiDroid</string>
   <string name="col_load_failed">Henting av samling mislykkes.\nVelg tilbake for å lukke AnkiDroid.</string>
   <string name="import_title">Importer kort</string>
-  <string name="import_message">Vil du importere alle kortene i fil %s?</string>
+  <string name="import_message">Would you like to add the content of file %s to your collection, or replace your collection with it?</string>
+  <string name="import_message_add">Add</string>
+  <string name="import_message_replace">Replace</string>
+  <string name="import_message_replace_confirm">This will delete your existing collection and replace it with the data of file %s. Are you sure?</string>
   <string name="import_log_success">Importerte %d kort problemfritt</string>
   <string name="import_log_error">Import feilet</string>
   <string name="import_log_no_apkg">This is not a valid apkg file</string>
   <string name="import_importing">Importerer kort.\nVennligst vent...</string>
   <string name="import_hint">For å importere kort, legg apkg-filen i mappen %s og trykk ok</string>
   <string name="import_no_file_found">Fant ingen apkg-fil å hente</string>
+  <string name="custom_study">Custom Study</string>
+  <string name="dyn_deck_desc">This is a special deck for studying outside of the normal schedule. Cards will be automatically returned to their original decks after you review them. Deleting this deck from the deck list will return all remaining cards to their original deck.</string>
   <string-array name="dynOrderLabels">
     <item>Eldste først</item>
     <item>Tilfeldig</item>
