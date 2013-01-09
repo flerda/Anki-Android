@@ -28,6 +28,7 @@
 		android:layout_above="@+id/info_buttons">
 	<WebView
         android:id="@+id/info"
+        android:gravity="center_vertical"
         android:layout_width="fill_parent"
 		android:layout_height="fill_parent"/>
 	<RelativeLayout
