@@ -79,12 +79,23 @@ import java.util.regex.Pattern;
 public class Info extends Activity {
 
     public static final String TYPE_EXTRA = "infoType";
+    public static final String TYPE_UPGRADE_STAGE = "upgradeStage";
+    public static final String TYPE_ANINAMTION_RIGHT = "animationToRight";
 
     public static final int TYPE_ABOUT = 0;
     public static final int TYPE_WELCOME = 1;
     public static final int TYPE_NEW_VERSION = 2;
     public static final int TYPE_SHARED_DECKS = 3;
     public static final int TYPE_UPGRADE_DECKS = 4;
+
+    public static final int UPGRADE_SCREEN_BASIC1 = 0;
+    public static final int UPGRADE_SCREEN_BASIC2 = 1;
+    public static final int UPGRADE_SCREEN_MORE_OPTIONS = 2;
+    public static final int UPGRADE_SCREEN_WEB_UPGRADE = 3;
+    public static final int UPGRADE_SCREEN_PC_UPGRADE = 4;
+    public static final int UPGRADE_SCREEN_MANUAL_UPGRADE = 5;
+    public static final int UPGRADE_SCREEN_AUTO_UPGRADE = 6;
+    public static final int UPGRADE_CONTINUE = 7;
 
     private static final int DIALOG_USER_NOT_LOGGED_IN_SYNC = 0;
     private static final int DIALOG_SYNC_LOG = 1;
@@ -95,6 +106,7 @@ public class Info extends Activity {
     private String mDialogMessage;
 
     private int mType;
+    private int mUpgradeStage = -1;
     private WebView mWebView;
     private RelativeLayout mLoadingLayer;
     private String mShareDecksTemplate;
@@ -118,7 +130,7 @@ public class Info extends Activity {
 
         mWebView = (WebView) findViewById(R.id.info);
         mWebView.setBackgroundColor(res.getColor(Themes.getBackgroundColor()));
-        Themes.setWallpaper((View) mWebView.getParent());
+        Themes.setWallpaper((View) mWebView.getParent().getParent());
 
         Button continueButton = (Button) findViewById(R.id.info_continue);
         continueButton.setOnClickListener(new OnClickListener() {
@@ -141,10 +153,7 @@ public class Info extends Activity {
                     case TYPE_UPGRADE_DECKS:
                         break;
                 }
-                finish();
-                if (AnkiDroidApp.SDK_VERSION > 4) {
-                    ActivityTransitionAnimation.slide(Info.this, ActivityTransitionAnimation.LEFT);
-                }
+                finishWithAnimation();
             }
         });
 
@@ -197,10 +206,7 @@ public class Info extends Activity {
                         edit.putLong("lastTimeOpened", System.currentTimeMillis());
                         edit.putBoolean("createTutorial", true);
                         edit.commit();
-                        finish();
-                        if (AnkiDroidApp.SDK_VERSION > 4) {
-                            ActivityTransitionAnimation.slide(Info.this, ActivityTransitionAnimation.LEFT);
-                        }
+                        finishWithAnimation();
                     }
                 });
                 break;
@@ -239,55 +245,261 @@ public class Info extends Activity {
 
             case TYPE_UPGRADE_DECKS:
                 sb.append("<html><body>");
-                File[] fileList = (new File(AnkiDroidApp.getCurrentAnkiDroidDirectory())).listFiles(new OldAnkiDeckFilter());
-                StringBuilder fsb = new StringBuilder();
-                fsb.append("<ul>");
-                for (File f : fileList) {
-                	fsb.append("<li>").append(f.getName().replace(".anki", "")).append("</li>");
-                }
-            	fsb.append("</ul>");
-                sb.append(res.getString(R.string.upgrade_decks_message, fsb.toString()));
-                sb.append("<ul><li>");
-                sb.append(res.getString(R.string.upgrade_decks_message_pos1,
-                		AnkiDroidApp.getCurrentAnkiDroidDirectory()));
-                sb.append("</li><li>");
-                sb.append(res.getString(R.string.upgrade_decks_message_pos2, res.getString(R.string.link_anki)));
-                sb.append("</li><li>");
-                sb.append(res.getString(R.string.upgrade_decks_message_pos3));
-                sb.append("</li></ul>");
-                sb.append(res.getString(R.string.upgrade_decks_message_finish));
-                sb.append("</body></html>");
-                mWebView.loadDataWithBaseURL("", sb.toString(), "text/html", "utf-8", null);
 
                 // add upgrade button
                 Button but = (Button) findViewById(R.id.info_tutorial);
                 but.setVisibility(View.VISIBLE);
-                but.setText(res.getString(R.string.upgrade_decks_button));
-                but.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View arg0) {
-                        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                        }
-                        Connection.upgradeDecks(mUpgradeListener,
-                                new Connection.Payload(new Object[] { AnkiDroidApp.getCurrentAnkiDroidDirectory() }));
-                    }
-                });
 
                 // add sync button
                 Button syncButton = (Button) findViewById(R.id.info_sync);
                 syncButton.setVisibility(View.VISIBLE);
-                syncButton.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View arg0) {
-                    	downloadCollection();
-                    }
-                });
+
+                mUpgradeStage = getIntent().getIntExtra(TYPE_UPGRADE_STAGE, -1);
+
+                switch (mUpgradeStage) {
+                case UPGRADE_SCREEN_BASIC1:
+                    sb.append("This is a major update to Ankidroid and the upgrade process will take at least 5-10 minutes.<br><br>Do you want to proceed now or later?<br><br>More info: <a href=\"http://code.google.com/p/ankidroid/wiki/Upgrading?wl=en\">http://code.google.com/p/ankidroid/wiki/Upgrading?wl=en</a>");
+                    but.setText(res.getString(R.string.later));
+                    but.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            Themes.showThemedToast(Info.this, "Please start Ankidroid again when you have time to upgrade!", false);
+                            setResult(RESULT_CANCELED);
+                            finish();
+                        }
+                    });
+                    syncButton.setText("More Options");
+                    syncButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            Intent result = new Intent();
+                            result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_MORE_OPTIONS);
+                            setResult(RESULT_OK, result);
+                            finishWithAnimation();
+                        }
+                    });
+                    continueButton.setText("Now");
+                    continueButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            Intent result = new Intent();
+                            result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_BASIC2);
+                            setResult(RESULT_OK, result);
+                            finishWithAnimation();
+                        }
+                    });
+                    break;
+
+                case UPGRADE_SCREEN_BASIC2:
+                    sb.append("The recommended upgrade method is to sync with a PC and upgrade with the desktop version of Anki.<br><br>Do you want to upgrade with a PC?");
+                    but.setText("Back");
+                    but.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            Intent result = new Intent();
+                            result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_BASIC1);
+                            result.putExtra(TYPE_ANINAMTION_RIGHT, true);
+                            setResult(RESULT_OK, result);
+                            finishWithAnimation(false);
+                        }
+                    });
+                    syncButton.setText(res.getString(R.string.no));
+                    syncButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            Intent result = new Intent();
+                            result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_WEB_UPGRADE);
+                            setResult(RESULT_OK, result);
+                            finishWithAnimation();
+                        }
+                    });
+                    continueButton.setText(res.getString(R.string.yes));
+                    continueButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            Intent result = new Intent();
+                            result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_PC_UPGRADE);
+                            setResult(RESULT_OK, result);
+                            finishWithAnimation();
+                        }
+                    });
+                    break;
+
+                case UPGRADE_SCREEN_MORE_OPTIONS:
+                    sb.append("You can create a new empty collection by clicking below.<br><br>If you want to downgrade back to AnkiDroid 1 then please (read these instructions on <a href=\"http://code.google.com/p/ankidroid/wiki/Upgrading?wl=en#Continuing_to_use_AnkiDroid_1.1.3\">http://code.google.com/p/ankidroid/wiki/Upgrading?wl=en#Continuing_to_use_AnkiDroid_1.1.3</a>).");
+                    but.setText(res.getString(R.string.upgrade_decks_button));
+                    but.setText("Back");
+                    but.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            Intent result = new Intent();
+                            result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_BASIC1);
+                            result.putExtra(TYPE_ANINAMTION_RIGHT, true);
+                            setResult(RESULT_OK, result);
+                            finishWithAnimation(false);
+                        }
+                    });
+                    syncButton.setText("Create new collection");
+                    syncButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            StyledDialog.Builder builder = new StyledDialog.Builder(
+                                    Info.this);
+                            builder.setTitle("Create New Collection");
+                            builder.setIcon(R.drawable.ic_dialog_alert);
+                            builder.setMessage("Are you sure you want to do this? Your old data will not be imported.");
+                            Resources res = getResources();
+                            builder.setPositiveButton(res.getString(R.string.yes), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                        int which) {
+                                    Intent result = new Intent();
+                                    result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_CONTINUE);
+                                    setResult(RESULT_OK, result);
+                                    finishWithAnimation();
+                                }
+                            });
+                            builder.setNegativeButton(res.getString(R.string.no), null);
+                            builder.show();                        	
+                        }
+                    });
+                    continueButton.setVisibility(View.GONE);
+                    break;
+
+                case UPGRADE_SCREEN_WEB_UPGRADE:
+                    sb.append("<b>This upgrade method is not recommended if you used media files, or have a big collection!</b><br><br>Your anki1 decks will be zipped and uploaded to AnkiWeb, and the converted collection will then be downloaded.<br><br>Please note that a stable internet connection is required, and that there is a 50MB file limit.<br><br>Users of Anki Desktop are strongly encouraged to use the PC based upgrad method.<br><br>Do you still want to proceed?");
+                    but.setText("Back");
+                    but.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            Intent result = new Intent();
+                            result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_BASIC2);
+                            result.putExtra(TYPE_ANINAMTION_RIGHT, true);
+                            setResult(RESULT_OK, result);
+                            finishWithAnimation(false);
+                        }
+                    });
+                    syncButton.setVisibility(View.GONE);
+                    continueButton.setText(res.getString(R.string.yes));
+                    continueButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                            }
+                            Connection.upgradeDecks(mUpgradeListener,
+                                    new Connection.Payload(new Object[] { AnkiDroidApp.getCurrentAnkiDroidDirectory() }));
+                        }
+                    });
+                    break;
+
+                case UPGRADE_SCREEN_PC_UPGRADE:
+                    sb.append("Do you currently have an up-to-date version of your AnkiDroid collection in the Anki desktop software?");
+                    but.setText("Back");
+                    but.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            Intent result = new Intent();
+                            result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_BASIC2);
+                            result.putExtra(TYPE_ANINAMTION_RIGHT, true);
+                            setResult(RESULT_OK, result);
+                            finishWithAnimation(false);
+                        }
+                    });
+                    syncButton.setText(res.getString(R.string.no));
+                    syncButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            Intent result = new Intent();
+                            result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_MANUAL_UPGRADE);
+                            setResult(RESULT_OK, result);
+                            finishWithAnimation();
+                        }
+                    });
+                    continueButton.setText(res.getString(R.string.yes));
+                    continueButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            Intent result = new Intent();
+                            result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_AUTO_UPGRADE);
+                            setResult(RESULT_OK, result);
+                            finishWithAnimation();
+                        }
+                    });
+                    break;
+
+                case UPGRADE_SCREEN_MANUAL_UPGRADE:
+                    sb.append("Please follow these step by step instructions (<a href=\"http://code.google.com/p/ankidroid/wiki/Upgrading?ts=1357702849&updated=Upgrading#Option_1:_Using_USB_(Recommended)\">http://code.google.com/p/ankidroid/wiki/Upgrading?ts=1357702849&updated=Upgrading#Option_1:_Using_USB_(Recommended)</a>) explaining the manual upgrade process, then restart AnkiDroid when you are finished.");
+                    but.setText("Back");
+                    but.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            Intent result = new Intent();
+                            result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_BASIC2);
+                            result.putExtra(TYPE_ANINAMTION_RIGHT, true);
+                            setResult(RESULT_OK, result);
+                            finishWithAnimation(false);
+                        }
+                    });
+                    syncButton.setText("Quit");
+                    syncButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            setResult(RESULT_CANCELED);
+                            finishWithAnimation();
+                        }
+                    });
+                    continueButton.setVisibility(View.GONE);
+                    break;
+
+                case UPGRADE_SCREEN_AUTO_UPGRADE:
+                    sb.append("Please follow these instructions (<a href=\"http://code.google.com/p/ankidroid/wiki/Upgrading?ts=1357702849&updated=Upgrading#Option_2:_Using_AnkiWeb_sync\">http://code.google.com/p/ankidroid/wiki/Upgrading?ts=1357702849&updated=Upgrading#Option_2:_Using_AnkiWeb_sync</a>) to upgrade to Anki Desktop 2, then sync your upgraded collection with AnkiWeb and press the \"Download\" button.");
+                    but.setText("Back");
+                    but.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            Intent result = new Intent();
+                            result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_PC_UPGRADE);
+                            result.putExtra(TYPE_ANINAMTION_RIGHT, true);
+                            setResult(RESULT_OK, result);
+                            finishWithAnimation(false);
+                        }
+                    });
+                    syncButton.setText("Download");
+                    syncButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View arg0) {
+                            downloadCollection();
+                        }
+                    });
+                    continueButton.setVisibility(View.GONE);
+                    break;
+
+                }
+                                
+//                File[] fileList = (new File(AnkiDroidApp.getCurrentAnkiDroidDirectory())).listFiles(new OldAnkiDeckFilter());
+//                StringBuilder fsb = new StringBuilder();
+//                fsb.append("<ul>");
+//                for (File f : fileList) {
+//                	fsb.append("<li>").append(f.getName().replace(".anki", "")).append("</li>");
+//                }
+//            	fsb.append("</ul>");
+//                sb.append(res.getString(R.string.upgrade_decks_message, fsb.toString()));
+//                sb.append("<ul><li>");
+//                sb.append(res.getString(R.string.upgrade_decks_message_pos1,
+//                		AnkiDroidApp.getCurrentAnkiDroidDirectory()));
+//                sb.append("</li><li>");
+//                sb.append(res.getString(R.string.upgrade_decks_message_pos2, res.getString(R.string.link_anki)));
+//                sb.append("</li><li>");
+//                sb.append(res.getString(R.string.upgrade_decks_message_pos3));
+//                sb.append("</li></ul>");
+//                sb.append(res.getString(R.string.upgrade_decks_message_finish));
+                sb.append("</body></html>");
+                mWebView.loadDataWithBaseURL("", sb.toString(), "text/html", "utf-8", null);
 
                 StyledDialog.Builder builder2 = new StyledDialog.Builder(this);
-
                 builder2.setTitle(res.getString(R.string.connection_error_title));
                 builder2.setIcon(R.drawable.ic_dialog_alert);
                 builder2.setMessage(res.getString(R.string.connection_needed));
@@ -386,13 +598,40 @@ public class Info extends Activity {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             if (mType == TYPE_SHARED_DECKS && mWebView.canGoBack()) {
                 mWebView.goBack();
+            } else if (mType == TYPE_UPGRADE_DECKS && mUpgradeStage != UPGRADE_SCREEN_BASIC1) {
+                Intent result = new Intent();
+                result.putExtra(TYPE_ANINAMTION_RIGHT, true);
+                switch (mUpgradeStage) {
+                case UPGRADE_SCREEN_BASIC2:
+                    result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_BASIC1);
+                    break;
+
+                case UPGRADE_SCREEN_MORE_OPTIONS:
+                    result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_BASIC1);
+                    break;
+
+                case UPGRADE_SCREEN_WEB_UPGRADE:
+                    result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_BASIC2);
+                    break;
+
+                case UPGRADE_SCREEN_PC_UPGRADE:
+                    result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_BASIC2);
+                    break;
+
+                case UPGRADE_SCREEN_MANUAL_UPGRADE:
+                    result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_BASIC2);
+                    break;
+
+                case UPGRADE_SCREEN_AUTO_UPGRADE:
+                    result.putExtra(TYPE_UPGRADE_STAGE, UPGRADE_SCREEN_PC_UPGRADE);
+                    break;
+                }
+                setResult(RESULT_OK, result);
+                finishWithAnimation(false);
             } else {
                 Log.i(AnkiDroidApp.TAG, "Info - onBackPressed()");
                 setResult(RESULT_CANCELED);
-                finish();
-                if (AnkiDroidApp.SDK_VERSION > 4) {
-                    ActivityTransitionAnimation.slide(Info.this, ActivityTransitionAnimation.LEFT);
-                }
+                finishWithAnimation();
             }
             return true;
         }
@@ -600,10 +839,7 @@ public class Info extends Activity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 		            		setResult(RESULT_OK);
-		                    finish();
-		                    if (AnkiDroidApp.SDK_VERSION > 4) {
-		                        ActivityTransitionAnimation.slide(Info.this, ActivityTransitionAnimation.LEFT);
-		                    }
+                                    finishWithAnimation();
 						}});
                     builder.setCancelable(false);
                     builder.show();
@@ -804,11 +1040,19 @@ public class Info extends Activity {
                 }
             } else {
                 setResult(RESULT_OK);
-                finish();
-                if (AnkiDroidApp.SDK_VERSION > 4) {
-                    ActivityTransitionAnimation.slide(Info.this, ActivityTransitionAnimation.LEFT);
-                }
+                finishWithAnimation();
             }
         }
     };
+
+    private void finishWithAnimation() {
+        finishWithAnimation(true);
+    }
+    private void finishWithAnimation(boolean left) {
+        finish();
+        if (AnkiDroidApp.SDK_VERSION > 4) {
+            ActivityTransitionAnimation.slide(Info.this, left ?
+                    ActivityTransitionAnimation.LEFT : ActivityTransitionAnimation.RIGHT);
+        }
+    }
 }
