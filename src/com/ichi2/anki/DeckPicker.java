@@ -42,6 +42,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -63,12 +64,12 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.ichi2.anim.ActivityTransitionAnimation;
-import com.ichi2.anki.multimediacard.activity.MultimediaCardEditorActivity;
 import com.ichi2.anki.receiver.SdCardReceiver;
 import com.ichi2.async.Connection;
 import com.ichi2.async.Connection.OldAnkiDeckFilter;
 import com.ichi2.async.Connection.Payload;
 import com.ichi2.async.DeckTask;
+import com.ichi2.async.DeckTask.Listener;
 import com.ichi2.async.DeckTask.TaskData;
 import com.ichi2.charts.ChartBuilder;
 import com.ichi2.libanki.Collection;
@@ -129,6 +130,7 @@ public class DeckPicker extends FragmentActivity {
     private static final int IMPORT_METHOD_ADD = 1;
     private static final int IMPORT_METHOD_REPLACE = 2;
 
+    private String mSyncMessage;
     private String mDialogMessage;
     private int[] mRepairValues;
     private boolean mLoadFailed;
@@ -369,6 +371,8 @@ public class DeckPicker extends FragmentActivity {
 
         @Override
         public void onPreExecute() {
+            mDialogMessage = "";
+            mSyncMessage = "";
         	mDontSaveOnStop = true;
             countUp = 0;
             countDown = 0;
@@ -417,6 +421,7 @@ public class DeckPicker extends FragmentActivity {
             if (mProgressDialog != null) {
                 mProgressDialog.dismiss();
             }
+            mSyncMessage = data.message;
             if (!data.success) {
                 Object[] result = (Object[]) data.result;
                 if (result[0] instanceof String) {
@@ -484,6 +489,9 @@ public class DeckPicker extends FragmentActivity {
                         col.save();
                         mDialogMessage = res.getString(R.string.sync_sanity_failed);
                         showDialog(DIALOG_SYNC_SANITY_ERROR);
+                    } else if (resultType.equals("serverAbort")) {
+                        // syncMsg has already been set above, no need to fetch it here.
+                        showDialog(DIALOG_SYNC_LOG);
                     } else {
                     	if (result.length > 1 && result[1] instanceof Integer) {
                             int type = (Integer) result[1];
@@ -619,8 +627,11 @@ public class DeckPicker extends FragmentActivity {
             	mOpenCollectionDialog.dismiss();
         	}
             try {
-                // Ensure we have the correct deck selected in the deck list after we have updated it
-                setSelectedDeck(AnkiDroidApp.getCol().getDecks().current().getLong("id"));
+                // Ensure we have the correct deck selected in the deck list after we have updated it. Check first
+                // if the collection is open since it might have been closed before this task completes.
+                if (AnkiDroidApp.getCol() != null) {
+                    setSelectedDeck(AnkiDroidApp.getCol().getDecks().current().getLong("id"));
+                }
             } catch (JSONException e) {
                 throw  new RuntimeException();
             }
@@ -1117,7 +1128,7 @@ public class DeckPicker extends FragmentActivity {
 
 
     private void addNote() {
-        Intent intent = new Intent(DeckPicker.this, MultimediaCardEditorActivity.class);
+        Intent intent = new Intent(DeckPicker.this, CardEditor.class);
         intent.putExtra(CardEditor.EXTRA_CALLER, CardEditor.CALLER_DECKPICKER);
         startActivityForResult(intent, ADD_NOTE);
         if (AnkiDroidApp.SDK_VERSION > 4) {
@@ -1269,29 +1280,25 @@ public class DeckPicker extends FragmentActivity {
         } else if (mImportPath != null && AnkiDroidApp.colIsOpen()) {
             showDialog(DIALOG_IMPORT);
         } else {
-            // if the collection is empty, user has already upgraded the app but maybe did not successfully upgrade the decks
-            if (!preferences.getString("lastUpgradeVersion", "").equals(AnkiDroidApp.getPkgVersion()) &&
-                    (new File(AnkiDroidApp.getCurrentAnkiDroidDirectory()).listFiles(new OldAnkiDeckFilter()).length) > 0) {
-                StyledDialog.Builder builder = new StyledDialog.Builder(DeckPicker.this);
-                builder.setTitle(R.string.deck_upgrade_title);
-                builder.setIcon(R.drawable.ic_dialog_alert);
-                builder.setMessage(R.string.deck_upgrade_already_upgraded);
-                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            // AnkiDroid is being updated and a collection already exists. Run a database check here since we could
+            // have added database fixes in between releases.
+            if (!preferences.getString("lastUpgradeVersion", "").equals(AnkiDroidApp.getPkgVersion())) {
+                preferences.edit().putString("lastUpgradeVersion", AnkiDroidApp.getPkgVersion()).commit();
+                DeckTask.launchDeckTask(DeckTask.TASK_TYPE_OPEN_COLLECTION, new Listener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        restartUpgradeProcess();
+                    public void onPostExecute(DeckTask task, TaskData result) {
+                        mOpenCollectionHandler.onPostExecute(result);
+                        integrityCheck();
                     }
-                });
-                builder.setCancelable(false);
-                builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        AnkiDroidApp.getSharedPrefs(AnkiDroidApp.getInstance().getBaseContext())
-                                .edit().putString("lastUpgradeVersion", AnkiDroidApp.getPkgVersion()).commit();
-                        loadCollection();
+                    public void onPreExecute(DeckTask task) {
                     }
-                });
-                builder.show();
+
+                    @Override
+                    public void onProgressUpdate(DeckTask task, TaskData... values) {
+                    }
+                }, new DeckTask.TaskData(AnkiDroidApp.getCollectionPath()));
             } else {
                 loadCollection();
             }
@@ -2021,7 +2028,14 @@ public class DeckPicker extends FragmentActivity {
             case DIALOG_IMPORT_LOG:
             case DIALOG_SYNC_LOG:
             case DIALOG_SYNC_SANITY_ERROR:
-                ad.setMessage(mDialogMessage);
+                // If both have text, separate them by a new line.
+                if (!TextUtils.isEmpty(mDialogMessage) &&  !TextUtils.isEmpty(mSyncMessage)) {
+                    ad.setMessage(mDialogMessage + "\n\n" + mSyncMessage);
+                } else if (!TextUtils.isEmpty(mDialogMessage)) {
+                    ad.setMessage(mDialogMessage);
+                } else {
+                    ad.setMessage(mSyncMessage);
+                }
                 break;
 
             case DIALOG_DB_ERROR:

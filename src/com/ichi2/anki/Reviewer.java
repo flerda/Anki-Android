@@ -71,6 +71,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -108,9 +109,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.xml.sax.XMLReader;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -165,7 +169,8 @@ public class Reviewer extends AnkiActivity {
     private static final int MENU_CLEAR_WHITEBOARD = 1;
     private static final int MENU_EDIT = 2;
     private static final int MENU_REMOVE = 3;
-    private static final int MENU_REMOVE_BURY = 31;
+    private static final int MENU_REMOVE_BURY_CARD = 30;
+    private static final int MENU_REMOVE_BURY_NOTE = 31;
     private static final int MENU_REMOVE_SUSPEND_CARD = 32;
     private static final int MENU_REMOVE_SUSPEND_NOTE = 33;
     private static final int MENU_REMOVE_DELETE = 34;
@@ -192,6 +197,9 @@ public class Reviewer extends AnkiActivity {
 
     /** The percentage of the absolute font size specified in the deck. */
     private int mDisplayFontSize = 100;
+
+    /** The percentage of the original image size in the deck. */
+    private int mDisplayImageSize = 100;
 
     /** Pattern for font-size style declarations */
     private static final Pattern fFontSizePattern = Pattern.compile(
@@ -223,6 +231,7 @@ public class Reviewer extends AnkiActivity {
     private boolean mPrefFullscreenReview;
     private boolean mZoomEnabled;
     private String mCollectionFilename;
+    private int mRelativeImageSize;
     private int mRelativeButtonSize;
     private boolean mDoubleScrolling;
     private boolean mScrollingButtons;
@@ -232,6 +241,7 @@ public class Reviewer extends AnkiActivity {
     private boolean mShakeActionStarted = false;
     private boolean mPrefFixArabic;
     private boolean mPrefForceQuickUpdate;
+    private boolean mDisplayKanjiInfo = false;
     // Android WebView
     private boolean mSpeakText;
     private boolean mInvertedColors = false;
@@ -418,6 +428,9 @@ public class Reviewer extends AnkiActivity {
     private Method mSetTextIsSelectable = null;
 
     private Sched mSched;
+
+    // Stores kanji to display their meaning after answering cards
+    private static HashMap<String, String> sKanjiInfo = new HashMap<String, String>();
 
     // private int zEase;
 
@@ -1224,7 +1237,8 @@ public class Reviewer extends AnkiActivity {
 
         SubMenu removeDeckSubMenu = menu.addSubMenu(Menu.NONE, MENU_REMOVE, Menu.NONE, R.string.menu_dismiss_note);
         removeDeckSubMenu.setIcon(R.drawable.ic_menu_stop);
-        removeDeckSubMenu.add(Menu.NONE, MENU_REMOVE_BURY, Menu.NONE, R.string.menu_bury_note);
+        removeDeckSubMenu.add(Menu.NONE, MENU_REMOVE_BURY_CARD, Menu.NONE, R.string.menu_bury_card);
+        removeDeckSubMenu.add(Menu.NONE, MENU_REMOVE_BURY_NOTE, Menu.NONE, R.string.menu_bury_note);
         removeDeckSubMenu.add(Menu.NONE, MENU_REMOVE_SUSPEND_CARD, Menu.NONE, R.string.menu_suspend_card);
         removeDeckSubMenu.add(Menu.NONE, MENU_REMOVE_SUSPEND_NOTE, Menu.NONE, R.string.menu_suspend_note);
         removeDeckSubMenu.add(Menu.NONE, MENU_REMOVE_DELETE, Menu.NONE, R.string.menu_delete_note);
@@ -1324,10 +1338,11 @@ public class Reviewer extends AnkiActivity {
         if (mClipboard != null) {
             try {
                 mClipboard.setText(text);
-            } catch (NullPointerException e) {
-                // Workaround for https://code.google.com/p/ankidroid/issues/detail?id=1746
-                // Some devices end up with an unusable clipboard. If so, we must disable it or AnkiDroid will
-                // crash if it tries to use it.
+            } catch (Exception e) {
+                // https://code.google.com/p/ankidroid/issues/detail?id=1746
+                // https://code.google.com/p/ankidroid/issues/detail?id=1820
+                // Some devices or external applications make the clipboard throw exceptions. If this happens, we
+                // must disable it or AnkiDroid will crash if it tries to use it.
                 Log.e(AnkiDroidApp.TAG, "Clipboard error. Disabling text selection setting.");
                 AnkiDroidApp.getSharedPrefs(getBaseContext()).edit().putBoolean("textSelection", false).commit();
             }
@@ -1398,8 +1413,14 @@ public class Reviewer extends AnkiActivity {
 
             case MENU_EDIT:
                 return editCard();
-
-            case MENU_REMOVE_BURY:
+                
+            case MENU_REMOVE_BURY_CARD:
+                setNextCardAnimation(false);
+                DeckTask.launchDeckTask(DeckTask.TASK_TYPE_DISMISS_NOTE, mDismissCardHandler, new DeckTask.TaskData(
+                        mSched, mCurrentCard, 4));
+                return true;
+                
+            case MENU_REMOVE_BURY_NOTE:
                 setNextCardAnimation(false);
                 DeckTask.launchDeckTask(DeckTask.TASK_TYPE_DISMISS_NOTE, mDismissCardHandler, new DeckTask.TaskData(
                         mSched, mCurrentCard, 0));
@@ -2030,6 +2051,7 @@ public class Reviewer extends AnkiActivity {
         mPrefFullscreenReview = preferences.getBoolean("fullscreenReview", false);
         mZoomEnabled = preferences.getBoolean("zoom", false);
         mDisplayFontSize = preferences.getInt("relativeDisplayFontSize", 100);// Card.DEFAULT_FONT_SIZE_RATIO);
+        mRelativeImageSize = preferences.getInt("relativeImageSize", 100);
         mRelativeButtonSize = preferences.getInt("answerButtonSize", 100);
         mInputWorkaround = preferences.getBoolean("inputWorkaround", false);
         mPrefFixArabic = preferences.getBoolean("fixArabicText", false);
@@ -2042,6 +2064,7 @@ public class Reviewer extends AnkiActivity {
         mWaitQuestionSecond = preferences.getInt("timeoutQuestionSeconds", 60);
         mScrollingButtons = preferences.getBoolean("scrolling_buttons", false);
         mDoubleScrolling = preferences.getBoolean("double_scrolling", false);
+        mDisplayKanjiInfo = preferences.getBoolean("displayKanjiInfo", false);
         mPrefCenterVertically =  preferences.getBoolean("centerVertically", false);
 
         mGesturesEnabled = AnkiDroidApp.initiateGestures(this, preferences);
@@ -2352,6 +2375,59 @@ public class Reviewer extends AnkiActivity {
     }
 
 
+    private void loadKanjiInfo() {
+        if (!sKanjiInfo.isEmpty()) {
+            return;
+        }
+
+        File file;
+        InputStream is;
+
+        is = this.getResources().openRawResource(R.raw.kanji_info);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+
+        String line;
+
+        try {
+            while (reader.ready()) {
+                line = reader.readLine();
+                if (line.length() == 0 || line.startsWith("#")) {
+                    continue;
+                }
+
+                try {
+                    String[] kanjiInfoPair = line.split(" ", 2);
+                    sKanjiInfo.put(kanjiInfoPair[0], kanjiInfoPair[1]);
+                } catch (IndexOutOfBoundsException e) {
+                    Log.i(AnkiDroidApp.TAG, "Malformed entry in kanji_info.txt: " + line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private String addKanjiInfo(String answer) {
+        loadKanjiInfo();
+
+        String kanjiInfo;
+
+        kanjiInfo = "\n\n<br/><br/><table style=\"color: #000000; background-color: #FFFFFF\">\n";
+
+        for (int i = 0; i < answer.length(); i++) {
+            String chr = (answer.substring(i, i + 1));
+            if (sKanjiInfo.containsKey(chr)) {
+                kanjiInfo = kanjiInfo + "<tr><td>" + chr + "</td><td>" + sKanjiInfo.get(chr) + "</td></tr>\n";
+            }
+        }
+
+        kanjiInfo = kanjiInfo + "</table>\n";
+
+        return kanjiInfo;
+    }
+
+
     private void displayCardAnswer() {
         Log.i(AnkiDroidApp.TAG, "displayCardAnswer");
 
@@ -2365,6 +2441,10 @@ public class Reviewer extends AnkiActivity {
 
         String answer = mCurrentCard.getAnswer(mCurrentSimpleInterface);
         answer = typeAnsAnswerFilter(answer);
+
+        if (mDisplayKanjiInfo) {
+            answer = answer + addKanjiInfo(mCurrentCard.getQuestion(mCurrentSimpleInterface));
+        }
 
         String displayString = "";
 
@@ -2480,6 +2560,11 @@ public class Reviewer extends AnkiActivity {
             Log.i(AnkiDroidApp.TAG, "content card = \n" + content);
             StringBuilder style = new StringBuilder();
             style.append(mCustomFontStyle);
+            
+            // Scale images.
+            if (mRelativeImageSize != 100) {
+                style.append(String.format("img { zoom: %s }\n", mRelativeImageSize / 100.0));
+            }
             Log.i(AnkiDroidApp.TAG, "::style::" + style);
 
             if (mNightMode) {
@@ -3199,11 +3284,13 @@ public class Reviewer extends AnkiActivity {
         /**
          * This is not called on the UI thread. Send a message that will be handled on the UI thread.
          */
+        @JavascriptInterface
         public void playSound(String soundPath) {
             Message msg = Message.obtain();
             msg.obj = soundPath;
             mHandler.sendMessage(msg);
         }
+        @JavascriptInterface
         public int getAvailableWidth() {
             if (mCtx.mAvailableInCardWidth == 0) {
                 mCtx.mAvailableInCardWidth = mCtx.calcAvailableInCardWidth();
