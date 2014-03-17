@@ -37,7 +37,6 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
-import android.text.method.KeyListener;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -46,7 +45,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -59,7 +57,6 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.ichi2.anim.ActivityTransitionAnimation;
-import com.ichi2.anim.ViewAnimation;
 import com.ichi2.anki.receiver.SdCardReceiver;
 import com.ichi2.async.DeckTask;
 import com.ichi2.filters.FilterFacade;
@@ -493,6 +490,9 @@ public class CardEditor extends Activity {
                 	swapText(false);
                 }
             });
+            
+            // Fix for Issue 1651: Ability to lookup a word in dictionary from the "Edit Note" dialog
+            Lookup.initialize(this, mCurrentEditedCard.getDid());
         }
 
         ((LinearLayout) findViewById(R.id.CardEditorDeckButton)).setOnClickListener(new View.OnClickListener() {
@@ -779,6 +779,13 @@ public class CardEditor extends Activity {
                     res.getString(R.string.intent_add_saved_information));
             item.setIcon(R.drawable.ic_menu_archive);
         }
+        
+        // Fix for Issue 1651: Ability to lookup a word in dictionary from the "Edit Note" dialog
+        if(!mAddNote){
+            item = menu.add(Menu.NONE, MENU_LOOKUP, Menu.NONE, Lookup.getSearchStringTitle());
+            item.setIcon(R.drawable.ic_menu_search);
+            item.setEnabled(Lookup.isAvailable());
+        }
         return true;
     }
 
@@ -807,6 +814,7 @@ public class CardEditor extends Activity {
             mIntentInformation = MetaDB.getIntentInformation(this);
             menu.findItem(MENU_SAVED_INTENT).setEnabled(mIntentInformation.size() > 0);
         }
+        
         return true;
     }
 
