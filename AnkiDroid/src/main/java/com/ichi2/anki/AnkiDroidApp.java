@@ -192,11 +192,19 @@ public class AnkiDroidApp extends Application {
     /**
      * On application creation.
      */
-    @TargetApi(Build.VERSION_CODES.FROYO)
     @Override
     public void onCreate() {
         super.onCreate();
-        // Get preferences
+        // Configure WebView to allow file scheme pages to access cookies.
+        mCompat.enableCookiesForFileSchemePages();
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.FROYO)
+    @Override
+    public void attachBaseContext(Context base){
+        super.attachBaseContext(base);
+         // Get preferences
         SharedPreferences preferences = getSharedPrefs(this);
 
         // Initialize crash reporting module
@@ -241,9 +249,6 @@ public class AnkiDroidApp extends Application {
         sInstance = this;
         sInstance.mHooks = new Hooks(preferences);
         setLanguage(preferences.getString(Preferences.LANGUAGE, ""));
-
-        // Configure WebView to allow file scheme pages to access cookies.
-        mCompat.enableCookiesForFileSchemePages();
 
         // Set good default values for swipe detection
         final ViewConfiguration vc = ViewConfiguration.get(this);
@@ -341,10 +346,9 @@ public class AnkiDroidApp extends Application {
      * Get the absolute path to the AnkiDroid directory.
      */
     public static String getCurrentAnkiDroidDirectory() {
-        SharedPreferences prefs = getSharedPrefs(sInstance.getApplicationContext());
+        SharedPreferences prefs = getSharedPrefs(sInstance);
         return prefs.getString("deckPath", getDefaultAnkiDroidDirectory());
     }
-
 
     /**
      * Create the AnkiDroid directory if it doesn't exist and add a .nomedia file to it if needed.
@@ -380,7 +384,6 @@ public class AnkiDroidApp extends Application {
             }
         }
     }
-
 
     public static Resources getAppResources() {
         return sInstance.getResources();
