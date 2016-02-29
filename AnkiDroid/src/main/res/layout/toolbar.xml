@@ -17,6 +17,7 @@
             android:background="?attr/selectableItemBackground"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            app:popupTheme="?attr/actionBarPopupThemeRef"/>
     </android.support.v7.widget.Toolbar>
 </merge>

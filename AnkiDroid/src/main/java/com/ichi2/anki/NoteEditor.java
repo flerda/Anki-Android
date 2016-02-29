@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -60,23 +59,23 @@ import com.ichi2.anki.exception.ConfirmModSchemaException;
 import com.ichi2.anki.multimediacard.IMultimediaEditableNote;
 import com.ichi2.anki.multimediacard.activity.MultimediaEditFieldActivity;
 import com.ichi2.anki.multimediacard.fields.AudioField;
+import com.ichi2.anki.multimediacard.fields.EFieldType;
 import com.ichi2.anki.multimediacard.fields.IField;
 import com.ichi2.anki.multimediacard.fields.ImageField;
+import com.ichi2.anki.multimediacard.fields.TextField;
 import com.ichi2.anki.multimediacard.impl.MultimediaEditableNote;
 import com.ichi2.anki.receiver.SdCardReceiver;
 import com.ichi2.anki.servicelayer.NoteService;
 import com.ichi2.async.DeckTask;
-import com.ichi2.filters.FilterFacade;
 import com.ichi2.libanki.Card;
 import com.ichi2.libanki.Collection;
 import com.ichi2.libanki.Note;
 import com.ichi2.libanki.Utils;
 import com.ichi2.themes.StyledProgressDialog;
 import com.ichi2.themes.Themes;
-import com.ichi2.widget.PopupMenuWithIcons;
+import com.ichi2.anki.widgets.PopupMenuWithIcons;
 import com.ichi2.widget.WidgetStatus;
 
-import org.amr.arabic.ArabicUtilities;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -121,15 +120,11 @@ public class NoteEditor extends AnkiActivity {
     public static final int CALLER_STUDYOPTIONS = 2;
     public static final int CALLER_DECKPICKER = 3;
 
-    public static final int CALLER_BIGWIDGET_EDIT = 4;
-    public static final int CALLER_BIGWIDGET_ADD = 5;
-
     public static final int CALLER_CARDBROWSER_EDIT = 6;
     public static final int CALLER_CARDBROWSER_ADD = 7;
 
     public static final int CALLER_CARDEDITOR = 8;
-    public static final int CALLER_CARDEDITOR_INTENT_ADD = 9;
-    public static final int CALLER_INDICLASH = 10;
+    public static final int CALLER_CARDEDITOR_INTENT_ADD = 10;
 
     public static final int REQUEST_ADD = 0;
     public static final int REQUEST_MULTIMEDIA_EDIT = 2;
@@ -180,8 +175,6 @@ public class NoteEditor extends AnkiActivity {
     private String[] mSourceText;
 
 
-    private boolean mPrefFixArabic;
-
     // A bundle that maps field ords to the text content of that field for use in
     // restoring the Activity.
     private Bundle mSavedFields;
@@ -202,11 +195,7 @@ public class NoteEditor extends AnkiActivity {
         @Override
         public void onProgressUpdate(DeckTask.TaskData... values) {
             int count = values[0].getInt();
-            if (mCaller == CALLER_BIGWIDGET_EDIT) {
-                // AnkiDroidWidgetBig.setCard(values[0].getCard());
-                // AnkiDroidWidgetBig.updateWidget(AnkiDroidWidgetBig.UpdateService.VIEW_NOT_SPECIFIED);
-                mChanged = true;
-            } else if (count > 0) {
+            if (count > 0) {
                 mChanged = true;
                 mSourceText = null;
                 Note oldNote = mEditorNote.clone();
@@ -230,7 +219,7 @@ public class NoteEditor extends AnkiActivity {
             } else {
                 Themes.showThemedToast(NoteEditor.this, getResources().getString(R.string.factadder_saving_error), true);
             }
-            if (!mAddNote || mCaller == CALLER_CARDEDITOR || mCaller == CALLER_BIGWIDGET_EDIT || mAedictIntent) {
+            if (!mAddNote || mCaller == CALLER_CARDEDITOR || mAedictIntent) {
                 mChanged = true;
                 mCloseAfter = true;
             } else if (mCaller == CALLER_CARDEDITOR_INTENT_ADD) {
@@ -310,7 +299,7 @@ public class NoteEditor extends AnkiActivity {
                 String action = intent.getAction();
                 if (action != null
                         && (ACTION_CREATE_FLASHCARD.equals(action) || ACTION_CREATE_FLASHCARD_SEND.equals(action))) {
-                    mCaller = CALLER_INDICLASH;
+                    mCaller = CALLER_CARDEDITOR_INTENT_ADD;
                 }
             }
         }
@@ -392,20 +381,6 @@ public class NoteEditor extends AnkiActivity {
                 mAddNote = true;
                 break;
 
-            case CALLER_BIGWIDGET_EDIT:
-                // Card widgetCard = AnkiDroidWidgetBig.getCard();
-                // if (widgetCard == null) {
-                // finish();
-                // return;
-                // }
-                // mEditorNote = widgetCard.getFact();
-                // mAddNote = false;
-                break;
-
-            case CALLER_BIGWIDGET_ADD:
-                mAddNote = true;
-                break;
-
             case CALLER_CARDBROWSER_EDIT:
                 mCurrentEditedCard = CardBrowser.sCardBrowserCard;
                 if (mCurrentEditedCard == null) {
@@ -425,10 +400,6 @@ public class NoteEditor extends AnkiActivity {
                 break;
 
             case CALLER_CARDEDITOR_INTENT_ADD:
-                mAddNote = true;
-                break;
-
-            case CALLER_INDICLASH:
                 fetchIntentInformation(intent);
                 if (mSourceText == null) {
                     finishWithoutAnimation();
@@ -532,9 +503,11 @@ public class NoteEditor extends AnkiActivity {
                 if (mAedictIntent && (mEditFields.size() == 3) && mSourceText[1].contains("[")) {
                     contents = mSourceText[1].replaceFirst("\\[", "\u001f" + mSourceText[0] + "\u001f");
                     contents = contents.substring(0, contents.length() - 1);
-                } else {
+                } else if (mEditFields.size() > 0) {
                     mEditFields.get(0).setText(mSourceText[0]);
-                    mEditFields.get(1).setText(mSourceText[1]);
+                    if (mEditFields.size() > 1) {
+                        mEditFields.get(1).setText(mSourceText[1]);
+                    }
                 }
             } else {
                 contents = intent.getStringExtra(EXTRA_CONTENTS);
@@ -547,8 +520,6 @@ public class NoteEditor extends AnkiActivity {
             setTitle(R.string.cardeditor_title_edit_card);
         }
 
-
-        mPrefFixArabic = preferences.getBoolean("fixArabicText", false);
 
         ((LinearLayout) findViewById(R.id.CardEditorTagButton)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -603,12 +574,9 @@ public class NoteEditor extends AnkiActivity {
             }
             Pair<String, String> messages = new Pair<String, String>(first, second);
 
-            /* Filter garbage information */
-            Pair<String, String> cleanMessages = new FilterFacade(getBaseContext()).filter(messages);
-
             mSourceText = new String[2];
-            mSourceText[0] = cleanMessages.first;
-            mSourceText[1] = cleanMessages.second;
+            mSourceText[0] = messages.first;
+            mSourceText[1] = messages.second;
         }
     }
 
@@ -837,11 +805,6 @@ public class NoteEditor extends AnkiActivity {
             menu.findItem(R.id.action_reset_card_progress).setVisible(true);
             menu.findItem(R.id.action_reschedule_card).setVisible(true);
             menu.findItem(R.id.action_reset_card_progress).setVisible(true);
-            // if Arabic reshaping is enabled, disable the Save button to avoid
-            // saving the reshaped string to the deck
-            if (mPrefFixArabic) {
-                menu.findItem(R.id.action_save).setEnabled(false);
-            }
         }
         if (mEditFields != null) {
             for (int i = 0; i < mEditFields.size(); i++) {
@@ -998,11 +961,7 @@ public class NoteEditor extends AnkiActivity {
         } else {
             setResult(result);
         }
-
-        if (mCaller == CALLER_CARDEDITOR_INTENT_ADD || mCaller == CALLER_BIGWIDGET_EDIT
-                || mCaller == CALLER_BIGWIDGET_ADD) {
-            finishWithAnimation(ActivityTransitionAnimation.FADE);
-        } else if (mCaller == CALLER_INDICLASH) {
+        if (mCaller == CALLER_CARDEDITOR_INTENT_ADD) {
             finishWithAnimation(ActivityTransitionAnimation.NONE);
         } else {
             finishWithAnimation(ActivityTransitionAnimation.RIGHT);
@@ -1047,7 +1006,7 @@ public class NoteEditor extends AnkiActivity {
         }
         // Also pass the card ID if not adding new note
         if (!mAddNote) {
-            intent.putExtra("cardId", mCurrentEditedCard.getId());
+            intent.putExtra("noteId", mCurrentEditedCard.note().getId());
         }
         startActivityForResultWithAnimation(intent, REQUEST_TEMPLATE_EDIT, ActivityTransitionAnimation.LEFT);
     }
@@ -1076,12 +1035,29 @@ public class NoteEditor extends AnkiActivity {
                     IMultimediaEditableNote mNote = NoteService.createEmptyNote(mEditorNote.model());
                     NoteService.updateMultimediaNoteFromJsonNote(col, mEditorNote, mNote);
                     mNote.setField(index, field);
-                    mEditFields.get(index).setText(field.getFormattedValue());
+                    FieldEditText fieldEditText = mEditFields.get(index);
+                    // Completely replace text for text fields (because current text was passed in)
+                    if (field.getType() == EFieldType.TEXT) {
+                        fieldEditText.setText(field.getFormattedValue());
+                    }
+                    // Insert text at cursor position if the field has focus
+                    else if (fieldEditText.hasFocus()) {
+                        fieldEditText.getText().replace(fieldEditText.getSelectionStart(),
+                                fieldEditText.getSelectionEnd(),
+                                field.getFormattedValue());
+                    }
+                    // Append text if the field doesn't have focus
+                    else {
+                        fieldEditText.getText().append(field.getFormattedValue());
+                    }
                     NoteService.saveMedia(col, (MultimediaEditableNote) mNote);
                     mChanged = true;
                 }
                 break;
             case REQUEST_TEMPLATE_EDIT:
+                if (resultCode == RESULT_OK) {
+                    mReloadRequired = true;
+                }
                 updateCards(mEditorNote.model());
         }
     }
@@ -1129,18 +1105,17 @@ public class NoteEditor extends AnkiActivity {
 
             ImageButton mediaButton = (ImageButton) editline_view.findViewById(R.id.id_media_button);
             // Load icons from attributes
-            int[] attrs = new int[] { R.attr.attachFileImage, R.attr.upDownImage};
-            TypedArray ta = obtainStyledAttributes(attrs);
+            int[] icons = Themes.getResFromAttr(this, new int[] { R.attr.attachFileImage, R.attr.upDownImage});
             // Make the icon change between media icon and switch field icon depending on whether editing note type
             if (editModelMode && allowFieldRemapping()) {
                 // Allow remapping if originally more than two fields
-                mediaButton.setBackgroundResource(ta.getResourceId(1, R.drawable.ic_import_export_black_24dp));
+                mediaButton.setBackgroundResource(icons[1]);
                 setRemapButtonListener(mediaButton, i);
             } else if (editModelMode && !allowFieldRemapping()) {
                 mediaButton.setBackgroundResource(0);
             } else {
                 // Use media editor button if not changing note type
-                mediaButton.setBackgroundResource(ta.getResourceId(0, R.drawable.ic_attachment_black_24dp));
+                mediaButton.setBackgroundResource(icons[0]);
                 setMMButtonListener(mediaButton, i);
             }
             mFieldsLayoutContainer.addView(label);
@@ -1173,7 +1148,7 @@ public class NoteEditor extends AnkiActivity {
                         public boolean onMenuItemClick(MenuItem item) {
                             IMultimediaEditableNote mNote = NoteService.createEmptyNote(mEditorNote.model());
                             NoteService.updateMultimediaNoteFromJsonNote(col, mEditorNote, mNote);
-                            IField field = mNote.getField(index);
+                            IField field;
                             switch (item.getItemId()) {
                                 case R.id.menu_multimedia_audio:
                                     Timber.i("NoteEditor:: Record audio button pressed");
@@ -1189,6 +1164,9 @@ public class NoteEditor extends AnkiActivity {
                                     return true;
                                 case R.id.menu_multimedia_text:
                                     Timber.i("NoteEditor:: Advanced editor button pressed");
+                                    field = new TextField();
+                                    field.setText(mEditFields.get(index).getText().toString());
+                                    mNote.setField(index, field);
                                     startMultimediaFieldEditor(index, mNote, field);
                                     return true;
                                 default:
@@ -1264,11 +1242,7 @@ public class NoteEditor extends AnkiActivity {
     private void initFieldEditText(FieldEditText editText, final int index, String[] values, Typeface customTypeface, boolean enabled) {
         String name = values[0];
         String content = values[1];
-        if (mPrefFixArabic) {
-            content = ArabicUtilities.reshapeSentence(content);
-        }
         editText.init(index, name, content);
-
         if (customTypeface != null) {
             editText.setTypeface(customTypeface);
         }

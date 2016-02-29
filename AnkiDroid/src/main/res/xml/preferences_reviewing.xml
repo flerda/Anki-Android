@@ -52,11 +52,6 @@
             android:title="@string/time_limit"
             app:max="9999"
             app:min="0" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="writeAnswersDisable"
-            android:summary="@string/write_answers_disable_summ"
-            android:title="@string/write_answers_disable" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_cat_flashcard" >
         <CheckBoxPreference
@@ -64,10 +59,12 @@
             android:key="keepScreenOn"
             android:summary="@string/pref_keep_screen_on_summ"
             android:title="@string/pref_keep_screen_on" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="fullscreenReview"
-            android:summary="@string/fullscreen_review_summ"
+        <ListPreference
+            android:defaultValue="0"
+            android:key="fullscreenMode"
+            android:summary=""
+            android:entries="@array/full_screen_mode_labels"
+            android:entryValues="@array/full_screen_mode_values"
             android:title="@string/fullscreen_review" />
         <CheckBoxPreference
             android:defaultValue="false"
@@ -81,7 +78,7 @@
         <com.ichi2.ui.SeekBarPreference
             android:defaultValue="100"
             android:key="cardZoom"
-            android:max="150"
+            android:max="300"
             android:summary="@string/preference_summary_percentage"
             android:text=" %"
             android:title="@string/card_zoom"
@@ -99,12 +96,12 @@
         <com.ichi2.ui.SeekBarPreference
             android:defaultValue="100"
             android:key="answerButtonSize"
-            android:max="170"
+            android:max="200"
             android:summary="@string/preference_summary_percentage"
             android:text=" %"
             android:title="@string/button_size"
             app:interval="10"
-            app:min="100" />                
+            app:min="100" />
         <CheckBoxPreference
             android:key="showProgress"
             android:summary="@string/show_progress_summ"

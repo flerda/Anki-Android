@@ -58,7 +58,7 @@
   <string formatted="false" name="stats_cumulative_correct_percentage">Pourcentage correct cumulé</string>
   <string name="stats_answers">Réponses</string>
   <string name="stats_minutes">Minutes</string>
-  <string name="stats_hours">s</string>
+  <string name="stats_hours">Heures</string>
   <string name="stats_percentage">Pourcentage</string>
   <string name="stats_period_month">1 mois</string>
   <string name="stats_period_year">1 an</string>
@@ -120,7 +120,7 @@
     <item>4</item>
   </string-array>
   <plurals name="stats_today_cards">
-    <item quantity="one">Studied &lt;b&gt;%1$d card&lt;/b&gt; in &lt;b&gt;%2$s&lt;/b&gt; today.</item>
-    <item quantity="other">Studied &lt;b&gt;%1$d cards&lt;/b&gt; in &lt;b&gt;%2$s&lt;/b&gt; today.</item>
+    <item quantity="one">Aujourd\'hui, &lt;b&gt;%1$d carte&lt;/b&gt; a été étudiée en &lt;b&gt;%2$s&lt;/b&gt;.</item>
+    <item quantity="other">Aujourd\'hui, &lt;b&gt;%1$d cartes&lt;/b&gt; ont été étudiées en &lt;b&gt;%2$s&lt;/b&gt;.</item>
   </plurals>
 </resources>

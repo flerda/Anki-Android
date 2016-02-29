@@ -45,12 +45,13 @@
   <string name="settings">Setingan</string>
   <string name="help">Bantuan</string>
   <string name="send_feedback">Kirim Masukan</string>
-  <string name="studyoptions_title">Pilihan Pembelajaran</string>
+  <string name="studyoptions_title">Deck overview</string>
   <string name="studyoptions_due_today">Jatuh tempo hari ini:</string>
   <string name="studyoptions_new_total">Total kartu baru:</string>
   <string name="studyoptions_total_cards">Total kartu:</string>
   <string name="studyoptions_eta">Perkiraan waktu (menit):</string>
   <string name="studyoptions_start">Belajar</string>
+  <string name="study_more">Study more</string>
   <plurals name="deckpicker_title">
     <item quantity="other">%1$d kartu jatuh tempo (%2$s)</item>
   </plurals>
@@ -77,7 +78,7 @@
   <string name="undo_action_delete">Hapus Catatan</string>
   <string name="undo_action_mark">tandai catatan</string>
   <string name="unbury">angkat</string>
-  <string name="contextmenu_deckpicker_rename_deck">Ubah nama deck</string>
+  <string name="rename_deck">Rename deck</string>
   <string name="menu_add">Tambahkan</string>
   <string name="menu_add_note">Tambah catatan</string>
   <string name="menu_my_account">Sinkronisasi akun</string>
@@ -110,6 +111,10 @@
   <string name="empty_cram_deck">Mengosongkan dek persiapan...</string>
   <string name="custom_study_deck_name">Sesi belajar biasa</string>
   <string name="custom_study_deck_exists">Mengubah nama geladak pembelajaran kustom yang ada terlebih dahulu</string>
+  <string name="empty_deck">This deck is empty</string>
+  <string name="studyoptions_empty">This deck is empty. Press the + button to add new content.</string>
+  <string name="studyoptions_limit_reached">Daily study limit reached</string>
+  <string name="studyoptions_empty_schedule">No cards scheduled to study</string>
   <string name="studyoptions_congrats_finished">Selamat! Kamu telah selesai untuk sekarang.</string>
   <string name="studyoptions_congrats_more_rev">Hari ini batas telah dicapai, tetapi besok masih ada kartu-kartu untuk diriview. Kamu dapat meningkatkan batas di pilihan-pilihan.</string>
   <string name="studyoptions_congrats_more_new">Hari ini batas telah dicapai. Ada lebih banyak kartu-kartu baru yang tersedia; kamu dapat menambahkan batas di pilihan-pilihan, tetapi ini dapat meningkatkan jangka pendek review beban kerja.</string>
@@ -118,21 +123,24 @@
   <string name="sd_card_not_mounted">Perangkat penyimpanan tidak terpasang</string>
   <string name="button_sync">Siknronisasi</string>
   <string name="cancel_sync_confirm">Do you want to cancel the sync?</string>
+  <string name="continue_sync">Continue sync</string>
   <string name="sync_cancelled">Sync cancelled</string>
+  <string name="sync_cancel_message">Cancelling&#8230;\nThis may take some time.</string>
   <string name="export">Keluarkan</string>
+  <string name="export_collection">Export collection</string>
+  <string name="export_deck">Export deck</string>
   <string name="nothing">Tidak ada</string>
-  <string name="title_activity_template_editor">Jenis kartu untuk %s</string>
+  <string name="title_activity_template_editor">Card types</string>
   <string name="card_template_editor_front">Template depan</string>
   <string name="card_template_editor_back">Template Belakang</string>
   <string name="card_template_editor_styling">Styling</string>
-  <string name="card_template_editor_menu_add_reverse">Tambah kebalikan</string>
   <string name="card_template_editor_menu_delete">Hapus</string>
   <string name="card_template_editor_cant_delete">Diperlukan setidaknya satu jenis kartu.</string>
   <plurals name="card_template_editor_confirm_delete">
     <item quantity="other">Menghapus jenis kartu \"%2$s\", dan kartu yang %1$d?</item>
   </plurals>
+  <string name="invalid_template">A card could not be generated</string>
   <string name="card_template_editor_would_delete_note">Menghapus jenis kartu ini akan menyebabkan satu atau lebih catatan terhapus. Harap membuat dahulu jenis kartu yang baru.</string>
   <string name="read_write_permission_label">Read and write to the AnkiDroid database</string>
-  <string name="read_write_permission_description">Allow the application to be able to access existing notes, cards,
-        models, and decks, as well as create new ones.</string>
+  <string name="read_write_permission_description">Allow the application to access existing notes, cards, note types, and decks, as well as create new ones</string>
 </resources>

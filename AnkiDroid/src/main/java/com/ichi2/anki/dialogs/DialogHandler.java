@@ -1,7 +1,7 @@
 package com.ichi2.anki.dialogs;
 
-import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,6 +9,10 @@ import android.os.Message;
 import com.ichi2.anki.AnkiActivity;
 import com.ichi2.anki.AnkiDroidApp;
 import com.ichi2.anki.DeckPicker;
+import com.ichi2.anki.R;
+import com.ichi2.async.Connection;
+import com.ichi2.libanki.Utils;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +27,8 @@ import timber.log.Timber;
  */
 public class DialogHandler extends Handler {
 
+    public static final long INTENT_SYNC_MIN_INTERVAL = 2*60000;    // 2min minimum sync interval
+
     /**
      * Handler messages
      */
@@ -34,6 +40,7 @@ public class DialogHandler extends Handler {
     public static final int MSG_SHOW_MEDIA_CHECK_COMPLETE_DIALOG = 5;
     public static final int MSG_SHOW_DATABASE_ERROR_DIALOG = 6;
     public static final int MSG_SHOW_FORCE_FULL_SYNC_DIALOG = 7;
+    public static final int MSG_DO_SYNC = 8;
 
 
     WeakReference<AnkiActivity> mActivity;
@@ -41,7 +48,7 @@ public class DialogHandler extends Handler {
     
     public DialogHandler(AnkiActivity activity) {
         // Use weak reference to main activity to prevent leaking the activity when it's closed
-        mActivity = new WeakReference<AnkiActivity>(activity);
+        mActivity = new WeakReference<>(activity);
     }
 
 
@@ -89,6 +96,22 @@ public class DialogHandler extends Handler {
             };
             dialog.setArgs(msgData.getString("message"));
             (mActivity.get()).showDialogFragment(dialog);
+        } else if (msg.what == MSG_DO_SYNC) {
+            SharedPreferences preferences = AnkiDroidApp.getSharedPrefs(mActivity.get());
+            Resources res = mActivity.get().getResources();
+            String hkey = preferences.getString("hkey", "");
+            boolean limited = Utils.intNow(1000) - preferences.getLong("lastSyncTime", 0) < INTENT_SYNC_MIN_INTERVAL;
+            if (!limited && hkey.length() > 0 && Connection.isOnline()) {
+                ((DeckPicker) mActivity.get()).sync();
+            } else {
+                String err = res.getString(R.string.sync_error);
+                if (limited) {
+                    mActivity.get().showSimpleNotification(err, res.getString(R.string.sync_too_busy));
+                } else {
+                    mActivity.get().showSimpleNotification(err, res.getString(R.string.youre_offline));
+                }
+            }
+            mActivity.get().finishWithoutAnimation();
         }
     }
 

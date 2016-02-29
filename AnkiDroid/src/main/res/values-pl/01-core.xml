@@ -45,21 +45,22 @@
   <string name="settings">Ustawienia</string>
   <string name="help">Pomoc</string>
   <string name="send_feedback">Prześlij opinię</string>
-  <string name="studyoptions_title">Opcje nauki</string>
+  <string name="studyoptions_title">Deck overview</string>
   <string name="studyoptions_due_today">Na dziś:</string>
   <string name="studyoptions_new_total">Łącznie nowych kart:</string>
   <string name="studyoptions_total_cards">Łącznie kart:</string>
   <string name="studyoptions_eta">Szacowany czas (min):</string>
   <string name="studyoptions_start">Ucz się teraz</string>
+  <string name="study_more">Study more</string>
   <plurals name="deckpicker_title">
     <item quantity="one">%1$d card due (%2$s)</item>
     <item quantity="few">%1$d cards due (%2$s)</item>
     <item quantity="other">%1$d cards due (%2$s)</item>
   </plurals>
   <plurals name="reviewer_window_title">
-    <item quantity="one">%d minute left</item>
-    <item quantity="few">%d minutes left</item>
-    <item quantity="other">%d minutes left</item>
+    <item quantity="one">Została %d minuta</item>
+    <item quantity="few">Zostało minut: %d</item>
+    <item quantity="other">Zostało %d minut</item>
   </plurals>
   <plurals name="studied_cards_today">
     <item quantity="one">Studied %1$d card in %2$s today</item>
@@ -83,7 +84,7 @@
   <string name="undo_action_delete">usunięcie notatki</string>
   <string name="undo_action_mark">wyróżnienie notatki</string>
   <string name="unbury">Odkop</string>
-  <string name="contextmenu_deckpicker_rename_deck">Zmień nazwę talii</string>
+  <string name="rename_deck">Zmień nazwę talii</string>
   <string name="menu_add">Dodaj</string>
   <string name="menu_add_note">Dodaj notatkę</string>
   <string name="menu_my_account">Synchronizacja konta</string>
@@ -116,6 +117,10 @@
   <string name="empty_cram_deck">Czyszczenie talii.\nProszę czekać...</string>
   <string name="custom_study_deck_name">Sesja nauki niestandardowej</string>
   <string name="custom_study_deck_exists">Najpierw zmień nazwę istniejącej talii nauki niestandardowej.</string>
+  <string name="empty_deck">Ta talia jest pusta</string>
+  <string name="studyoptions_empty">Talia jest pusta. Wybierz przycisk + żeby dodać karty.</string>
+  <string name="studyoptions_limit_reached">Dzienny limit nauki został wyczerpany</string>
+  <string name="studyoptions_empty_schedule">Nie ma zaplanowanych kart do nauki</string>
   <string name="studyoptions_congrats_finished">Gratulacje! Zakończono powtórki na dziś.</string>
   <string name="studyoptions_congrats_more_rev">Dzisiejszy limit powtórek został wyczerpany, ale wciąż pozostają karty do przejrzenia. Dla optymalnego zapamiętywania proszę rozważyć zwiększenie dziennego limitu w ustawieniach.</string>
   <string name="studyoptions_congrats_more_new">Pozostało więcej kart do przejrzenia, ale dzienny limit został osiągnięty. Możesz zwiększyć limit w opcjach, ale miej na uwadze, że zwiększy to ilość powtórzeń w najbliższych dniach.</string>
@@ -123,15 +128,18 @@
   <string name="studyoptions_no_cards_due">Nie ma żadnych kart do przejrzenia.</string>
   <string name="sd_card_not_mounted">Device storage not mounted</string>
   <string name="button_sync">Synchronizuj</string>
-  <string name="cancel_sync_confirm">Do you want to cancel the sync?</string>
-  <string name="sync_cancelled">Sync cancelled</string>
+  <string name="cancel_sync_confirm">Chcesz przerwać synchronizację?</string>
+  <string name="continue_sync">Continue sync</string>
+  <string name="sync_cancelled">Synchronizacja przerwana</string>
+  <string name="sync_cancel_message">Cancelling&#8230;\nThis may take some time.</string>
   <string name="export">Eksportuj</string>
+  <string name="export_collection">Eksportuj kolekcję</string>
+  <string name="export_deck">Eksportuj talię</string>
   <string name="nothing">Nic</string>
-  <string name="title_activity_template_editor">Typy kart dla %s</string>
+  <string name="title_activity_template_editor">Typ karty</string>
   <string name="card_template_editor_front">Szablon przodu</string>
   <string name="card_template_editor_back">Szablon tyłu</string>
   <string name="card_template_editor_styling">Styl</string>
-  <string name="card_template_editor_menu_add_reverse">Dodaj odwrotność</string>
   <string name="card_template_editor_menu_delete">Usuń</string>
   <string name="card_template_editor_cant_delete">Wymagany jest przynajmniej jeden typ karty.</string>
   <plurals name="card_template_editor_confirm_delete">
@@ -139,8 +147,8 @@
     <item quantity="few">Delete the “%2$s” card type, and its %1$d cards?</item>
     <item quantity="other">Delete the “%2$s” card type, and its %1$d cards?</item>
   </plurals>
+  <string name="invalid_template">A card could not be generated</string>
   <string name="card_template_editor_would_delete_note">Usunięcie typu karty może spowodować usunięcie jednej lub większej ilości notatek. Proszę o utworzenie najpierw nowej karty.</string>
   <string name="read_write_permission_label">Read and write to the AnkiDroid database</string>
-  <string name="read_write_permission_description">Allow the application to be able to access existing notes, cards,
-        models, and decks, as well as create new ones.</string>
+  <string name="read_write_permission_description">Allow the application to access existing notes, cards, note types, and decks, as well as create new ones</string>
 </resources>

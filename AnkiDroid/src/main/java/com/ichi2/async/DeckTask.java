@@ -29,14 +29,12 @@ import com.ichi2.anki.BackupManager;
 import com.ichi2.anki.CardBrowser;
 import com.ichi2.anki.CollectionHelper;
 import com.ichi2.anki.R;
-import com.ichi2.anki.exception.APIVersionException;
 import com.ichi2.anki.exception.ConfirmModSchemaException;
 import com.ichi2.libanki.AnkiPackageExporter;
 import com.ichi2.libanki.Card;
 import com.ichi2.libanki.Collection;
 import com.ichi2.libanki.Note;
 import com.ichi2.libanki.Sched;
-import com.ichi2.libanki.Stats;
 import com.ichi2.libanki.Storage;
 import com.ichi2.libanki.Utils;
 import com.ichi2.libanki.importer.Anki2Importer;
@@ -49,6 +47,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -68,7 +67,6 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
 
     public static final int TASK_TYPE_SAVE_COLLECTION = 2;
     public static final int TASK_TYPE_ANSWER_CARD = 3;
-    public static final int TASK_TYPE_MARK_CARD = 5;
     public static final int TASK_TYPE_ADD_FACT = 6;
     public static final int TASK_TYPE_UPDATE_FACT = 7;
     public static final int TASK_TYPE_UNDO = 8;
@@ -93,11 +91,20 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
     public static final int TASK_TYPE_CHECK_MEDIA = 38;
     public static final int TASK_TYPE_ADD_TEMPLATE = 39;
     public static final int TASK_TYPE_REMOVE_TEMPLATE = 40;
+    public static final int TASK_TYPE_COUNT_MODELS = 41;
+    public static final int TASK_TYPE_DELETE_MODEL = 42;
+    public static final int TASK_TYPE_DELETE_FIELD = 43;
+    public static final int TASK_TYPE_REPOSITION_FIELD = 44;
+    public static final int TASK_TYPE_ADD_FIELD = 45;
+    public static final int TASK_TYPE_CHANGE_SORT_FIELD = 46;
+    public static final int TASK_TYPE_SAVE_MODEL = 47;
+    public static final int TASK_TYPE_FIND_EMPTY_CARDS = 48;
 
     /**
      * A reference to the application context to use to fetch the current Collection object.
      */
     private Context mContext;
+
 
     /**
      * The most recently started {@link DeckTask} instance.
@@ -121,12 +128,9 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
      */
     public static DeckTask launchDeckTask(int type, Listener listener, TaskData... params) {
         // Start new task
-        /* Note: It seems that doing this can lead to replacing sLatestInstance with a new DeckTask after calling cancel()
-        but BEFORE actually finishing the task. This interferes with code checking for onCancelled(), which is very problematic */
-        // TODO: change to a cleaner way of doing this
-        sLatestInstance = new DeckTask(type, listener, sLatestInstance);
-        sLatestInstance.execute(params);
-        return sLatestInstance;
+        DeckTask newTask = new DeckTask(type, listener, sLatestInstance);
+        newTask.execute(params);
+        return newTask;
     }
 
 
@@ -182,17 +186,6 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
     }
 
 
-    public static boolean taskIsRunning() {
-        try {
-            if ((sLatestInstance != null) && (sLatestInstance.getStatus() != AsyncTask.Status.FINISHED)) {
-                return true;
-            }
-        } catch (Exception e) {
-            return true;
-        }
-        return false;
-    }
-
     private final int mType;
     private final Listener mListener;
     private DeckTask mPreviousTask;
@@ -228,9 +221,14 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
                 Timber.e(e, "previously running task was cancelled: %d", mPreviousTask.mType);
             }
         }
-
+        sLatestInstance = this;
         mContext = AnkiDroidApp.getInstance().getApplicationContext();
 
+        // Skip the task if the collection cannot be opened
+        if (mType != TASK_TYPE_REPAIR_DECK && CollectionHelper.getInstance().getColSafe(mContext) == null) {
+            Timber.e("Aborting DeckTask %d as Collection could not be opened", mType);
+            return null;
+        }
         // Actually execute the task now that we are at the front of the queue.
         switch (mType) {
             case TASK_TYPE_LOAD_DECK_COUNTS:
@@ -241,9 +239,6 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
 
             case TASK_TYPE_ANSWER_CARD:
                 return doInBackgroundAnswerCard(params);
-
-            case TASK_TYPE_MARK_CARD:
-                return doInBackgroundMarkCard(params);
 
             case TASK_TYPE_ADD_FACT:
                 return doInBackgroundAddNote(params);
@@ -314,6 +309,29 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
             case TASK_TYPE_REMOVE_TEMPLATE:
                 return doInBackgroundRemoveTemplate(params);
 
+            case TASK_TYPE_COUNT_MODELS:
+                return doInBackgroundCountModels(params);
+
+            case TASK_TYPE_DELETE_MODEL:
+                return  doInBackGroundDeleteModel(params);
+
+            case TASK_TYPE_DELETE_FIELD:
+                return doInBackGroundDeleteField(params);
+
+            case TASK_TYPE_REPOSITION_FIELD:
+                return doInBackGroundRepositionField(params);
+
+            case TASK_TYPE_ADD_FIELD:
+                return doInBackGroundAddField(params);
+
+            case TASK_TYPE_CHANGE_SORT_FIELD:
+                return doInBackgroundChangeSortField(params);
+
+            case TASK_TYPE_SAVE_MODEL:
+                return doInBackgroundSaveModel(params);
+            case TASK_TYPE_FIND_EMPTY_CARDS:
+                return doInBackGroundFindEmptyCards(params);
+
             default:
                 Timber.e("unknown task type: %d", mType);
                 return null;
@@ -381,10 +399,6 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
         Card editCard = params[0].getCard();
         Note editNote = editCard.note();
         boolean fromReviewer = params[0].getBoolean();
-
-        // mark undo
-        col.markUndo(Collection.UNDO_EDIT_NOTE, new Object[]{col.getNote(editNote.getId()), editCard.getId(),
-                fromReviewer});
 
         try {
             col.getDb().getDatabase().beginTransaction();
@@ -563,38 +577,6 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
     }
 
 
-    private TaskData doInBackgroundMarkCard(TaskData... params) {
-        Card card = params[0].getCard();
-        Collection col = CollectionHelper.getInstance().getCol(mContext);
-        try {
-            AnkiDb ankiDB = col.getDb();
-            ankiDB.getDatabase().beginTransaction();
-            try {
-                if (card != null) {
-                    Note note = card.note();
-                    col.markUndo(Collection.UNDO_MARK_NOTE,
-                            new Object[]{note.getId(), note.stringTags(), card.getId()});
-                    if (note.hasTag("marked")) {
-                        note.delTag("marked");
-                    } else {
-                        note.addTag("marked");
-                    }
-                    note.flush();
-                }
-                publishProgress(new TaskData(card));
-                ankiDB.getDatabase().setTransactionSuccessful();
-            } finally {
-                ankiDB.getDatabase().endTransaction();
-            }
-        } catch (RuntimeException e) {
-            Timber.e(e, "doInBackgroundMarkCard - RuntimeException on marking card");
-            AnkiDroidApp.sendExceptionReport(e, "doInBackgroundMarkCard");
-            return new TaskData(false);
-        }
-        return new TaskData(true);
-    }
-
-
     private TaskData doInBackgroundUndo(TaskData... params) {
         Collection col = CollectionHelper.getInstance().getCol(mContext);
         Sched sched = col.getSched();
@@ -637,7 +619,7 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
         String query = (String) params[0].getObjArray()[1];
         Boolean order = (Boolean) params[0].getObjArray()[2];
         ArrayList<HashMap<String,String>> searchResult = col.findCardsForCardBrowser(query, order, deckNames);
-        if (isCancelled() || CardBrowser.sSearchCancelled) {
+        if (isCancelled()) {
             Timber.d("doInBackgroundSearchCards was cancelled so return null");
             return null;
         } else {
@@ -663,6 +645,7 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
                 CardBrowser.updateSearchItemQA(items.get(i), c);
                 // Stop if cancelled
                 if (isCancelled()) {
+                    Timber.d("doInBackgroundRenderBrowserQA was aborted");
                     return null;
                 } else {
                     float progress = (float) i / n * 100;
@@ -719,13 +702,8 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
             int totalCount = sched.cardCount();
             double progressMature = ((double) sched.matureCount()) / ((double) totalCount);
             double progressAll = 1 - (((double) (totalNewCount + counts[1])) / ((double) totalCount));
-            double[][] serieslist = null;
-            // only calculate stats if necessary
-            if ((Boolean) obj[1]) {
-                serieslist = Stats.getSmallDueStats(col);
-            }
             return new TaskData(new Object[] { counts[0], counts[1], counts[2], totalNewCount, totalCount,
-                    progressMature, progressAll, sched.eta(counts), serieslist });
+                    progressMature, progressAll, sched.eta(counts)});
         } catch (RuntimeException e) {
             Timber.e(e, "doInBackgroundUpdateValuesFromDeck - an error occurred");
             return null;
@@ -745,18 +723,16 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
     private TaskData doInBackgroundRebuildCram(TaskData... params) {
         Timber.d("doInBackgroundRebuildCram");
         Collection col = CollectionHelper.getInstance().getCol(mContext);
-        boolean fragmented = params[0].getBoolean();
         col.getSched().rebuildDyn(col.getDecks().selected());
-        return doInBackgroundUpdateValuesFromDeck(new DeckTask.TaskData(new Object[]{true, fragmented}));
+        return doInBackgroundUpdateValuesFromDeck(new DeckTask.TaskData(new Object[]{true}));
     }
 
 
     private TaskData doInBackgroundEmptyCram(TaskData... params) {
         Timber.d("doInBackgroundEmptyCram");
         Collection col = CollectionHelper.getInstance().getCol(mContext);
-        boolean fragmented = params[0].getBoolean();
         col.getSched().emptyDyn(col.getDecks().selected());
-        return doInBackgroundUpdateValuesFromDeck(new DeckTask.TaskData(new Object[]{true, fragmented}));
+        return doInBackgroundUpdateValuesFromDeck(new DeckTask.TaskData(new Object[]{true}));
     }
 
 
@@ -1047,7 +1023,7 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
                 if (child.getInt("dyn") == 1) {
                     continue;
                 }
-                TaskData newParams = new TaskData(new Object[] { col, child, conf });
+                TaskData newParams = new TaskData(new Object[] { child, conf });
                 boolean changed = doInBackgroundConfChange(newParams).getBoolean();
                 if (!changed) {
                     return new TaskData(false);
@@ -1066,15 +1042,11 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
     private TaskData doInBackgroundCheckMedia(TaskData... params) {
         Timber.d("doInBackgroundCheckMedia");
         Collection col = CollectionHelper.getInstance().getCol(mContext);
-        try {
-            // A media check on AnkiDroid will also update the media db
-            col.getMedia().findChanges(true);
-            // Then do the actual check
-            List<List<String>> result = col.getMedia().check();
-            return new TaskData(0, new Object[]{result}, true);
-        } catch (APIVersionException e) {
-            return new TaskData(false);
-        }
+        // A media check on AnkiDroid will also update the media db
+        col.getMedia().findChanges(true);
+        // Then do the actual check
+        List<List<String>> result = col.getMedia().check();
+        return new TaskData(0, new Object[]{result}, true);
     }
 
     /**
@@ -1097,7 +1069,7 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
     }
 
     /**
-     * Remove a card template
+     * Remove a card template. Note: it's necessary to call save model after this to re-generate the cards
      */
     private TaskData doInBackgroundRemoveTemplate(TaskData... params) {
         Timber.d("doInBackgroundRemoveTemplate");
@@ -1115,6 +1087,171 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
             return new TaskData(false);
         }
         return new TaskData(true);
+    }
+
+    /**
+     * Regenerate all the cards in a model
+     */
+    private TaskData doInBackgroundSaveModel(TaskData... params) {
+        Timber.d("doInBackgroundSaveModel");
+        Collection col = CollectionHelper.getInstance().getCol(mContext);
+        Object [] args = params[0].getObjArray();
+        JSONObject model = (JSONObject) args[0];
+        col.getModels().save(model, true);
+        col.reset();
+        return new TaskData(true);
+    }
+
+
+    /*
+     * Async task for the ModelBrowser Class
+     * Returns an ArrayList of all models alphabetically ordered and the number of notes
+     * associated with each model.
+     *
+     * @return {ArrayList<JSONObject> models, ArrayList<Integer> cardCount}
+     */
+    private TaskData doInBackgroundCountModels(TaskData... params){
+        Timber.d("doInBackgroundLoadModels");
+        Collection col = CollectionHelper.getInstance().getCol(mContext);
+
+        ArrayList<JSONObject> models = (ArrayList<JSONObject>) col.getModels().all();
+        ArrayList<Integer> cardCount = new ArrayList<Integer>();
+        Collections.sort(models, new Comparator<JSONObject>() {
+            @Override
+            public int compare(JSONObject a, JSONObject b) {
+                try {
+                    return a.getString("name").compareTo(b.getString("name"));
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        try{
+            for (JSONObject n : models) {
+                long modID = n.getLong("id");
+                cardCount.add(col.getModels().nids(col.getModels().get(modID)).size());
+            }
+        } catch (JSONException e) {
+                Timber.e("doInBackgroundLoadModels :: JSONException");
+                return new TaskData(false);
+        }
+
+        Object[] data = new Object[2];
+        data[0] = models;
+        data[1] = cardCount;
+        return (new TaskData(0, data, true));
+    }
+
+
+    /**
+     * Deletes the given model (stored in the long field of TaskData)
+     * and all notes associated with it
+     */
+    private TaskData doInBackGroundDeleteModel(TaskData... params){
+        Timber.d("doInBackGroundDeleteModel");
+        long modID = params[0].getLong();
+        Collection col = CollectionHelper.getInstance().getCol(mContext);
+        try {
+            col.getModels().rem(col.getModels().get(modID));
+        }
+        catch (ConfirmModSchemaException e) {
+            Timber.e("doInBackGroundDeleteModel :: ConfirmModSchemaException");
+            return new TaskData(false);
+        }
+        return new TaskData(true);
+    }
+
+    /**
+     * Deletes thje given field in the given model
+     */
+    private TaskData doInBackGroundDeleteField(TaskData... params){
+        Timber.d("doInBackGroundDeleteField");
+        Object[] objects = params[0].getObjArray();
+
+        JSONObject model = (JSONObject) objects[0];
+        JSONObject field = (JSONObject) objects[1];
+
+
+        Collection col = CollectionHelper.getInstance().getCol(mContext);
+        try {
+            col.getModels().remField(model, field);
+        }
+        catch (ConfirmModSchemaException e) {
+            //Should never be reached
+            return new TaskData(false);
+        }
+        return new TaskData(true);
+    }
+
+    /**
+     * Repositions the given field in the given model
+     */
+    private TaskData doInBackGroundRepositionField(TaskData... params){
+        Timber.d("doInBackgroundRepositionField");
+        Object[] objects = params[0].getObjArray();
+
+        JSONObject model = (JSONObject) objects[0];
+        JSONObject field = (JSONObject) objects[1];
+        int index = (Integer) objects[2];
+
+
+        Collection col = CollectionHelper.getInstance().getCol(mContext);
+        try {
+            col.getModels().moveField(model, field, index);
+        }
+        catch (ConfirmModSchemaException e) {
+            //Should never be reached
+            return new TaskData(false);
+        }
+        return new TaskData(true);
+    }
+
+    /**
+     * Adds a field of with name in given model
+     */
+    private TaskData doInBackGroundAddField(TaskData... params){
+        Timber.d("doInBackgroundRepositionField");
+        Object[] objects = params[0].getObjArray();
+
+        JSONObject model = (JSONObject) objects[0];
+        String fieldName = (String) objects[1];
+
+        Collection col = CollectionHelper.getInstance().getCol(mContext);
+        try {
+            col.getModels().addField(model, col.getModels().newField(fieldName));
+        }
+        catch (ConfirmModSchemaException e) {
+            //Should never be reached
+            return new TaskData(false);
+        }
+        return new TaskData(true);
+    }
+
+    /**
+     * Adds a field of with name in given model
+     */
+    private TaskData doInBackgroundChangeSortField(TaskData... params){
+        try {
+            Timber.d("doInBackgroundChangeSortField");
+            Object[] objects = params[0].getObjArray();
+
+            JSONObject model = (JSONObject) objects[0];
+            int idx = (int) objects[1];
+
+            Collection col = CollectionHelper.getInstance().getCol(mContext);
+            col.getModels().setSortIdx(model, idx);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return new TaskData(true);
+    }
+
+    public TaskData doInBackGroundFindEmptyCards(TaskData... params) {
+        Collection col = CollectionHelper.getInstance().getCol(mContext);
+        List<Long> cids = col.emptyCids();
+        return new TaskData(new Object[] { cids});
     }
 
     /**
@@ -1430,12 +1567,8 @@ public class DeckTask extends BaseAsyncTask<DeckTask.TaskData, DeckTask.TaskData
             return mObjects;
         }
     }
-    
-    public static boolean taskIsCancelled(){
-        return sLatestInstance!=null && sLatestInstance.isCancelled();
-    }
-    
-    public static boolean taskIsCancelled(int taskType){
-        return sLatestInstance != null && sLatestInstance.mType == taskType && taskIsCancelled();
+
+    public static synchronized DeckTask getInstance() {
+        return sLatestInstance;
     }
 }

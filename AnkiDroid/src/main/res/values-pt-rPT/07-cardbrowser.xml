@@ -40,39 +40,39 @@
 -->
 <resources>
   <plurals name="card_browser_subtitle">
-    <item quantity="one">%d card shown</item>
-    <item quantity="other">%d cards shown</item>
+    <item quantity="one">%d ficha mostrada</item>
+    <item quantity="other">%d fichas mostradas</item>
   </plurals>
   <string name="card_browser_all_decks">Todos os baralhos</string>
   <string name="card_browser_delete_card">Eliminar nota</string>
   <string name="card_browser_suspend_card">Suspender ficha</string>
-  <string name="card_browser_unsuspend_card">Cancelar suspensão</string>
+  <string name="card_browser_unsuspend_card">Cancelar suspensão da ficha</string>
   <string name="card_browser_mark_card">Marcar nota</string>
   <string name="card_browser_unmark_card">Desmarcar nota</string>
-  <string name="delete_card_title">Eliminar a nota?</string>
-  <string name="delete_card_message">Deseja realmente eliminar todas as fichas desta nota? \nCampo de pesquisa: %s</string>
+  <string name="delete_card_title">Apagar nota?</string>
+  <string name="delete_card_message">Eliminar todas as fichas desta nota? \nCampo de procura: %s</string>
   <string name="card_browser_show_marked">Filtro marcado</string>
   <string name="card_browser_show_suspended">Filtro suspenso</string>
   <string name="card_browser_search_by_tag">Filtrar por etiqueta</string>
-  <string name="card_browser_tags_shown">Etiqueta: %1$s</string>
-  <string name="card_browser_list_my_searches">My searches</string>
-  <string name="card_browser_list_my_searches_save">Save search</string>
-  <string name="card_browser_list_my_searches_title">Choose a saved search</string>
-  <string name="card_browser_list_my_searches_new_name">Name for the current search</string>
-  <string name="card_browser_list_my_searches_new_search_error_empty_name">You can’t save a search without a name</string>
-  <string name="card_browser_list_my_searches_new_search_error_dup">Name exists</string>
-  <string name="card_browser_list_my_searches_remove_content">Delete “%1$s”?</string>
+  <string name="card_browser_tags_shown">Etiquetas: %1$s</string>
+  <string name="card_browser_list_my_searches">Minhas procuras</string>
+  <string name="card_browser_list_my_searches_save">Guardar procura</string>
+  <string name="card_browser_list_my_searches_title">Escolher uma procura guardada</string>
+  <string name="card_browser_list_my_searches_new_name">Nome para a procura atual</string>
+  <string name="card_browser_list_my_searches_new_search_error_empty_name">Não pode guardar uma procura sem um nome</string>
+  <string name="card_browser_list_my_searches_new_search_error_dup">Nome já existe</string>
+  <string name="card_browser_list_my_searches_remove_content">Eliminar \"%1$s\"?</string>
   <string name="card_browser_change_display_order">Alterar a ordem de exibição</string>
-  <string name="card_browser_change_display_order_title">Escolha a ordem de exibição</string>
+  <string name="card_browser_change_display_order_title">Escolher a ordem de exibição</string>
   <string name="card_browser_change_display_order_reverse">Selecione um campo duas vezes para inverter a ordem</string>
   <string name="card_details_question">Pergunta</string>
   <string name="card_details_answer">Resposta</string>
   <string name="card_details_due">Agendada</string>
   <string name="card_details_tags">Etiquetas</string>
-  <string name="card_browser_filtering_cards">A filtrar fichas&#8230;\nPrima voltar para cancelar</string>
+  <string name="card_browser_filtering_cards">A filtrar as fichas&#8230;\nPrima voltar para cancelar</string>
   <string-array name="card_browser_order_labels">
     <item>Sem ordenação (mais rápido)</item>
-    <item>By sort field</item>
+    <item>Por campo de ordenação</item>
     <item>Por data de criação</item>
     <item>Por data de edição</item>
     <item>Por data de modificação</item>

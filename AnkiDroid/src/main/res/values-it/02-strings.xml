@@ -55,6 +55,7 @@
   <string name="filter_tags">Filtra etichette</string>
   <string name="no_tags">Non hai ancora aggiunto nessuna etichetta.</string>
   <string name="sdcard_missing_message">La scheda SD non è disponibile, perché è usata come unità USB. Scollegare l\'USB per accedere ai mazzi.</string>
+  <string name="updated_version">Aggiornato alla versione %s</string>
   <string name="enable_whiteboard">Abilita la lavagna</string>
   <string name="disable_whiteboard">Disabilita la lavagna</string>
   <string name="show_whiteboard">Mostra lavagna</string>
@@ -65,6 +66,7 @@
   <string name="leech_notification">Carta contrassegnata come sanguisuga</string>
   <string name="corrupt_font">File dei caratteri corrotto %s</string>
   <string-array name="browser_column1_headings">
+    <item>Domanda</item>
     <item>Ordina per</item>
   </string-array>
   <string-array name="browser_column2_headings">
@@ -77,6 +79,13 @@
     <item>Errori</item>
     <item>Ripetizioni</item>
   </string-array>
+  <string name="custom_study_increase_new_limit">Aumenta il limite odierno di carte nuove</string>
+  <string name="custom_study_increase_review_limit">Aumenta il limite odierno di ripetizioni</string>
+  <string name="custom_study_review_forgotten">Ripeti carte dimenticate</string>
+  <string name="custom_study_review_ahead">Ripeti in anticipo</string>
+  <string name="custom_study_random_selection">Studia una selezione casuale di carte</string>
+  <string name="custom_study_preview_new">Anteprima carte nuove</string>
+  <string name="custom_study_limit_tags">Limita ad etichette particolari</string>
   <string name="cardeditor_title_add_note">Aggiungi nota</string>
   <string name="cardeditor_title_edit_card">Modifica nota</string>
   <string name="discard_unsaved_changes">Chiudi e perdi input?</string>
@@ -107,7 +116,6 @@
   <string name="card_editor_preview_card">Anteprima</string>
   <string name="error_insufficient_memory">Operazione non possibile a causa di memoria insufficiente sul tuo dispositivo</string>
   <string name="rename">Rinomina</string>
-  <string name="rename_error">Mazzo %s potrebbe non essere rinominato</string>
   <string name="default_conf_delete_error">Il gruppo di opzioni predefinito non può essere rimosso</string>
   <plurals name="factadder_cards_added">
     <item quantity="one">%d carta aggiunta</item>
@@ -116,8 +124,9 @@
   <string name="help_title">Aiuto</string>
   <string name="check_db">Controlla database</string>
   <string name="check_media">Controlla file multimediali</string>
+  <string name="empty_cards">Carte vuote</string>
   <string name="check_db_message">Controllo database.\nAttendi...</string>
-  <string name="empty_card_warning" tools:ignore="TypographyEllipsis">Carta vuota. Esegui \"Strumenti&gt;Carte vuote...\" con la versione desktop.</string>
+  <string name="empty_card_warning">Questa carta è vuota. Utilizza l\'opzione \"Carte vuote\" dal menu sulla schermata di elenco dei mazzi.</string>
   <string name="unknown_type_field_warning">Digita la risposta: campo sconosciuto %s</string>
   <string name="delete_deck">Eliminazione mazzo...\nAttendi.</string>
   <string name="show_hint">Mostra %s</string>
@@ -146,16 +155,16 @@
   <string name="upgrade_import_no_file_found">Nessun file importabile %1$s trovato</string>
   <string name="study_options">Opzioni del mazzo</string>
   <string name="custom_study">Studio personalizzato</string>
+  <string name="more_options">Più</string>
   <string name="dyn_deck_desc">Questo è un mazzo speciale per studiare al di fuori della pianificazione normale. Le carte ritorneranno automaticamente nel mazzo originale dopo che le hai ripetute. L\'eliminazione di questo mazzo dall\'elenco dei mazzi riporterà tutte le carte rimanenti nel loro mazzo originale.</string>
   <string name="steps_error">I passi devono essere un numero maggiore di 0</string>
   <string name="steps_min_error">Almeno un passo è necessario</string>
   <string name="sched_end">(fine)</string>
-  <string name="sched_unbury_button">Per vederle ora, tocca il pulsante Disseppellisci.</string>
+  <string name="sched_unbury_action">Per vederle ora tocca \"Disseppellisci\" nel menu.</string>
   <string name="sched_has_buried">Alcune carte correlate o seppellite sono state rinviate ad una prossima sessione.</string>
   <string name="tag_editor_add_feedback">Tocca \"%2$s\" per confermare l\'aggiunta di \"%1$s\"</string>
   <string name="tag_editor_add_feedback_existing">Etichetta esistente \"%1$s\" selezionata</string>
   <string name="lookup_hint">Dopo aver copiato il testo, tocca la carta in un punto qualsiasi per mostrare l\'icona di ricerca</string>
-  <string name="add_content_showcase_text">Per cominciare, pigia il bottone + per aggiungere nuovi contenuti da studiare.\n\n Pigia \'Aiuto\' per vedere il manuale.</string>
   <plurals name="time_span_seconds">
     <item quantity="one">%s secondo</item>
     <item quantity="other">%s secondi</item>
@@ -181,4 +190,7 @@
     <item quantity="other">%s anni</item>
   </plurals>
   <string name="less_than_time">&lt; %s</string>
+  <string name="decks_rename_exists">Quel mazzo esiste già.</string>
+  <string name="decks_rename_filtered_nosubdecks">Un mazzo filtrato non può avere sottomazzi.</string>
+  <string name="filtered_deck_name">Mazzo filtrato</string>
 </resources>

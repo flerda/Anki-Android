@@ -43,7 +43,7 @@
   <string name="drawer_open">Abrir cajón</string>
   <string name="drawer_close">Cerrar cajón</string>
   <string name="CardEditorLaterMessage">Información guardada para más tarde</string>
-  <string name="CardEditorCardDeck">Mazo de tarjeta:</string>
+  <string name="CardEditorCardDeck">Mazo de tarjetas:</string>
   <string name="CardEditorNoteDeck">Mazo:</string>
   <string name="CardEditorModel">Tipo:</string>
   <string name="CardEditorTags">Etiquetas: %1$s</string>
@@ -55,6 +55,7 @@
   <string name="filter_tags">Filtrar etiquetas</string>
   <string name="no_tags">No has añadido ninguna etiqueta aún.</string>
   <string name="sdcard_missing_message">Tarjeta SD no disponible debido a que está siendo utilizada como un dispositivo USB. Desconecte el USB para acceder a sus mazos.</string>
+  <string name="updated_version">Actualizado a la versión %s</string>
   <string name="enable_whiteboard">Activar pizarra</string>
   <string name="disable_whiteboard">Desactivar pizarra</string>
   <string name="show_whiteboard">Mostrar pizarra</string>
@@ -65,6 +66,7 @@
   <string name="leech_notification">Tarjeta marcada como sanguijuela</string>
   <string name="corrupt_font">Archivo de fuente corrupto %s</string>
   <string-array name="browser_column1_headings">
+    <item>Pregunta</item>
     <item>Campo de ordenamiento</item>
   </string-array>
   <string-array name="browser_column2_headings">
@@ -77,6 +79,13 @@
     <item>Intervalos</item>
     <item>Repasos</item>
   </string-array>
+  <string name="custom_study_increase_new_limit">Aumentar el límite de tarjetas nuevas para hoy</string>
+  <string name="custom_study_increase_review_limit">Aumentar el límite de repasos para hoy</string>
+  <string name="custom_study_review_forgotten">Revisar tarjetas olvidadas</string>
+  <string name="custom_study_review_ahead">Revisar por adelantado</string>
+  <string name="custom_study_random_selection">Estudiar una selección al azar de tarjetas</string>
+  <string name="custom_study_preview_new">Previsualizar tarjetas nuevas</string>
+  <string name="custom_study_limit_tags">Limitar a etiquetas particulares</string>
   <string name="cardeditor_title_add_note">Añadir nota</string>
   <string name="cardeditor_title_edit_card">Editar nota</string>
   <string name="discard_unsaved_changes">¿Cerrar y perder la entrada actual?</string>
@@ -107,7 +116,6 @@
   <string name="card_editor_preview_card">Vista previa</string>
   <string name="error_insufficient_memory">La operación no puede llevarse a cabo debido a memoria insuficiente en su dispositivo</string>
   <string name="rename">Renombrar</string>
-  <string name="rename_error">El mazo %s no pudo ser renombrado</string>
   <string name="default_conf_delete_error">El grupo de opciones por defecto no puede ser eliminado</string>
   <plurals name="factadder_cards_added">
     <item quantity="one">%d tarjeta añadida</item>
@@ -116,8 +124,9 @@
   <string name="help_title">Ayuda</string>
   <string name="check_db">Comprobar base de datos</string>
   <string name="check_media">Comprobar archivo multimedia</string>
+  <string name="empty_cards">Empty cards</string>
   <string name="check_db_message">Comprobando base de datos.\nPor favor aguarde...</string>
-  <string name="empty_card_warning" tools:ignore="TypographyEllipsis">Tarjeta vacía. Ejecute \"Herramientas&gt;Tarjetas vacías...\" en el cliente de escritorio.</string>
+  <string name="empty_card_warning">This card is empty. Use the “Empty cards” option from the menu on the deck list screen.</string>
   <string name="unknown_type_field_warning">Tipear respuesta: campo desconocido %s</string>
   <string name="delete_deck">Eliminando mazo...\nPor favor aguarde.</string>
   <string name="show_hint">Mostrar %s</string>
@@ -146,16 +155,16 @@
   <string name="upgrade_import_no_file_found">No se ha hallado archivos %1$s para importar</string>
   <string name="study_options">Opciones de mazo</string>
   <string name="custom_study">Estudio personalizado</string>
+  <string name="more_options">Más</string>
   <string name="dyn_deck_desc">Este es un mazo especial para estudiar por fuera del cronograma normal. Las tarjetas serán automáticamente devueltas a sus mazos originales luego de que las haya repasado. Borrar este mazo de la lista de mazos devolverá todas las tarjetas restantes a sus mazos originales.</string>
   <string name="steps_error">Los pasos debe ser números mayores que 0</string>
   <string name="steps_min_error">Se requiere al menos un paso</string>
   <string name="sched_end">(fin)</string>
-  <string name="sched_unbury_button">Para verlas ahora, pulse el botón Desenterrar.</string>
+  <string name="sched_unbury_action">Para verlos ahora pulsa \"Desenterrar\" en el menú.</string>
   <string name="sched_has_buried">Algunas tarjetas relacionadas o enterradas fueron postergadas para una sesión posterior.</string>
   <string name="tag_editor_add_feedback">Tocar \"%2$s\" para confirmar la adición de \"%1$s\"</string>
   <string name="tag_editor_add_feedback_existing">Etiqueta existente \"%1$s\" seleccionada</string>
   <string name="lookup_hint">Luego de copiar el texto, pulse en cualquier lugar sobre la tarjeta para mostrar el ícono de búsqueda</string>
-  <string name="add_content_showcase_text">Para comenzar, pulse el botón + para añadir algún nuevo material de estudio.\n\n Presiona \'Ayuda\' para ver el manual.</string>
   <plurals name="time_span_seconds">
     <item quantity="one">%s segundo</item>
     <item quantity="other">%s segundos</item>
@@ -181,4 +190,7 @@
     <item quantity="other">%s años</item>
   </plurals>
   <string name="less_than_time">&lt; %s</string>
+  <string name="decks_rename_exists">El mazo ya existe</string>
+  <string name="decks_rename_filtered_nosubdecks">Un mazo filtrado no puede tener submazos</string>
+  <string name="filtered_deck_name">Mazo filtrado</string>
 </resources>

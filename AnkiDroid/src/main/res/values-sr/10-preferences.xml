@@ -64,6 +64,8 @@
   <string name="whiteboard_black_summ">Користи мање меморије, осим у ноћном режиму</string>
   <string name="write_answers_disable">Онемогући куцање одговора</string>
   <string name="write_answers_disable_summ">Спречава појаву тастатуре на картицама које садрже поље \"укуцајте одговор\"</string>
+  <string name="use_input_tag">Type answer into the card</string>
+  <string name="use_input_tag_summ">Use a text input box inside the card to type in the answer</string>
   <string name="text_selection_click">Исправљање грешке дугог притискања</string>
   <string name="text_selection_click_summ">Укључите, ако не успевате да почнете означавање текста преко дугог притиска</string>
   <string name="dictionary">Кориснички речник</string>
@@ -71,17 +73,18 @@
   <string name="reset_languages_summ">Ресетуј језике (за претварање текста у звук и речнике) за све шпилове. Ресетуј за конкретне шпилове - у садржају шпилова</string>
   <string name="reset_languages_question">Да ресетујем све језичке поставке?</string>
   <string name="reset_confirmation">Ресетована сва подешавања</string>
-  <string name="card_zoom">Card zoom</string>
-  <string name="image_zoom">Image zoom</string>
+  <string name="card_zoom">Зумирање картице</string>
+  <string name="image_zoom">Зумирање слике</string>
   <string name="button_size">Величина дугмета за одговор</string>
   <string name="card_browser_font_size">Величина фонта прегледача картица</string>
   <string name="col_path">Фасцикла са колекцијом</string>
   <string name="fullscreen_review">Пуноекрански режим</string>
-  <string name="fullscreen_review_summ">Сакриј системски део екрана</string>
+  <string name="full_screen_off">Off</string>
+  <string name="full_screen_system">Hide the system bars</string>
+  <string name="full_screen_complete">Hide the system bars and answer buttons</string>
+  <string name="full_screen_error_gestures">You must enable gestures to hide the answer buttons</string>
   <string name="gestures">Омогући гестове</string>
   <string name="gestures_summ">Додели гестове за дејства као одговарње и уређивање картица.</string>
-  <string name="gestures_hide_answer_buttons">Hide answer buttons</string>
-  <string name="gestures_hide_answer_buttons_summ">Don’t show answer buttons when gestures are enabled</string>
   <string name="gestures_swipe_up">Пребацити горе</string>
   <string name="gestures_swipe_down">Пребацити доле</string>
   <string name="gestures_swipe_left">Пребацити лево</string>
@@ -103,9 +106,9 @@
   <string name="sync_account">AnkiWeb налог</string>
   <string name="sync_account_summ_logged_out">Нисте ауторизовани</string>
   <string name="sync_account_summ_logged_in">%s</string>
-  <string name="automatic_sync_choice">Automatic synchronization</string>
-  <string name="automatic_sync_choice_summ">Sync automatically on app start/exit if the last sync was more than 10
-        minutes ago.</string>
+  <string name="automatic_sync_choice">Аутоматска синхронизација</string>
+  <string name="automatic_sync_choice_summ">Синхронизуј аутоматски на старт/излаз, ако је од последње синхронизације прошло више
+        од 10 минута.</string>
   <string name="fix_hebrew_text">Исправке за хебрејске гласове</string>
   <string name="fix_hebrew_text_summ">Трик за правилно приказивање самогласника у хебрејском.</string>
   <string name="fix_hebrew_instructions">Овај параметар превазилази RTL алгоритам система Android, да би приказао правилно гласове у тексту на хебрејском,.\n\nДа би то радило, морате преузети фонт Tohu.ttf и ручно га копирати у:\n%s/fonts/\n\nНе морате да модификујете ваше карте.</string>
@@ -149,20 +152,17 @@
   <string name="input_workaround_summ">Решење проблема са HTML пољима уноса. Решење је проблематично на више уређаја.</string>
   <string name="pref_keep_screen_on">Држи екран укљученим</string>
   <string name="pref_keep_screen_on_summ">Онемогући спавање екрана</string>
-  <string name="fix_arabic_text">Побољшај приказ арапског</string>
-  <string name="fix_arabic_text_summ">Делимични трик за подржавање Арапски језик на Android-у. Када је укључен, није могуће уредите картице.</string>
   <string name="convert_fen_text">Подршка шаховских бележака</string>
-  <string name="filter_google_translate">Из Google Преводиоца</string>
-  <string name="filter_google_translate_summ">Једноставно чување изворне речи и превода</string>
   <string name="convert_fen_text_summ">Цртај шаховску таблу са Форсит-Едвардс нотацијом. Нотација мора да буде ограђена [fen][/fen] таговима.</string>
+  <string name="enable_api_title">Омогући AnkiDroid API</string>
+  <string name="enable_api_summary">Нека се друге апликације повежу са AnkiDroid и читају/записују податке без ваше интервенције</string>
   <string name="studyoptions_limit_select_tags">Изаберите ознаке</string>
   <string name="deck_conf_deck_description">Опис шпила</string>
   <string name="deck_conf_group">Група опције</string>
   <plurals name="deck_conf_group_summ">
-    <item quantity="one">%1$s\n%2$d deck uses this group</item>
-    <item quantity="few">%1$s\n%2$d decks use this group</item>
-    <item quantity="many">%1$s\n%2$d decks use this group</item>
-    <item quantity="other">%1$s\n%2$d decks use this group</item>
+    <item quantity="one">%1$s\n%2$d шпил користи ову групу</item>
+    <item quantity="few">%1$s\n%2$d шпила користи ову групу</item>
+    <item quantity="other">%1$s\n%2$d шпилова користи ову групу</item>
   </plurals>
   <string name="deck_conf_new_cards">Нове картице</string>
   <string name="deck_conf_rev_cards">Понављања</string>
@@ -207,10 +207,9 @@
   <string name="deck_conf_remove_message">Да уклоним текућу групу опција?</string>
   <string name="deck_conf_set_subdecks">Задај за све групе подшпилова</string>
   <plurals name="deck_conf_set_subdecks_summ">
-    <item quantity="one">%s subdeck will use this group</item>
-    <item quantity="few">%s subdecks will use this group</item>
-    <item quantity="many">%s subdecks will use this group</item>
-    <item quantity="other">%s subdecks will use this group</item>
+    <item quantity="one">%s подшпил ће да користи ову групу</item>
+    <item quantity="few">%s подшпила ће да користи ову групу</item>
+    <item quantity="other">%s подшпила ће да користи ову групу</item>
   </plurals>
   <string name="deck_conf_set_subdecks_title">Задај за све групе шпилова</string>
   <string name="deck_conf_set_subdecks_message">Да задам текућу групу опција за све подшпилове ових шпилова?</string>

@@ -80,17 +80,8 @@
     <item>Utoljára hozzáadott előbb</item>
     <item>Relative overdueness</item>
   </string-array>
-  <string-array name="custom_study_options_labels">
-    <item>A mai új kártyák számának növelése</item>
-    <item>A mai ismétlések számának növelése</item>
-    <item>Elfelejtett kártyák ismétlése</item>
-    <item>Idő előtti ismétlés</item>
-    <item>Véletlenül választott kártyák tanulása</item>
-    <item>Új kártyák átnézése</item>
-    <item>Bizonyos címkékre szűrés</item>
-  </string-array>
   <string-array name="add_to_cur_labels">
-    <item>Use current deck</item>
+    <item>Jelenlegi pakli használata</item>
     <item>Decide by note type</item>
   </string-array>
   <string-array name="new_spread_labels">
@@ -100,6 +91,6 @@
   </string-array>
   <string-array name="override_font_labels">
     <item>When no font specified on flashcards</item>
-    <item>Always</item>
+    <item>Mindig</item>
   </string-array>
 </resources>

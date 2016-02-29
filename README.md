@@ -1,4 +1,6 @@
-AnkiDroid: Anki on Android
+A semi-official port of the open source [Anki](http://ankisrs.net/index.html) spaced repetition flashcard system to Android. Memorize anything with AnkiDroid!
+
+![Screenshot](https://raw.githubusercontent.com/ankidroid/ankidroiddocs/master/img/4-reviewer.png)
 
 Install
 -------

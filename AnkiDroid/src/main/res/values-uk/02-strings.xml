@@ -53,8 +53,9 @@
   <string name="add_tag">Add tag</string>
   <string name="check_all_tags">Check/uncheck all tags</string>
   <string name="filter_tags">Фільтрувати теґи</string>
-  <string name="no_tags">You haven’t added any tags yet.</string>
+  <string name="no_tags">You haven’t added any tags yet</string>
   <string name="sdcard_missing_message">SD картка недоступна бо використовується як USB накопичувач. Для доступу до ваших колекцій від’єднайте USB.</string>
+  <string name="updated_version">Updated to version %s</string>
   <string name="enable_whiteboard">Enable whiteboard</string>
   <string name="disable_whiteboard">Disable whiteboard</string>
   <string name="show_whiteboard">Показати Дошку</string>
@@ -65,6 +66,7 @@
   <string name="leech_notification">Картка позначена як липка</string>
   <string name="corrupt_font">Пошкоджений файл шрифтів %s</string>
   <string-array name="browser_column1_headings">
+    <item>Question</item>
     <item>Sort field</item>
   </string-array>
   <string-array name="browser_column2_headings">
@@ -77,6 +79,13 @@
     <item>Провали</item>
     <item>Огляди</item>
   </string-array>
+  <string name="custom_study_increase_new_limit">Increase today’s new card limit</string>
+  <string name="custom_study_increase_review_limit">Increase today’s review card limit</string>
+  <string name="custom_study_review_forgotten">Review forgotten cards</string>
+  <string name="custom_study_review_ahead">Review ahead</string>
+  <string name="custom_study_random_selection">Study a random selection of cards</string>
+  <string name="custom_study_preview_new">Preview new cards</string>
+  <string name="custom_study_limit_tags">Limit to particular tags</string>
   <string name="cardeditor_title_add_note">Додати Запис</string>
   <string name="cardeditor_title_edit_card">Змінити запис</string>
   <string name="discard_unsaved_changes">Close and lose current input?</string>
@@ -109,7 +118,6 @@
   <string name="card_editor_preview_card">Перегляд</string>
   <string name="error_insufficient_memory">Дія не можлива через брак пам’яті на вашому пристрої</string>
   <string name="rename">Перейменувати</string>
-  <string name="rename_error">Колода %s не може бути перейменована</string>
   <string name="default_conf_delete_error">Неможливо видалити групу з типовими параметрами</string>
   <plurals name="factadder_cards_added">
     <item quantity="one">%d card added</item>
@@ -119,8 +127,9 @@
   <string name="help_title">Допомога</string>
   <string name="check_db">Перевірити базу даних</string>
   <string name="check_media">Check media</string>
+  <string name="empty_cards">Empty cards</string>
   <string name="check_db_message">Перевірка бази даних.\n Будь ласка, зачекайте...</string>
-  <string name="empty_card_warning" tools:ignore="TypographyEllipsis">Порожня картка. Запустіть \"Інструменти &gt; порожні карти...\" на стільничному клієнті.</string>
+  <string name="empty_card_warning">This card is empty. Use the “Empty cards” option from the menu on the deck list screen.</string>
   <string name="unknown_type_field_warning">Введіть відповідь: невідоме поле %s</string>
   <string name="delete_deck">Видалення колоди...\n Будь ласка, зачекайте.</string>
   <string name="show_hint">Show %s</string>
@@ -149,16 +158,16 @@
   <string name="upgrade_import_no_file_found">Ввізного файлу %1$s не знайдено</string>
   <string name="study_options">Параметри колоди</string>
   <string name="custom_study">Додатковий трейнінг</string>
+  <string name="more_options">More</string>
   <string name="dyn_deck_desc">Це спеціальна колекція для навчання поза межами нормального розкладу. Картки будуть автоматично повернуті до їх початкових колекцій після повторення. Видалення цієї колекції з списку поврне всі карточки до початкових колекцій.</string>
   <string name="steps_error">Дії повинні бути числами, більшими за 0</string>
   <string name="steps_min_error">Принаймні один крок потрібний</string>
   <string name="sched_end">(кінець)</string>
-  <string name="sched_unbury_button">Щоб переглянути їх зараз, натисніть кнопку Unbury.</string>
+  <string name="sched_unbury_action">To see them now touch the “Unbury” item in the menu</string>
   <string name="sched_has_buried">Деякі пов\'язані або приховані карти відкладені до наступної сесії.</string>
   <string name="tag_editor_add_feedback">Touch “%2$s” to confirm adding “%1$s”</string>
   <string name="tag_editor_add_feedback_existing">Existing tag “%1$s” selected</string>
   <string name="lookup_hint">After copying the text, tap anywhere on the flashcard to show the search icon</string>
-  <string name="add_content_showcase_text">To get started, tap the + button to add some new study material.\n\nPress “Help” to see the manual.</string>
   <plurals name="time_span_seconds">
     <item quantity="one">%s second</item>
     <item quantity="few">%s seconds</item>
@@ -190,4 +199,7 @@
     <item quantity="other">%s years</item>
   </plurals>
   <string name="less_than_time">&lt; %s</string>
+  <string name="decks_rename_exists">That deck already exists</string>
+  <string name="decks_rename_filtered_nosubdecks">A filtered deck cannot have subdecks</string>
+  <string name="filtered_deck_name">Filtered Deck</string>
 </resources>

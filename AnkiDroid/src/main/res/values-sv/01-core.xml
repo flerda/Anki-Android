@@ -45,12 +45,13 @@
   <string name="settings">Inställningar</string>
   <string name="help">Hjälp</string>
   <string name="send_feedback">Skicka feedback</string>
-  <string name="studyoptions_title">Studiealternativ</string>
+  <string name="studyoptions_title">Deck overview</string>
   <string name="studyoptions_due_today">Aktuella idag:</string>
   <string name="studyoptions_new_total">Nya kort totalt:</string>
   <string name="studyoptions_total_cards">Totalt antal kort:</string>
   <string name="studyoptions_eta">Uppskattad tid (min):</string>
   <string name="studyoptions_start">Plugga nu</string>
+  <string name="study_more">Study more</string>
   <plurals name="deckpicker_title">
     <item quantity="one">%1$d kort i kö (%2$s)</item>
     <item quantity="other">%1$d kort i kö (%2$s)</item>
@@ -80,7 +81,7 @@
   <string name="undo_action_delete">ta bort not</string>
   <string name="undo_action_mark">markera not</string>
   <string name="unbury">Sluta dölja</string>
-  <string name="contextmenu_deckpicker_rename_deck">Byt namn på kortlek</string>
+  <string name="rename_deck">Rename deck</string>
   <string name="menu_add">Lägg till</string>
   <string name="menu_add_note">Lägg till not</string>
   <string name="menu_my_account">Synkronisera konto</string>
@@ -113,6 +114,10 @@
   <string name="empty_cram_deck">Tömmer kortleken för råplugg.\nVar god vänta...</string>
   <string name="custom_study_deck_name">Anpassad studiesession</string>
   <string name="custom_study_deck_exists">Var god döp om den existerande anpassade studiekortleken först.</string>
+  <string name="empty_deck">This deck is empty</string>
+  <string name="studyoptions_empty">This deck is empty. Press the + button to add new content.</string>
+  <string name="studyoptions_limit_reached">Daily study limit reached</string>
+  <string name="studyoptions_empty_schedule">No cards scheduled to study</string>
   <string name="studyoptions_congrats_finished">Grattis! Du är klar för stunden.</string>
   <string name="studyoptions_congrats_more_rev">Dagens gräns för antal repetitioner har uppnåtts, men det finns fortfarande kort kvar att repetera. För att optimera inlärningsprocessen, överväg att öka den dagliga gränsen för antal repetitioner i inställningarna.</string>
   <string name="studyoptions_congrats_more_new">Det finns fler nya kort, men den dagliga gränsen har uppnåtts. Du kan höja gränsen i inställningarna, men kom ihåg att detta också ökar antalet repetitioner på kort sikt.</string>
@@ -121,22 +126,25 @@
   <string name="sd_card_not_mounted">Lagringsenheten inte monterad</string>
   <string name="button_sync">Synkronisera</string>
   <string name="cancel_sync_confirm">Do you want to cancel the sync?</string>
+  <string name="continue_sync">Continue sync</string>
   <string name="sync_cancelled">Sync cancelled</string>
+  <string name="sync_cancel_message">Cancelling&#8230;\nThis may take some time.</string>
   <string name="export">Exportera</string>
+  <string name="export_collection">Export collection</string>
+  <string name="export_deck">Export deck</string>
   <string name="nothing">Inget</string>
-  <string name="title_activity_template_editor">Korttyper för %s</string>
+  <string name="title_activity_template_editor">Card types</string>
   <string name="card_template_editor_front">Kortmall för framsida</string>
   <string name="card_template_editor_back">Kortmall för baksida</string>
   <string name="card_template_editor_styling">Formgivning</string>
-  <string name="card_template_editor_menu_add_reverse">Lägg till omvänd</string>
   <string name="card_template_editor_menu_delete">Ta bort</string>
   <string name="card_template_editor_cant_delete">Minst en korttyp krävs.</string>
   <plurals name="card_template_editor_confirm_delete">
     <item quantity="one">Ta bort korttypen \"%2$s\" och dess %1$d kort?</item>
     <item quantity="other">Ta bort korttypen \"%2$s\" och dess %1$d kort?</item>
   </plurals>
+  <string name="invalid_template">A card could not be generated</string>
   <string name="card_template_editor_would_delete_note">Att ta bort det här kortet skulle göra att en eller flera noter tas bort. Vänligen skapa en ny korttyp först.</string>
   <string name="read_write_permission_label">Read and write to the AnkiDroid database</string>
-  <string name="read_write_permission_description">Allow the application to be able to access existing notes, cards,
-        models, and decks, as well as create new ones.</string>
+  <string name="read_write_permission_description">Allow the application to access existing notes, cards, note types, and decks, as well as create new ones</string>
 </resources>

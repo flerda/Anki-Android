@@ -45,12 +45,13 @@
   <string name="settings">Nastavení</string>
   <string name="help">Nápověda</string>
   <string name="send_feedback">Odeslat názor</string>
-  <string name="studyoptions_title">Možnosti studia</string>
+  <string name="studyoptions_title">Deck overview</string>
   <string name="studyoptions_due_today">Dnes k zopakování:</string>
   <string name="studyoptions_new_total">Celkem nových karet:</string>
   <string name="studyoptions_total_cards">Celkem karet:</string>
   <string name="studyoptions_eta">Odhadovaný čas (min):</string>
   <string name="studyoptions_start">Studovat</string>
+  <string name="study_more">Study more</string>
   <plurals name="deckpicker_title">
     <item quantity="one">%1$d card due (%2$s)</item>
     <item quantity="few">%1$d cards due (%2$s)</item>
@@ -83,7 +84,7 @@
   <string name="undo_action_delete">odstranit poznámku</string>
   <string name="undo_action_mark">označit poznámku</string>
   <string name="unbury">Zruš odložení</string>
-  <string name="contextmenu_deckpicker_rename_deck">Přejmenovat balíček</string>
+  <string name="rename_deck">Rename deck</string>
   <string name="menu_add">Přidat</string>
   <string name="menu_add_note">Přidat poznámku</string>
   <string name="menu_my_account">Synchronizovat účet</string>
@@ -116,22 +117,29 @@
   <string name="empty_cram_deck">Vyprazdňování balíčku šprtání.\nProsím čekejte...</string>
   <string name="custom_study_deck_name">Dodatečné procvičování</string>
   <string name="custom_study_deck_exists">Nejdříve prosím přejmenujte balíček dodatečného tréninku.</string>
+  <string name="empty_deck">This deck is empty</string>
+  <string name="studyoptions_empty">This deck is empty. Press the + button to add new content.</string>
+  <string name="studyoptions_limit_reached">Daily study limit reached</string>
+  <string name="studyoptions_empty_schedule">No cards scheduled to study</string>
   <string name="studyoptions_congrats_finished">Blahopřejeme! Prozatím jste hotov.</string>
   <string name="studyoptions_congrats_more_rev">Bylo dosaženo limitu dnešního opakování, ale stále existují karty pro přezkoušení. Pro optimální zapamatování zvažte zvýšení denního limitu v možnostech.</string>
   <string name="studyoptions_congrats_more_new">Existuje více nových karet, ale byl dosažen denní limit. Můžete zvýšit tento limit v Nastavení, ale mějte na paměti, že se krátkodobě zvýší vaše zátěž na opakování.</string>
   <string name="studyoptions_congrats_custom">Pro studium mimo normální plán klepněte na tlačítko \'Vlastní učení\'.</string>
-  <string name="studyoptions_no_cards_due">No cards are due yet.</string>
+  <string name="studyoptions_no_cards_due">No cards are due yet</string>
   <string name="sd_card_not_mounted">Device storage not mounted</string>
   <string name="button_sync">Synchronizovat</string>
   <string name="cancel_sync_confirm">Do you want to cancel the sync?</string>
+  <string name="continue_sync">Continue sync</string>
   <string name="sync_cancelled">Sync cancelled</string>
+  <string name="sync_cancel_message">Cancelling&#8230;\nThis may take some time.</string>
   <string name="export">Export</string>
+  <string name="export_collection">Export collection</string>
+  <string name="export_deck">Export deck</string>
   <string name="nothing">Nic</string>
-  <string name="title_activity_template_editor">Typy karet pro %s</string>
+  <string name="title_activity_template_editor">Card types</string>
   <string name="card_template_editor_front">Šablona lícu</string>
   <string name="card_template_editor_back">Šablona rubu</string>
   <string name="card_template_editor_styling">Styl</string>
-  <string name="card_template_editor_menu_add_reverse">Add reverse</string>
   <string name="card_template_editor_menu_delete">Odstranit</string>
   <string name="card_template_editor_cant_delete">Je vyžadován alespoň jeden typ karty.</string>
   <plurals name="card_template_editor_confirm_delete">
@@ -139,8 +147,8 @@
     <item quantity="few">Delete the “%2$s” card type, and its %1$d cards?</item>
     <item quantity="other">Odstranit typ karty \'%2$s\' a jeho %1$d karty?</item>
   </plurals>
+  <string name="invalid_template">A card could not be generated</string>
   <string name="card_template_editor_would_delete_note"> Odstraněním tohoto typu karty můžete způsobit, že jedna nebo         více poznámek budou odstraněny. Nejprve vytvořte nový typ karty.</string>
   <string name="read_write_permission_label">Read and write to the AnkiDroid database</string>
-  <string name="read_write_permission_description">Allow the application to be able to access existing notes, cards,
-        models, and decks, as well as create new ones.</string>
+  <string name="read_write_permission_description">Allow the application to access existing notes, cards, note types, and decks, as well as create new ones</string>
 </resources>

@@ -388,6 +388,10 @@ public class Utils {
         return ar;
     }
 
+    public static Long[] list2ObjectArray(List<Long> list) {
+        return list.toArray(new Long[list.size()]);
+    }
+
     /** Return a non-conflicting timestamp for table. */
     public static long timestampID(AnkiDb db, String table) {
         // be careful not to create multiple objects without flushing them, or they
@@ -499,16 +503,8 @@ public class Utils {
 
 
     public static String[] splitFields(String fields) {
-        // do not drop empty fields
-        fields = fields.replaceAll("\\x1f\\x1f", "\u001f\u001e\u001f");
-        fields = fields.replaceAll("\\x1f$", "\u001f\u001e");
-        String[] split = fields.split("\\x1f");
-        for (int i = 0; i < split.length; i++) {
-            if (split[i].matches("\\x1e")) {
-                split[i] = "";
-            }
-        }
-        return split;
+        // -1 ensures that we don't drop empty fields at the ends
+        return fields.split("\\x1f", -1);
     }
 
     /**

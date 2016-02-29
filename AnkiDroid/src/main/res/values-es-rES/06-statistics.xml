@@ -41,21 +41,21 @@
 <resources>
   <string name="statistics_young">Jóvenes</string>
   <string name="statistics_mature">Maduras</string>
-  <string name="statistics_young_and_learn">Joven+aprender</string>
+  <string name="statistics_young_and_learn">Joven y aprender</string>
   <string name="statistics_unlearned">No vistas</string>
   <string name="statistics_suspended">Suspendidas</string>
-  <string name="statistics_relearn">Volver a aprender</string>
-  <string name="statistics_learn">Aprendido</string>
-  <string name="statistics_cram">Empollado</string>
+  <string name="statistics_relearn">Vueltas a aprender</string>
+  <string name="statistics_learn">Aprendidas</string>
+  <string name="statistics_cram">Intensivas</string>
   <string name="stats_cards">Tarjetas</string>
   <string name="stats_cards_intervals">Tarjetas con intervalo dado</string>
   <string name="stats_cumulative_cards">Tarjetas acumuladas</string>
   <string name="stats_cumulative_answers">Respuestas acumuladas</string>
   <string name="stats_cumulative_time_minutes">Minutos acumulados</string>
   <string name="stats_cumulative_time_hours">Horas acumuladas</string>
-  <string name="stats_cumulative">Acumulado</string>
+  <string name="stats_cumulative">Acumuladas</string>
   <string name="stats_cumulative_percentage">Porcentaje acumulado</string>
-  <string formatted="false" name="stats_cumulative_correct_percentage">%  Acumulado correcto</string>
+  <string formatted="false" name="stats_cumulative_correct_percentage">% correctas acumulado</string>
   <string name="stats_answers">Respuestas</string>
   <string name="stats_minutes">Minutos</string>
   <string name="stats_hours">Horas</string>
@@ -66,16 +66,16 @@
   <string name="stats_deck_collection">colección</string>
   <string name="stats_time_of_day">Hora del día</string>
   <string name="stats_day_of_week">Día de la semana</string>
-  <string formatted="false" name="stats_percentage_correct">% correcto</string>
-  <string name="stats_reviews">Revisiones</string>
+  <string formatted="false" name="stats_percentage_correct">% correctas</string>
+  <string name="stats_reviews">Repasos</string>
   <string name="stats_answer_type">Tipo de respuesta</string>
   <string name="stats_today_again_count">Contar de nuevo: &lt;b&gt;%d&lt;/b&gt;</string>
-  <string name="stats_today_correct_count">(&lt;b&gt;%.1f%%&lt;/b&gt; correcta)</string>
-  <string name="stats_today_type_breakdown">Aprender: &lt;b&gt;%1$s&lt;/b&gt;, Revisar: &lt;b&gt;%2$s&lt;/b&gt;, Reaprender: &lt;b&gt;%3$s&lt;/b&gt;, Filtradas: &lt;b&gt;%4$s&lt;/b&gt;</string>
+  <string name="stats_today_correct_count">(&lt;b&gt;%.1f%%&lt;/b&gt; correctas)</string>
+  <string name="stats_today_type_breakdown">Aprender: &lt;b&gt;%1$s&lt;/b&gt;, revisar: &lt;b&gt;%2$s&lt;/b&gt;, reaprender: &lt;b&gt;%3$s&lt;/b&gt;, filtradas: &lt;b&gt;%4$s&lt;/b&gt;</string>
   <string name="stats_today_mature_cards">Respuestas correctas en tarjetas maduras: %1$d/%2$d (%3$.1f%%)</string>
   <string name="stats_today_no_mature_cards">No se han estudiado tarjetas maduras hoy.</string>
   <string name="deck_summary_all_decks">Todos los mazos</string>
-  <string name="stats_select_time_scale">Seleccione Calendario</string>
+  <string name="stats_select_time_scale">Selecciona calendario</string>
   <string-array name="due_x_axis_title">
     <item>Días</item>
     <item>Semanas</item>
@@ -98,9 +98,9 @@
     <item>3AM</item>
   </string-array>
   <string-array name="stats_week_days">
-    <item>Sol</item>
+    <item>Dom</item>
     <item>Lun</item>
-    <item>Ma</item>
+    <item>Mar</item>
     <item>Mié</item>
     <item>Jue</item>
     <item>Vie</item>
@@ -120,7 +120,7 @@
     <item>4</item>
   </string-array>
   <plurals name="stats_today_cards">
-    <item quantity="one">Estudiada &lt;b&gt;%1$d tarjeta&lt;b&gt; en &lt;b&gt;%2$s&lt;/b&gt; hoy.</item>
-    <item quantity="other">Estudiadas &lt;b&gt;%1$d tarjetas&lt;b&gt; en &lt;b&gt;%2$s&lt;/b&gt; hoy.</item>
+    <item quantity="one">Has estudiado &lt;b&gt;%1$d tarjeta&lt;b&gt; en &lt;b&gt;%2$s&lt;/b&gt; hoy.</item>
+    <item quantity="other">Has estudiado &lt;b&gt;%1$d tarjetas&lt;b&gt; en &lt;b&gt;%2$s&lt;/b&gt; hoy.</item>
   </plurals>
 </resources>

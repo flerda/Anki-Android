@@ -70,7 +70,8 @@ public class AnkiDb {
         }
 
         if (mDatabase != null) {
-            setWalJournalMode();
+            // TODO: we can remove this eventually once everyone has stopped using old AnkiDroid clients with WAL
+            CompatHelper.getCompat().disableDatabaseWriteAheadLogging(mDatabase);
             mDatabase.rawQuery("PRAGMA synchronous = 2", null);
         }
         // getDatabase().beginTransactionNonExclusive();
@@ -94,8 +95,6 @@ public class AnkiDb {
      */
     public void closeDatabase() {
         if (mDatabase != null) {
-            // set journal mode again to delete in order to make the db accessible for anki desktop and for full upload
-            setDeleteJournalMode();
             mDatabase.close();
             Timber.d("closeDatabase, database %s closed = %s", mDatabase.getPath(), !mDatabase.isOpen());
             mDatabase = null;
@@ -348,43 +347,6 @@ public class AnkiDb {
         } finally {
             mDatabase.endTransaction();
         }
-    }
-
-
-    /**
-     * Anki desktop only uses a journal_mode of DELETE. We therefore set this before database closure to ensure
-     * compatibility. This allows full upload to AnkiWeb and manual collection migration, but has no bearing on partial
-     * progress syncs.
-     */
-    protected void setDeleteJournalMode() {
-        disableWriteAheadLogging();
-        queryString("PRAGMA journal_mode = DELETE");
-    }
-
-
-    /** to be called for each database upon opening */
-    private void setWalJournalMode() {
-        if (CompatHelper.isHoneycomb()) {
-            queryString("PRAGMA journal_mode = WAL");
-        } else {
-            setDeleteJournalMode();
-        }
-    }
-
-
-    /**
-     * Attempts to disable write ahead logging using a method on the {@link SQLiteDatabase} object.
-     * <p>
-     * The method might not exist (it is only included in API level 16) but we attempt anyway since it is part of
-     * present in a number of implementations.
-     */
-    private void disableWriteAheadLogging() {
-        SQLiteDatabase db = getDatabase();
-        // The call to disableWriteAheadLogging() below requires no transaction is in progress.
-        if (db.inTransaction()) {
-            db.endTransaction();
-        }
-        CompatHelper.getCompat().disableDatabaseWriteAheadLogging(db);
     }
 
     /**

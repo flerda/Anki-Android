@@ -32,6 +32,8 @@ public class CompatHelper {
 
         if (isNookHdOrHdPlus() && getSdkVersion() == 15) {
             mCompat = new CompatV15NookHdOrHdPlus();
+        } else if (getSdkVersion() >= 21) {
+            mCompat = new CompatV21();
         } else if (getSdkVersion() >= 19) {
             mCompat = new CompatV19();
         } else if (getSdkVersion() >= 16) {
@@ -42,10 +44,8 @@ public class CompatHelper {
             mCompat = new CompatV11();
         } else if (getSdkVersion() >= 12) {
             mCompat = new CompatV12();
-        } else if (getSdkVersion() >= 9) {
-            mCompat = new CompatV9();
         } else {
-            mCompat = new CompatV8();
+            mCompat = new CompatV10();
         }
     }
 
@@ -58,6 +58,10 @@ public class CompatHelper {
     /** Determine if the device is running API level 11 or higher. */
     public static boolean isHoneycomb() {
         return getSdkVersion() >= Build.VERSION_CODES.HONEYCOMB;
+    }
+    /** Determine if the device is running API level 21 or higher. */
+    public static boolean isLollipop() {
+        return getSdkVersion() >= Build.VERSION_CODES.LOLLIPOP;
     }
 
     /**
@@ -111,9 +115,6 @@ public class CompatHelper {
 
     public static void removeHiddenPreferences(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (getSdkVersion() >= 9){
-            preferences.edit().remove("fixArabicText").commit();
-        }
         if (isHoneycomb()){
             preferences.edit().remove("longclickWorkaround").commit();
         }

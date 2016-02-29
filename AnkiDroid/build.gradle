@@ -1,43 +1,62 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.github.triplet.play'
 def homePath = System.properties['user.home']
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         applicationId "com.ichi2.anki"
-        minSdkVersion 8
-        targetSdkVersion 22
+        minSdkVersion 10
+        targetSdkVersion 23
         testApplicationId "com.ichi2.anki.tests"
     }
-    signingConfigs {
-      release {
-        storeFile file("${homePath}/src/android-keystore")
-        keyAlias "nrkeystorealias"
-        storePassword System.getenv("KSTOREPWD")
-        keyPassword System.getenv("KEYPWD")
-      }
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
-        }
-    }   
     lintOptions {
         abortOnError false
         disable 'TypographyEllipsis'
     }
+    signingConfigs {
+        release {
+            storeFile file("${homePath}/src/android-keystore")
+            keyAlias "nrkeystorealias"
+            storePassword System.getenv("KSTOREPWD")
+            keyPassword System.getenv("KEYPWD")
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+    useLibrary 'org.apache.http.legacy'
+}
+
+
+play {
+    serviceAccountEmail = '294046724212-r3bef6kl46pb9gk0h1pl5rcjmpfrdpjl@developer.gserviceaccount.com'
+    pk12File = file("${homePath}/src/583631bdd16d.p12")
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:design:22.2.1'
-    compile 'com.afollestad:material-dialogs:0.7.6.0'
-    compile 'net.i2p.android.ext:floatingactionbutton:1.10.0'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    // Note: the design support library can be quite buggy, so test everything thoroughly before updating it
+    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:customtabs:23.1.1'
+    compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile('com.afollestad.material-dialogs:core:0.8.5.1@aar') {
+        //exclude group: 'com.android.support'  // uncomment to force our local support lib version
+        transitive = true
+    }
+    compile('com.mikepenz:materialdrawer:4.4.9@aar') {
+        //exclude group: 'com.android.support' // uncomment to force our local support lib version
+        transitive = true
+    }
+    compile 'com.getbase:floatingactionbutton:1.10.1'
     compile 'ch.acra:acra:4.6.2'
-    compile 'com.jakewharton.timber:timber:2.5.1'
-    compile 'com.google.code.gson:gson:2.3'
+    compile 'com.jakewharton.timber:timber:2.7.1'
+    compile 'com.google.code.gson:gson:2.4'
     compile project(":api")
 }

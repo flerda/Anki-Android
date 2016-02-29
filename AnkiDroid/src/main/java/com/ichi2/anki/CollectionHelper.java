@@ -16,10 +16,13 @@
 
 package com.ichi2.anki;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 
 import com.ichi2.anki.exception.StorageAccessException;
 import com.ichi2.libanki.Collection;
@@ -110,6 +113,21 @@ public class CollectionHelper {
         // Open collection
         String path = getCollectionPath(context);
         return getCol(path);
+    }
+
+    /**
+     * Call getCol(context) inside try / catch statement.
+     * Send exception report and return null if there was an exception.
+     * @param context
+     * @return
+     */
+    public synchronized Collection getColSafe(Context context) {
+        try {
+            return getCol(context);
+        } catch (Exception e) {
+            AnkiDroidApp.sendExceptionReport(e, "CollectionHelper.getColSafe");
+            return null;
+        }
     }
 
 
@@ -204,7 +222,7 @@ public class CollectionHelper {
      * external storage directory.
      * @return the folder path
      */
-    private static String getDefaultAnkiDroidDirectory() {
+    public static String getDefaultAnkiDroidDirectory() {
         return new File(Environment.getExternalStorageDirectory(), "AnkiDroid").getAbsolutePath();
     }
 
@@ -232,5 +250,15 @@ public class CollectionHelper {
      */
     private static String getParentDirectory(String path) {
         return new File(path).getParentFile().getAbsolutePath();
+    }
+
+    /**
+     * Check if we have permission to access the external storage
+     * @param context
+     * @return
+     */
+    public static boolean hasStorageAccessPermission(Context context) {
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED;
     }
 }

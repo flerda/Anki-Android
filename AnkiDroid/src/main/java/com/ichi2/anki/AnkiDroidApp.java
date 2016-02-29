@@ -41,6 +41,8 @@ import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -136,7 +138,7 @@ public class AnkiDroidApp extends Application {
      * The latest package version number that included changes to the preferences that requires handling. All
      * collections being upgraded to (or after) this version must update preferences.
      */
-    public static final int CHECK_PREFERENCES_AT_VERSION = 20500135;
+    public static final int CHECK_PREFERENCES_AT_VERSION = 20500225;
 
 
     /**
@@ -182,16 +184,19 @@ public class AnkiDroidApp extends Application {
         DEFAULT_SWIPE_THRESHOLD_VELOCITY = vc.getScaledMinimumFlingVelocity();
 
         // Create the AnkiDroid directory if missing. Send exception report if inaccessible.
-        try {
-            String dir = CollectionHelper.getCurrentAnkiDroidDirectory(this);
-            CollectionHelper.initializeAnkiDroidDirectory(dir);
-        } catch (StorageAccessException e) {
-            Timber.e(e, "Could not initialize AnkiDroid directory");
-            if (isSdCardMounted()) {
-                sendExceptionReport(e, "AnkiDroidApp.onCreate");
+        if (CollectionHelper.hasStorageAccessPermission(this)) {
+            try {
+                String dir = CollectionHelper.getCurrentAnkiDroidDirectory(this);
+                CollectionHelper.initializeAnkiDroidDirectory(dir);
+            } catch (StorageAccessException e) {
+                Timber.e(e, "Could not initialize AnkiDroid directory");
+                String defaultDir = CollectionHelper.getDefaultAnkiDroidDirectory();
+                if (isSdCardMounted() && CollectionHelper.getCurrentAnkiDroidDirectory(this).equals(defaultDir)) {
+                    // Don't send report if the user is using a custom directory as SD cards trip up here a lot
+                    sendExceptionReport(e, "AnkiDroidApp.onCreate");
+                }
             }
         }
-
     }
 
 
@@ -241,9 +246,38 @@ public class AnkiDroidApp extends Application {
 
     public static void sendExceptionReport(Throwable e, String origin, String additionalInfo) {
         //CustomExceptionHandler.getInstance().uncaughtException(null, e, origin, additionalInfo);
+        SharedPreferences prefs = getSharedPrefs(getInstance());
+        // Only send report if we have not sent an identical report before
+        try {
+            JSONObject sentReports = new JSONObject(prefs.getString("sentExceptionReports", "{}"));
+            String hash = getExceptionHash(e);
+            if (sentReports.has(hash)) {
+                Timber.i("The exception report with hash %s has already been sent from this device", hash);
+                return;
+            } else {
+                sentReports.put(hash, true);
+                prefs.edit().putString("sentExceptionReports", sentReports.toString()).apply();
+            }
+        } catch (JSONException e1) {
+            Timber.i(e1, "Could not get cache of sent exception reports");
+        }
         ACRA.getErrorReporter().putCustomData("origin", origin);
         ACRA.getErrorReporter().putCustomData("additionalInfo", additionalInfo);
         ACRA.getErrorReporter().handleException(e);
+    }
+
+    private static String getExceptionHash(Throwable th) {
+        final StringBuilder res = new StringBuilder();
+        Throwable cause = th;
+        while (cause != null) {
+            final StackTraceElement[] stackTraceElements = cause.getStackTrace();
+            for (final StackTraceElement e : stackTraceElements) {
+                res.append(e.getClassName());
+                res.append(e.getMethodName());
+            }
+            cause = cause.getCause();
+        }
+        return Integer.toHexString(res.toString().hashCode());
     }
 
 

@@ -19,11 +19,8 @@
 package com.ichi2.anki;
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
-import com.ichi2.anim.ActivityTransitionAnimation;
 import com.ichi2.libanki.Collection;
 
 import timber.log.Timber;
@@ -33,17 +30,22 @@ public class Previewer extends AbstractFlashcardViewer {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         Timber.d("onCreate()");
         mCurrentCardId=getIntent().getLongExtra("currentCardId", -1);
+        if (mCurrentCardId == -1) {
+            Timber.e("Previewer started without a valid card ID");
+            finishWithoutAnimation();
+        }
+        super.onCreate(savedInstanceState);
+        showBackIcon();
     }
-
 
     @Override
     protected void onCollectionLoaded(Collection col) {
         super.onCollectionLoaded(col);
         mCurrentCard = col.getCard(mCurrentCardId);
         displayCardQuestion();
+        showBackIcon();
     }
 
 
@@ -54,28 +56,8 @@ public class Previewer extends AbstractFlashcardViewer {
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finishWithAnimation(ActivityTransitionAnimation.DIALOG_EXIT);
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-        return true;
-    }
-
-
-    @Override
     protected void initLayout() {
         super.initLayout();
-        getDrawerToggle().setDrawerIndicatorEnabled(false);
         mTopBarLayout.setVisibility(View.GONE);
     }
 

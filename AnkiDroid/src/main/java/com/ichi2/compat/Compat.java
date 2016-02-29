@@ -18,13 +18,14 @@ package com.ichi2.compat;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import com.ichi2.anki.AbstractFlashcardViewer;
 import com.ichi2.anki.AnkiActivity;
-import com.ichi2.anki.NavigationDrawerActivity;
-import com.ichi2.anki.exception.APIVersionException;
+import com.ichi2.anki.DeckPicker;
 
 /**
  * This interface defines a set of functions that are not available on all platforms.
@@ -32,7 +33,7 @@ import com.ichi2.anki.exception.APIVersionException;
  * A set of implementations for the supported platforms are available.
  * <p>
  * Each implementation ends with a {@code V<n>} prefix, identifying the minimum API version on which this implementation
- * can be used. For example, see {@link CompatV8}.
+ * can be used. For example, see {@link CompatV10}.
  * <p>
  * Each implementation should extend the previous implementation and implement this interface.
  * <p>
@@ -47,15 +48,16 @@ import com.ichi2.anki.exception.APIVersionException;
  * unless the behaviour is supposed to be different there.
  */
 public interface Compat {
-    String nfcNormalized(String txt) throws APIVersionException;
     String detagged(String txt);
-    void setOverScrollModeNever(View v);
     void setTtsOnUtteranceProgressListener(TextToSpeech tts);
     void disableDatabaseWriteAheadLogging(SQLiteDatabase db);
+    boolean isWriteAheadLoggingEnabled(SQLiteDatabase db);
     void enableCookiesForFileSchemePages();
     void updateWidgetDimensions(Context context, RemoteViews updateViews, Class<?> cls);
-    void setAlpha(View view, float alpha);
     void restartActivityInvalidateBackstack(AnkiActivity activity);
-    void setFullScreen(NavigationDrawerActivity activity);
+    void setFullScreen(AbstractFlashcardViewer activity);
+    void setSelectableBackground(View view);
+    void openUrl(AnkiActivity activity, Uri uri);
+    void supportAddContentMenu(final DeckPicker a);
 }
 

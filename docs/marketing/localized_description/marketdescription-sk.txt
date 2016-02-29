@@ -1,24 +1,24 @@
-Zapamätaj si čokoľvek s AnkiDroid!
+Zapamätajte si čokoľvek s AnkiDroid!
 
-S AnkiDroid sa učíte kartičky (flashcards) veľmi efektívne, pretože vám ich zobrazí vždy tesne predtým, ako by ste ich zabudli. Je plne kompatibilný so softvérom Anki (vrátane synchronizácie), ktorý je dostupný pre Windows, Linux a MacOS.
+S AnkiDroid sa učíte kartičky (flashcards) veľmi efektívne, pretože vám ich zobrazí vždy tesne predtým, než ich zabudnete. Je plne kompatibilný s počítačovým programom Anki (vrátane synchronizácie), ktorý je dostupný pre Windows, Linux a MacOS.
 
-Študuj všetko možné kdekoľvek a kedykoľvek chceš. Užitočne stráv nevyužitý čas, napr.: cestu v autobuse, v rade v supermarkete, alebo v akejkoľvek inej situácii kedy máš čas!
+Študujte všetko možné kdekoľvek a kedykoľvek chcete. Užitočne a efektívne využite nevyužitý čas cestou v autobuse, v rade v supermarkete alebo v akejkoľvek inej situácii, počas ktorej musíte niekde čakať!
 
-Vytvor si vlastné balíčky kariet alebo si zdarma stiahni balíčky zostavené podľa témy či jazyka (k dispozícii je ich viac než 6000).
+Vytvorte si vlastné balíčky kariet alebo si zdarma stiahnite balíčky zostavené podľa témy či jazyka (k dispozícii je ich viac než 6000).
 
-Materiál môžeš vkladať prostredníctvom počítačovej aplikácie Anki, alebo priamo v AnkiDroid. Aplikácia dokonca podporuje automatické pridanie textu zo slovníka!
+Materiál môžete vkladať prostredníctvom počítačového programu Anki alebo priamo v AnkiDroid. Aplikácia dokonca podporuje automatické pridanie textu zo slovníka!
 
 ★ Kľúčové vlastnosti:
-• karty podporujú: text, obrázky, zvuky, LaTeX
-• odložené opakovanie (algoritmus supermemo 2)
+• podporovaný obsah kartičiek: text, obrázky, zvuky, LaTeX
+• odložené opakovanie tzv. spaced-repetition (algoritmus supermemo 2)
 • čítanie textu, tzv. TTS (text-to-speech)
-• viac ako 6000 vytvorených balíčkov
+• viac ako 6000 vopred vytvorených balíčkov
 • widget postupu
 • podrobné štatistiky
 • synchronizácia s AnkiWeb
 • program je open source
 
-★ Ďalšie funkcie:
+★ Ďalšie vlastnosti:
 • dopisovanie odpovedí (voliteľné)
 • tabuľa
 • pridávanie/úprava kariet
@@ -26,7 +26,7 @@ Materiál môžeš vkladať prostredníctvom počítačovej aplikácie Anki, ale
 • podpora pre tablet
 • import existujúcich súborov zbierok (cez počítačovú aplikáciu Anki)
 • integrované slovníky (ColorDict, GoldenDict, Leo.org, Aedict, rôzne webové slovníky)
-• Pridávanie kariet z iných aplikácii, napr. slovníkov
+• pridávanie kariet z iných aplikácii, napr. slovníkov
 • podpora vlastného štýlu písma
 • úplné zálohovanie
 • ovládanie gestami

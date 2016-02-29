@@ -19,10 +19,11 @@
 ~ this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ichi2.anki"
-    android:installLocation="auto"
-    android:versionCode="20500156"
-    android:versionName="2.5alpha56" >
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.ichi2.anki"
+          android:installLocation="auto"
+          android:versionCode="20600000"
+          android:versionName="2.6dev">
 
     <!--
         The version number is of the form:
@@ -58,6 +59,8 @@
                 android:label="@string/read_write_permission_label"
                 android:description="@string/read_write_permission_description"
                 android:protectionLevel="dangerous" />
+    <!-- custom tabs library has minimum SDK of 16 -->
+    <uses-sdk tools:overrideLibrary="android.support.customtabs, com.getbase.floatingactionbutton"/>
 
     <supports-screens
         android:anyDensity="true"
@@ -72,12 +75,12 @@
         android:allowBackup="true"
         android:icon="@drawable/anki"
         android:label="@string/app_name"
-        android:theme="@style/App_Theme_White"
         android:windowSoftInputMode="adjustResize"
         android:largeHeap="true">
         <activity
             android:name="com.ichi2.anki.IntentHandler"
             android:configChanges="keyboardHidden|orientation|screenSize|locale"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -137,8 +140,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="application/x-apkg"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/zip"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.ichi2.anki.DO_SYNC" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
+            android:theme="@style/App_Theme_Dark.Launcher"
             android:name="com.ichi2.anki.DeckPicker"
             android:configChanges="keyboardHidden|orientation|screenSize|locale"
             android:label="@string/app_name">
@@ -164,14 +177,22 @@
                 android:value="com.ichi2.anki.DeckPicker" />
         </activity>
         <activity
+        android:name=".ModelBrowser"
+        android:configChanges="keyboardHidden|orientation|locale|screenSize"
+        android:label="@string/model_browser_label" />
+        <activity
+            android:name=".ModelFieldEditor"
+            android:configChanges="keyboardHidden|orientation|locale|screenSize"
+            android:label="@string/model_editor_label" />
+        <activity
             android:name="com.ichi2.anki.Reviewer"
             android:configChanges="keyboardHidden|orientation|locale|screenSize"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:parentActivityName=".StudyOptionsActivity">
+            android:parentActivityName=".DeckPicker">
             <!-- The meta-data element is needed for versions lower than 4.1 -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.ichi2.anki.StudyOptionsActivity" />
+                android:value="com.ichi2.anki.DeckPicker" />
         </activity>
         <activity
             android:name="com.ichi2.anki.VideoPlayer"
@@ -255,36 +276,6 @@
         <!-- Service to perform web API queries -->
         <service android:name="com.ichi2.widget.AnkiDroidWidgetSmall$UpdateService" />
 
-        <!--
-        medium widget
-		<receiver android:name="com.ichi2.widget.AnkiDroidWidgetMedium" android:label="@string/widget_medium">
-			<intent-filter>
-			<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-			</intent-filter>
-			<meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_provider" />
-		</receiver>
-        -->
-        <!--
-        Service to perform web API queries
-		<service android:name="com.ichi2.widget.AnkiDroidWidgetMedium$UpdateService" />
-        -->
-
-
-        <!--
-        big widget
-		<uses-library android:name="android.test.runner"></uses-library>
-		<receiver android:name="com.ichi2.widget.AnkiDroidWidgetBig" android:label="@string/widget_big">
-			<intent-filter>
-			<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-			</intent-filter>
-			<meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_provider_big" />
-		</receiver>
-        -->
-        <!--
-        Service to perform web API queries
-		<service android:name="com.ichi2.widget.AnkiDroidWidgetBig$UpdateService" />
-        -->
-
         <receiver
             android:name="com.ichi2.anki.receiver.SdCardReceiver"
             android:enabled="true"
@@ -315,11 +306,6 @@
             android:name="com.ichi2.anki.multimediacard.activity.LoadPronounciationActivity"
             android:configChanges="keyboardHidden|orientation|locale|screenSize"
             android:label="@string/title_activity_load_pronounciation" >
-        </activity>
-        <activity
-            android:name="com.ichi2.anki.multimediacard.activity.SearchImageActivity"
-            android:configChanges="keyboardHidden|orientation|locale|screenSize"
-            android:label="@string/title_activity_search_image" >
         </activity>
         <activity
             android:name="com.ichi2.anki.CardTemplateEditor"

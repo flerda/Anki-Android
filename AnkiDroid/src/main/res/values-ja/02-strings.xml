@@ -45,7 +45,7 @@
   <string name="CardEditorLaterMessage">後日のために情報を保存</string>
   <string name="CardEditorCardDeck">デッキ:</string>
   <string name="CardEditorNoteDeck">デッキ:</string>
-  <string name="CardEditorModel">ノートタイプ:</string>
+  <string name="CardEditorModel">タイプ:</string>
   <string name="CardEditorTags">タグ: %1$s</string>
   <string name="CardEditorCards">カード:%1$s</string>
   <string name="tag_name">タグ名</string>
@@ -55,6 +55,7 @@
   <string name="filter_tags">フィルター (前方一致検索)</string>
   <string name="no_tags">まだタグが一つも作成されていません</string>
   <string name="sdcard_missing_message">USBストレージとして使用されているので、SDカードは使用できません。デッキにアクセスするには、USBを切断してください。</string>
+  <string name="updated_version">バージョン%sへ更新しました</string>
   <string name="enable_whiteboard">ホワイトボードを有効にする</string>
   <string name="disable_whiteboard">ホワイトボードを無効にする</string>
   <string name="show_whiteboard">ホワイトボードを表示する</string>
@@ -65,18 +66,26 @@
   <string name="leech_notification">このカードに \"leech\" （無駄）というタグを付けました</string>
   <string name="corrupt_font">使用できないフォントファイル %s</string>
   <string-array name="browser_column1_headings">
+    <item>質問</item>
     <item>ソートフィールド</item>
   </string-array>
   <string-array name="browser_column2_headings">
     <item>解答</item>
     <item>カード</item>
-    <item>デッキ:</item>
+    <item>デッキ</item>
     <item>ノートタイプ</item>
     <item>質問</item>
     <item>タグ</item>
     <item>忘却回数</item>
     <item>学習回数</item>
   </string-array>
+  <string name="custom_study_increase_new_limit">今日の新規カードの上限を上げる</string>
+  <string name="custom_study_increase_review_limit">今日の復習カードの上限を上げる</string>
+  <string name="custom_study_review_forgotten">忘却したカードを復習する</string>
+  <string name="custom_study_review_ahead">先取りして復習する</string>
+  <string name="custom_study_random_selection">カードをランダムに学習する</string>
+  <string name="custom_study_preview_new">新規カードをプレビューする</string>
+  <string name="custom_study_limit_tags">特定のタグによる選択</string>
   <string name="cardeditor_title_add_note">ノートを追加</string>
   <string name="cardeditor_title_edit_card">ノートの編集</string>
   <string name="discard_unsaved_changes">閉じて現在の入力を破棄しますか？</string>
@@ -105,22 +114,22 @@
   <string name="card_editor_preview_card">プレビュー</string>
   <string name="error_insufficient_memory">メモリ不足のため操作できませんでした。</string>
   <string name="rename">名前の変更</string>
-  <string name="rename_error">デッキ \"%s\" の名前を変更できません。</string>
   <string name="default_conf_delete_error">標準オプショングループを削除することはできません。</string>
   <plurals name="factadder_cards_added">
     <item quantity="other">%d枚のカードを追加しました</item>
   </plurals>
   <string name="help_title">ヘルプ</string>
-  <string name="check_db">データベースの検査</string>
+  <string name="check_db">データベースをチェック</string>
   <string name="check_media">メディアをチェック</string>
+  <string name="empty_cards">無効なカードをチェック</string>
   <string name="check_db_message">データベースをチェックしています...</string>
-  <string name="empty_card_warning" tools:ignore="TypographyEllipsis">空のカード。\"ツール &gt; 空のカード...\"をデスクトップ クライアントで実行。</string>
+  <string name="empty_card_warning">このカードは無効なカード（必要な情報を削除したことにより、表側が表示できないカード）です。このような無効なカードを一括削除するには、デッキリスト画面のメニューから「無効なカードをチェック」を選択してください。</string>
   <string name="unknown_type_field_warning">タイピングして答えを入力: 不明なフィールド %s</string>
   <string name="delete_deck">デッキを削除しています...</string>
   <string name="show_hint">%s を表示</string>
-  <string name="info_rate">AnkiDroidを評価</string>
+  <string name="info_rate">このアプリを評価</string>
   <string name="col_load_failed">コレクションの読み込みに失敗しました\n Backボタンを押して AnkiDroid を終了してください</string>
-  <string name="import_title">カードのインポート</string>
+  <string name="import_title">カードをインポート</string>
   <string name="import_select_title">インポートするファイルを選択</string>
   <string name="import_message_add">追加</string>
   <string name="import_message_replace_confirm">このコレクションは削除され、ファイル中のデータに置き換えられます%s. よろしいでしょうか？</string>
@@ -143,17 +152,17 @@
   <string name="upgrade_import_no_file_found">読み込み可能な %1$s のファイルが見つかりません</string>
   <string name="study_options">デッキ オプション</string>
   <string name="custom_study">カスタム学習</string>
+  <string name="more_options">その他</string>
   <string name="dyn_deck_desc">これは標準のスケジュールから外れて学習する特別なデッキです。 カードは復習が済んだら元のデッキに自動的に戻ります。 このデッキを削除すると、残りのカードも全て元のデッキに戻ります。</string>
   <string name="steps_error">学習ステップには1以上の数字を入力してください</string>
   <string name="steps_min_error">少なくとも 1 つの学習ステップが必要です。</string>
   <string name="sched_end">（終了）</string>
-  <string name="sched_unbury_button">それらのカードを今すぐ表示するには、「延期を解除」ボタンをタップしてください。</string>
+  <string name="sched_unbury_action">それらを今見る場合はメニューの「延期解除」をタップしてください</string>
   <string name="sched_has_buried">関連カード、延期カードの学習は明日まで延期されます。</string>
   <string name="tag_editor_add_feedback">タグ「%1$s」を作成しますか？　よろしければ「%2$s」をタップしてください。
 </string>
   <string name="tag_editor_add_feedback_existing">既存のタグ「%1$s」が選択されました</string>
   <string name="lookup_hint">文字列をコピーした後、カード内でタップすると、検索辞書アイコンが表示されます</string>
-  <string name="add_content_showcase_text">開始する場合は、「＋」ボタンをタップして新しい学習データを追加してください。\n\n マニュアルを見る場合は、「ヘルプ」を押してください。</string>
   <plurals name="time_span_seconds">
     <item quantity="other">%s秒</item>
   </plurals>
@@ -173,4 +182,7 @@
     <item quantity="other">%s年</item>
   </plurals>
   <string name="less_than_time">&lt; %s</string>
+  <string name="decks_rename_exists">そのデッキ名は既に使用されています</string>
+  <string name="decks_rename_filtered_nosubdecks">フィルターデッキ内にはサブデッキを作れません</string>
+  <string name="filtered_deck_name">フィルターデッキ</string>
 </resources>

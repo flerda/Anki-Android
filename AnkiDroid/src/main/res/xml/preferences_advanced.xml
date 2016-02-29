@@ -26,7 +26,12 @@
     android:title="@string/pref_cat_advanced"
     android:summary="@string/pref_cat_advanced_summ"
     android:key="pref_screen_advanced">
-        <Preference 
+        <EditTextPreference
+            android:defaultValue="/sdcard/AnkiDroid"
+            android:key="deckPath"
+            android:summary="@string/preference_summary_literal"
+            android:title="@string/col_path" />
+        <Preference
             android:key="force_full_sync"
             android:title="@string/force_full_sync_title"
             android:summary="@string/force_full_sync_summary" />
@@ -51,9 +56,19 @@
                 android:title="@string/safe_display" />
             <CheckBoxPreference
                 android:defaultValue="false"
+                android:key="writeAnswersDisable"
+                android:summary="@string/write_answers_disable_summ"
+                android:title="@string/write_answers_disable" />
+            <CheckBoxPreference
+                android:defaultValue="false"
                 android:key="inputWorkaround"
                 android:summary="@string/input_workaround_summ"
                 android:title="@string/input_workaround" />
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="useInputTag"
+                android:summary="@string/use_input_tag_summ"
+                android:title="@string/use_input_tag" />
             <CheckBoxPreference
                 android:defaultValue="false"
                 android:key="textSelectionLongclickWorkaround"
@@ -64,15 +79,15 @@
                 android:key="fixHebrewText"
                 android:summary="@string/fix_hebrew_text_summ"
                 android:title="@string/fix_hebrew_text" />
-            <CheckBoxPreference
-                android:defaultValue="false"
-                android:key="fixArabicText"
-                android:summary="@string/fix_arabic_text_summ"
-                android:title="@string/fix_arabic_text" />
         </PreferenceCategory>
         <PreferenceCategory
             android:key="category_plugins"
             android:title="@string/pref_cat_plugins" >
+            <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="providerEnabled"
+                android:summary="@string/enable_api_summary"
+                android:title="@string/enable_api_title"/>
             <CheckBoxPreference
                 android:defaultValue="false"
                 android:key="tts"
@@ -86,18 +101,13 @@
                 android:summary="@string/preference_summary_literal"
                 android:title="@string/dictionary" />
             <com.ichi2.preferences.CustomDialogPreference
-                android:dialogIcon="@android:drawable/ic_dialog_alert"
+                android:dialogIcon="@drawable/ic_dialog_alert"
                 android:dialogMessage="@string/reset_languages_question"
                 android:dialogTitle="@string/reset_languages"
                 android:negativeButtonText="@string/dialog_cancel"
                 android:positiveButtonText="@string/dialog_ok"
                 android:summary="@string/reset_languages_summ"
                 android:title="@string/reset_languages" />
-            <CheckBoxPreference
-                android:defaultValue="false"
-                android:key="com.ichi2.filters.GoogleTranslaterFilter"
-                android:summary="@string/filter_google_translate_summ"
-                android:title="@string/filter_google_translate" />
             <CheckBoxPreference
                 android:defaultValue="false"
                 android:key="convertFenText"
@@ -117,7 +127,7 @@
                 android:title="@string/double_scrolling_gap" />
         </PreferenceCategory>
 
-    <Preference 
+    <Preference
         android:key="about_dialog_preference"
         android:title="@string/about_title">
         <intent

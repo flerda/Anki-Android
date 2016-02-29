@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -33,6 +34,8 @@ import com.ichi2.anki.dialogs.AsyncDialogFragment;
 import com.ichi2.anki.dialogs.DialogHandler;
 import com.ichi2.anki.dialogs.SimpleMessageDialog;
 import com.ichi2.async.CollectionLoader;
+import com.ichi2.compat.CompatHelper;
+import com.ichi2.compat.customtabs.CustomTabActivityHelper;
 import com.ichi2.libanki.Collection;
 import com.ichi2.themes.Themes;
 
@@ -42,8 +45,12 @@ public class AnkiActivity extends AppCompatActivity implements LoaderManager.Loa
         SimpleMessageDialog.SimpleMessageDialogListener {
 
     public final int SIMPLE_NOTIFICATION_ID = 0;
+    public static final int REQUEST_REVIEW = 901;
 
     private DialogHandler mHandler = new DialogHandler(this);
+
+    // custom tabs
+    private CustomTabActivityHelper mCustomTabActivityHelper;
 
 
     @Override
@@ -53,7 +60,21 @@ public class AnkiActivity extends AppCompatActivity implements LoaderManager.Loa
         // Set the theme
         Themes.setTheme(this);
         super.onCreate(savedInstanceState);
+        mCustomTabActivityHelper = new CustomTabActivityHelper();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mCustomTabActivityHelper.bindCustomTabsService(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mCustomTabActivityHelper.unbindCustomTabsService(this);
+    }
+
 
     @Override
     protected void onResume() {
@@ -277,7 +298,7 @@ public class AnkiActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
-    protected void showProgressBar() {
+    public void showProgressBar() {
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         if (progressBar != null) {
             progressBar.setVisibility(View.VISIBLE);
@@ -285,11 +306,27 @@ public class AnkiActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
-    protected void hideProgressBar() {
+    public void hideProgressBar() {
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         if (progressBar != null) {
             progressBar.setVisibility(View.GONE);
         }
+    }
+
+
+    protected void mayOpenUrl(Uri url) {
+        boolean success = mCustomTabActivityHelper.mayLaunchUrl(url, null, null);
+        if (!success) {
+            Timber.w("Couldn't preload url: %s", url.toString());
+        }
+    }
+
+    protected void openUrl(Uri url) {
+        CompatHelper.getCompat().openUrl(this, url);
+    }
+
+    public CustomTabActivityHelper getCustomTabActivityHelper() {
+        return mCustomTabActivityHelper;
     }
 
 
@@ -361,6 +398,10 @@ public class AnkiActivity extends AppCompatActivity implements LoaderManager.Loa
         View root = findViewById(R.id.root_layout);
         showSnackbar(mainTextResource, shortLength, -1, null, root);
     }
+    protected void showSimpleSnackbar(String mainText, boolean shortLength) {
+        View root = findViewById(R.id.root_layout);
+        showSnackbar(mainText, shortLength, -1, null, root, null);
+    }
 
     /**
      * Show a snackbar with an action
@@ -370,8 +411,17 @@ public class AnkiActivity extends AppCompatActivity implements LoaderManager.Loa
      * @param listener listener for the action (if null no action shown)
      * @oaram root View Snackbar will attach to. Should be CoordinatorLayout for swipe-to-dismiss to work.
      */
-    protected void showSnackbar(int mainTextResource, boolean shortLength,
-                                int actionTextResource, View.OnClickListener listener, View root) {
+    protected void showSnackbar(int mainTextResource, boolean shortLength, int actionTextResource,
+                                View.OnClickListener listener, View root) {
+        showSnackbar(mainTextResource,shortLength,actionTextResource,listener,root, null);
+    }
+    protected void showSnackbar(int mainTextResource, boolean shortLength, int actionTextResource,
+                                View.OnClickListener listener, View root, Snackbar.Callback callback) {
+        String mainText = getResources().getString(mainTextResource);
+        showSnackbar(mainText, shortLength, actionTextResource, listener, root, callback);
+    }
+    protected void showSnackbar(String mainText, boolean shortLength, int actionTextResource,
+                                View.OnClickListener listener, View root, Snackbar.Callback callback) {
         if (root == null) {
             root = findViewById(android.R.id.content);
             if (root == null) {
@@ -380,16 +430,22 @@ public class AnkiActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         }
         int length = shortLength ? Snackbar.LENGTH_SHORT : Snackbar.LENGTH_LONG;
-        Snackbar sb = Snackbar.make(root, mainTextResource, length);
+        Snackbar sb = Snackbar.make(root, mainText, length);
         if (listener != null) {
             sb.setAction(actionTextResource, listener);
+        }
+        if (callback != null) {
+            sb.setCallback(callback);
         }
         // Make the text white to avoid interference from our theme colors.
         View view = sb.getView();
         TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
         TextView action = (TextView) view.findViewById(android.support.design.R.id.snackbar_action);
-        tv.setTextColor(Color.WHITE);
-        action.setTextColor(getResources().getColor(R.color.theme_primary));
+        if (tv != null && action != null) {
+            tv.setTextColor(Color.WHITE);
+            action.setTextColor(getResources().getColor(R.color.theme_primary));
+            tv.setMaxLines(2);  // prevent tablets from truncating to 1 line
+        }
         sb.show();
     }
 
@@ -413,7 +469,7 @@ public class AnkiActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
-    protected void showSimpleNotification(String title, String message) {
+    public void showSimpleNotification(String title, String message) {
         SharedPreferences prefs = AnkiDroidApp.getSharedPrefs(this);
         // Don't show notification if disabled in preferences
         if (Integer.parseInt(prefs.getString("minimumCardsDueForNotification", "0")) <= 1000000) {
@@ -427,7 +483,9 @@ public class AnkiActivity extends AppCompatActivity implements LoaderManager.Loa
                     .setSmallIcon(R.drawable.ic_stat_notify)
                     .setContentTitle(title)
                     .setContentText(message)
+                    .setColor(getResources().getColor(R.color.theme_primary))
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                     .setTicker(ticker);
             // Enable vibrate and blink if set in preferences
             if (prefs.getBoolean("widgetVibrate", false)) {
@@ -472,7 +530,7 @@ public class AnkiActivity extends AppCompatActivity implements LoaderManager.Loa
 
     // Restart the activity
     @SuppressLint("NewApi")
-    protected void restartActivity() {
+    public void restartActivity() {
         Timber.i("AnkiActivity -- restartActivity()");
         Intent intent = new Intent();
         intent.setClass(this, this.getClass());

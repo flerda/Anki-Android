@@ -53,8 +53,9 @@
   <string name="add_tag">Add tag</string>
   <string name="check_all_tags">Check/uncheck all tags</string>
   <string name="filter_tags">فیلترکردن برچسب ها</string>
-  <string name="no_tags">You haven’t added any tags yet.</string>
+  <string name="no_tags">You haven’t added any tags yet</string>
   <string name="sdcard_missing_message">کارت حافظه در دسترس نیست زیرا حافظه یواس بی در حال استفاده است.اتصال را برای دسترسی به دسته های کارت قطع نمایید.</string>
+  <string name="updated_version">Updated to version %s</string>
   <string name="enable_whiteboard">فعال سازی تخته سفید</string>
   <string name="disable_whiteboard">غیر فعال کردن تخته سفید</string>
   <string name="show_whiteboard">نمایش تخته سفید</string>
@@ -65,6 +66,7 @@
   <string name="leech_notification">کارت به عنوان مزاحم مشخص شده است</string>
   <string name="corrupt_font">فونت فایل خراب %s</string>
   <string-array name="browser_column1_headings">
+    <item>Question</item>
     <item>Sort field</item>
   </string-array>
   <string-array name="browser_column2_headings">
@@ -77,6 +79,13 @@
     <item>دفعات اشتباه</item>
     <item>بازبینی ها</item>
   </string-array>
+  <string name="custom_study_increase_new_limit">Increase today’s new card limit</string>
+  <string name="custom_study_increase_review_limit">Increase today’s review card limit</string>
+  <string name="custom_study_review_forgotten">Review forgotten cards</string>
+  <string name="custom_study_review_ahead">Review ahead</string>
+  <string name="custom_study_random_selection">Study a random selection of cards</string>
+  <string name="custom_study_preview_new">Preview new cards</string>
+  <string name="custom_study_limit_tags">Limit to particular tags</string>
   <string name="cardeditor_title_add_note">افزودن یادداشت</string>
   <string name="cardeditor_title_edit_card">ویرایش یادداشت</string>
   <string name="discard_unsaved_changes">آیا می خواهید خارج شوید؟ورودی ها از بین خواهد رفت.</string>
@@ -105,7 +114,6 @@
   <string name="card_editor_preview_card">پیش نمایش</string>
   <string name="error_insufficient_memory">به علت عدم وجود حافظه کافی در دستگاه شما عملیات امکان پذیر نیست</string>
   <string name="rename">تغییر نام</string>
-  <string name="rename_error">نامگذاری مجدد دسته کارت %s ممکن نشد</string>
   <string name="default_conf_delete_error">امکان پاک کردن تنظیمات پیش فرض گروه نمی باشد</string>
   <plurals name="factadder_cards_added">
     <item quantity="other">%d cards added</item>
@@ -113,8 +121,9 @@
   <string name="help_title">کمک</string>
   <string name="check_db">بررسی پایگاه داده</string>
   <string name="check_media">بررسی رسانه ها</string>
+  <string name="empty_cards">Empty cards</string>
   <string name="check_db_message">بررسی پایگاه داده.\nلطفا صبر کنید...</string>
-  <string name="empty_card_warning" tools:ignore="TypographyEllipsis">کارت خالی.\"ابزارها &gt; کارت های خالی...\" را در نسخه ی رومیزی اجرا کنید.</string>
+  <string name="empty_card_warning">This card is empty. Use the “Empty cards” option from the menu on the deck list screen.</string>
   <string name="unknown_type_field_warning">پاسخ دهید:فیلد نامشخص %s</string>
   <string name="delete_deck">حذف دسته کارت...\nلطفا صبر کنید.</string>
   <string name="show_hint">%s را نمایش بده</string>
@@ -143,16 +152,16 @@
   <string name="upgrade_import_no_file_found">غیر وارد کردنی %1$s فایل یافت شد</string>
   <string name="study_options">Deck options</string>
   <string name="custom_study">مطالعه بر اساس تنظیمات دلخواه</string>
+  <string name="more_options">More</string>
   <string name="dyn_deck_desc">این یک دسته ویژه برای مطالعه در خارج از زمان بندی عادی می باشد.بعد از مرور کارتها آنها بطور خودکار به دسته های اصلی برگردانده خواهد شد.حذف کردن این دسته از لیست دسته ها سبب می شود که همه کارتهای باقیمانده نیز به دسته اصلی برگردانده شود.</string>
   <string name="steps_error">مراحل باید با اعداد بزرگتر از 0 شماره گذاری گردند</string>
   <string name="steps_min_error">حداقل یک مرحله لازم است</string>
   <string name="sched_end">(پایان)</string>
-  <string name="sched_unbury_button">برای دیدن آنها در حال حاضر، دکمه Unbury بزنید.</string>
+  <string name="sched_unbury_action">To see them now touch the “Unbury” item in the menu</string>
   <string name="sched_has_buried">تعدادی از کارت های مرتبط یا مخفی شده تا نشست بعدی نمایش داده نخواهند شد.</string>
   <string name="tag_editor_add_feedback">Touch “%2$s” to confirm adding “%1$s”</string>
   <string name="tag_editor_add_feedback_existing">Existing tag “%1$s” selected</string>
   <string name="lookup_hint">After copying the text, tap anywhere on the flashcard to show the search icon</string>
-  <string name="add_content_showcase_text">To get started, tap the + button to add some new study material.\n\nPress “Help” to see the manual.</string>
   <plurals name="time_span_seconds">
     <item quantity="other">%s seconds</item>
   </plurals>
@@ -172,4 +181,7 @@
     <item quantity="other">%s years</item>
   </plurals>
   <string name="less_than_time">&lt; %s</string>
+  <string name="decks_rename_exists">That deck already exists</string>
+  <string name="decks_rename_filtered_nosubdecks">A filtered deck cannot have subdecks</string>
+  <string name="filtered_deck_name">Filtered Deck</string>
 </resources>

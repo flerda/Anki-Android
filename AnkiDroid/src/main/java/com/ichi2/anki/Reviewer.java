@@ -35,11 +35,13 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 
+import com.ichi2.anim.ActivityTransitionAnimation;
 import com.ichi2.async.DeckTask;
 import com.ichi2.compat.CompatHelper;
 import com.ichi2.libanki.Collection;
 import com.ichi2.themes.Themes;
 import com.ichi2.widget.WidgetStatus;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import org.json.JSONException;
 
@@ -51,6 +53,7 @@ public class Reviewer extends AbstractFlashcardViewer {
     private boolean mHasDrawerSwipeConflicts = false;
     private boolean mShowWhiteboard = true;
     private boolean mBlackWhiteboard = true;
+    private boolean mPrefFullscreenReview = false;
 
     @Override
     protected void setTitle() {
@@ -90,17 +93,16 @@ public class Reviewer extends AbstractFlashcardViewer {
         disableDrawerSwipeOnConflicts();
         // Add a weak reference to current activity so that scheduler can talk to to Activity
         mSched.setContext(new WeakReference<Activity>(this));
-    }
 
+        // Set full screen/immersive mode if needed
+        if (mPrefFullscreenReview) {
+            CompatHelper.getCompat().setFullScreen(this);
+        }
+    }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // The action bar home/up action should open or close the drawer.
-        // ActionBarDrawerToggle will take care of this.
-        if (getDrawerToggle().onOptionsItemSelected(item)) {
-            return true;
-        }
         switch (item.getItemId()) {
 
             case android.R.id.home:
@@ -115,7 +117,8 @@ public class Reviewer extends AbstractFlashcardViewer {
 
             case R.id.action_mark_card:
                 Timber.i("Reviewer:: Mark button pressed");
-                DeckTask.launchDeckTask(DeckTask.TASK_TYPE_MARK_CARD, mMarkCardHandler, new DeckTask.TaskData(mCurrentCard, 0));
+                onMark(mCurrentCard);
+                refreshActionBar();
                 break;
 
             case R.id.action_replay:
@@ -180,6 +183,11 @@ public class Reviewer extends AbstractFlashcardViewer {
                 lookUpOrSelectText();
                 break;
 
+            case R.id.action_open_deck_options:
+                Intent i = new Intent(this, DeckOptions.class);
+                startActivityForResultWithAnimation(i, DECK_OPTIONS, ActivityTransitionAnimation.FADE);
+                break;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -242,6 +250,9 @@ public class Reviewer extends AbstractFlashcardViewer {
             menu.findItem(R.id.action_search_dictionary).setVisible(true).setEnabled(!(mPrefWhiteboard && mShowWhiteboard))
                     .setTitle(clipboardHasText() ? Lookup.getSearchStringTitle() : res.getString(R.string.menu_select));
         }
+        if (getCol().getDecks().isDyn(getParentDid())) {
+            menu.findItem(R.id.action_open_deck_options).setVisible(false);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -277,7 +288,8 @@ public class Reviewer extends AbstractFlashcardViewer {
 	            return true;
 	        }
 	        if (keyPressed == '*') {
-	            DeckTask.launchDeckTask(DeckTask.TASK_TYPE_MARK_CARD, mMarkCardHandler, new DeckTask.TaskData(mCurrentCard, 0));
+                onMark(mCurrentCard);
+                refreshActionBar();
 	            return true;
 	        }
 	        if (keyPressed == '-') {
@@ -300,6 +312,12 @@ public class Reviewer extends AbstractFlashcardViewer {
 	            playSounds(true);
 	            return true;
 	        }
+
+            // different from Anki Desktop
+            if (keyPressed == 'z') {
+                undo();
+                return true;
+            }
         }
         return super.onKeyUp(keyCode, event);
     }
@@ -310,6 +328,7 @@ public class Reviewer extends AbstractFlashcardViewer {
         super.restorePreferences();
         SharedPreferences preferences = AnkiDroidApp.getSharedPrefs(getBaseContext());
         mBlackWhiteboard = preferences.getBoolean("blackWhiteboard", true);
+        mPrefFullscreenReview = Integer.parseInt(preferences.getString("fullscreenMode", "0")) >0;
         return preferences;
     }
 
@@ -337,7 +356,7 @@ public class Reviewer extends AbstractFlashcardViewer {
 
         if (!isFinishing()) {
             if (colIsOpen() && mSched != null) {
-                WidgetStatus.update(this, mSched.progressToday(null, mCurrentCard, true));
+                WidgetStatus.update(this);
             }
         }
         UIUtils.saveCollectionInBackground(this);
@@ -414,15 +433,34 @@ public class Reviewer extends AbstractFlashcardViewer {
     }
 
     @Override
+    public boolean onItemClick(View view, int i, IDrawerItem iDrawerItem) {
+        // Tell the browser the current card ID so that it can tell us when we need to reload
+        if (mCurrentCard != null) {
+            setCurrentCardId(mCurrentCard.getId());
+        }
+        return super.onItemClick(view, i, iDrawerItem);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        // Restore full screen once we regain focus
+        if (hasFocus) {
+            delayedHide(INITIAL_HIDE_DELAY);
+        } else {
+            mFullScreenHandler.removeMessages(0);
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_STATISTICS || requestCode == REQUEST_BROWSE_CARDS) {
             // select original deck if the statistics or card browser were opened,
             // which can change the selected deck
-            if (data.hasExtra("originalDeck")) {
+            if (data != null && data.hasExtra("originalDeck")) {
                 getCol().getDecks().select(data.getLongExtra("originalDeck", 0L));
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

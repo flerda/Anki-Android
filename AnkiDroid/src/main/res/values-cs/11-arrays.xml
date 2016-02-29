@@ -80,15 +80,6 @@
     <item>Naposledy přidané první</item>
     <item>Relative overdueness</item>
   </string-array>
-  <string-array name="custom_study_options_labels">
-    <item>Zvýšit dnešní limit nových karet</item>
-    <item>Zvýšit dnešní limit opakování</item>
-    <item>Opakovat zapomenuté karty</item>
-    <item>Opakovat dopředu</item>
-    <item>Studovat náhodný výběr karet</item>
-    <item>Zkoušení nových karet</item>
-    <item>Omezit podle štítků</item>
-  </string-array>
   <string-array name="add_to_cur_labels">
     <item>Použít aktuální balíček</item>
     <item>Rozhodnout podle typu poznámky</item>

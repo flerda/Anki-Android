@@ -43,14 +43,14 @@
     <item quantity="one">%d cartão exibido</item>
     <item quantity="other">%d cartões exibidos</item>
   </plurals>
-  <string name="card_browser_all_decks">Todos os decks</string>
+  <string name="card_browser_all_decks">Todos os baralhos</string>
   <string name="card_browser_delete_card">Excluir nota</string>
   <string name="card_browser_suspend_card">Suspender cartão</string>
   <string name="card_browser_unsuspend_card">Cancelar suspensão</string>
   <string name="card_browser_mark_card">Marcar nota</string>
   <string name="card_browser_unmark_card">Desmarcar nota</string>
   <string name="delete_card_title">Excluir nota?</string>
-  <string name="delete_card_message">Realmente excluir todos os cartões desta nota?\nCampo de busca: %s</string>
+  <string name="delete_card_message">Excluir todos os cartões desta nota?\nCampo de busca: %s</string>
   <string name="card_browser_show_marked">Filtrar marcadas</string>
   <string name="card_browser_show_suspended">Filtro suspenso</string>
   <string name="card_browser_search_by_tag">Filtrar por Tag</string>

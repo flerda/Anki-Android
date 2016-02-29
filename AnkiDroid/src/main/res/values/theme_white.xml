@@ -19,16 +19,18 @@
         <item name="actionModeBackground">@color/theme_accent</item>
         <item name="actionBarThemeRef">@style/ActionBar</item>
         <item name="popupTheme">@style/ActionBar.Popup</item>
+        <item name="actionBarPopupThemeRef">@style/ActionBar.Popup</item>
         <!-- Dialog styles -->
         <item name="android:listPreferredItemHeight">56dip</item>
         <!-- Deck list colors and divider -->
-        <item name="currentDeckBackgroundColor">@color/deckadapter_row_current</item>
+        <item name="currentDeckBackground">@drawable/item_background_selected_pre21</item>
         <item name="dynDeckColor">@color/deckadapter_deck_name_dyn</item>
         <item name="deckDivider">@drawable/divider</item>
         <item name="expandRef">@drawable/ic_chevron_right_black_24dp</item>
         <item name="collapseRef">@drawable/ic_expand_more_black_24dp</item>
         <!-- Reviewer colors -->
         <item name="topBarColor">@color/theme_primary_light</item>
+        <item name="maxTimerColor">@color/max_timer</item>
         <item name="newCountColor">@color/new_count</item>
         <item name="learnCountColor">@color/learn_count</item>
         <item name="zeroCountColor">@color/zero_count</item>
@@ -50,6 +52,16 @@
         <item name="dialogErrorIcon">@drawable/ic_warning_black_36dp</item>
         <item name="dialogSyncErrorIcon">@drawable/ic_sync_problem_black_36dp</item>
         <item name="dialogSendIcon">@drawable/ic_send_black_36dp</item>
+        <!-- Navigation drawer colors -->
+        <item name="material_drawer_background">@color/material_drawer_background</item>
+        <item name="material_drawer_primary_text">@color/material_drawer_primary_text</item>
+        <item name="material_drawer_primary_icon">@color/material_drawer_primary_icon</item>
+        <item name="material_drawer_secondary_text">@color/material_drawer_secondary_text</item>
+        <item name="material_drawer_hint_text">@color/material_drawer_hint_text</item>
+        <item name="material_drawer_divider">@color/material_drawer_divider</item>
+        <item name="material_drawer_selected">@color/material_drawer_selected</item>
+        <item name="material_drawer_selected_text">@color/material_drawer_selected_text</item>
+        <item name="material_drawer_header_selection_text">@color/material_drawer_header_selection_text</item>
     </style>
 
     <style name="Theme_White_Statistics" parent="App_Theme_White">

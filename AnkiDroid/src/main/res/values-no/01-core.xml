@@ -45,12 +45,13 @@
   <string name="settings">Oppsett</string>
   <string name="help">Hjelp</string>
   <string name="send_feedback">Send tilbakemelding</string>
-  <string name="studyoptions_title">Innstillinger</string>
+  <string name="studyoptions_title">Deck overview</string>
   <string name="studyoptions_due_today">Forfaller i dag:</string>
   <string name="studyoptions_new_total">Totalt nye kort:</string>
   <string name="studyoptions_total_cards">Totalt antall kort:</string>
   <string name="studyoptions_eta">Tidsestimat (min.):</string>
   <string name="studyoptions_start">Studer nå</string>
+  <string name="study_more">Study more</string>
   <plurals name="deckpicker_title">
     <item quantity="one">%1$d card due (%2$s)</item>
     <item quantity="other">%1$d cards due (%2$s)</item>
@@ -80,7 +81,7 @@
   <string name="undo_action_delete">slett notat</string>
   <string name="undo_action_mark">merk notat</string>
   <string name="unbury">Grav opp igjen</string>
-  <string name="contextmenu_deckpicker_rename_deck">Gi nytt navn til kortstokk</string>
+  <string name="rename_deck">Rename deck</string>
   <string name="menu_add">Legg til</string>
   <string name="menu_add_note">Legg til notat</string>
   <string name="menu_my_account">Synkroniser konto</string>
@@ -113,30 +114,37 @@
   <string name="empty_cram_deck">Tømmer pugge-kortstokken.\nVennligst vent...</string>
   <string name="custom_study_deck_name">Tilpasset studiesesjon</string>
   <string name="custom_study_deck_exists">Gi den eksisterende tilpassede studiestokken nytt navn først</string>
+  <string name="empty_deck">This deck is empty</string>
+  <string name="studyoptions_empty">This deck is empty. Press the + button to add new content.</string>
+  <string name="studyoptions_limit_reached">Daily study limit reached</string>
+  <string name="studyoptions_empty_schedule">No cards scheduled to study</string>
   <string name="studyoptions_congrats_finished">Gratulerer! Du er ferdig for i dag.</string>
   <string name="studyoptions_congrats_more_rev">Du har nådd grensen for gjennomgang i dag, men det er fortsatt kort du ikke har gått gjennom. For best mulig effekt, bør du vurdere å øke grensen i alternativene.</string>
   <string name="studyoptions_congrats_more_new">Det finnes flere nye kort tilgjengelig, men den daglige grensen er nådd. Du kan øke grensen i innstillingene, men vær oppmerksom på at dette også vil øke den kortsiktige mengden av kort til repetering.</string>
   <string name="studyoptions_congrats_custom">For å studere utenfor den vanlige tidsrammen, trykk på \"Tilpassede studier\"-knappen.</string>
-  <string name="studyoptions_no_cards_due">No cards are due yet.</string>
+  <string name="studyoptions_no_cards_due">No cards are due yet</string>
   <string name="sd_card_not_mounted">Device storage not mounted</string>
   <string name="button_sync">Synkroniser</string>
   <string name="cancel_sync_confirm">Do you want to cancel the sync?</string>
+  <string name="continue_sync">Continue sync</string>
   <string name="sync_cancelled">Sync cancelled</string>
+  <string name="sync_cancel_message">Cancelling&#8230;\nThis may take some time.</string>
   <string name="export">Eksporter</string>
+  <string name="export_collection">Export collection</string>
+  <string name="export_deck">Export deck</string>
   <string name="nothing">Ingenting</string>
-  <string name="title_activity_template_editor">Korttyper for %s</string>
+  <string name="title_activity_template_editor">Card types</string>
   <string name="card_template_editor_front">Framsidemal</string>
   <string name="card_template_editor_back">Baksidemal</string>
   <string name="card_template_editor_styling">Formgivning</string>
-  <string name="card_template_editor_menu_add_reverse">Add reverse</string>
   <string name="card_template_editor_menu_delete">Slett</string>
   <string name="card_template_editor_cant_delete">Minst én korttype kreves.</string>
   <plurals name="card_template_editor_confirm_delete">
     <item quantity="one">Slette korttypen \"%2$s\" og dens %1$d kort?</item>
     <item quantity="other">Slette korttypen \"%2$s\" og dens %1$d kort?</item>
   </plurals>
+  <string name="invalid_template">A card could not be generated</string>
   <string name="card_template_editor_would_delete_note">Fjerning av denne korttypen vil føre til at ett eller flere notater slettes. Vennligst lag en ny korttype først.</string>
   <string name="read_write_permission_label">Read and write to the AnkiDroid database</string>
-  <string name="read_write_permission_description">Allow the application to be able to access existing notes, cards,
-        models, and decks, as well as create new ones.</string>
+  <string name="read_write_permission_description">Allow the application to access existing notes, cards, note types, and decks, as well as create new ones</string>
 </resources>

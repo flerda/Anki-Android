@@ -27,9 +27,7 @@ import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
-import android.util.Pair;
 
-import com.ichi2.anki.AnkiDroidApp;
 import com.ichi2.anki.R;
 import com.ichi2.libanki.hooks.Hooks;
 
@@ -50,7 +48,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Random;
 
 import timber.log.Timber;
@@ -94,7 +91,6 @@ public class Sched {
     private LinkedList<Long> mRevDids;
 
     // Not in libanki
-    private HashMap<Long, Pair<String[], long[]>> mCachedDeckCounts;
     private WeakReference<Activity> mContextReference;
 
     /**
@@ -291,7 +287,7 @@ public class Sched {
     public void _updateStats(Card card, String type, long cnt) {
         String key = type + "Today";
         long did = card.getDid();
-        ArrayList<JSONObject> list = mCol.getDecks().parents(did);
+        List<JSONObject> list = mCol.getDecks().parents(did);
         list.add(mCol.getDecks().get(did));
         for (JSONObject g : list) {
             try {
@@ -343,7 +339,7 @@ public class Sched {
                     continue;
                 }
                 // check the parents
-                ArrayList<JSONObject> parents = mCol.getDecks().parents(did);
+                List<JSONObject> parents = mCol.getDecks().parents(did);
                 for (JSONObject p : parents) {
                     // add if missing
                     long id = p.getLong("id");
@@ -399,7 +395,7 @@ public class Sched {
                     return deckDueList();
                 }
                 String p;
-                List<String> parts = Arrays.asList(deck.getString("name").split("::"));
+                List<String> parts = Arrays.asList(deck.getString("name").split("::", -1));
                 if (parts.size() < 2) {
                     p = null;
                 } else {
@@ -445,7 +441,7 @@ public class Sched {
     private List<DeckDueTreeNode> _groupChildren(List<DeckDueTreeNode> grps) {
         // first, split the group names into components
         for (DeckDueTreeNode g : grps) {
-            g.names = g.names[0].split("::");
+            g.names = g.names[0].split("::", -1);
         }
         // and sort based on those components
         Collections.sort(grps);
@@ -705,7 +701,7 @@ public class Sched {
             if (fn == null) {
                 fn = Sched.class.getDeclaredMethod("_deckNewLimitSingle", JSONObject.class);
             }
-            ArrayList<JSONObject> decks = mCol.getDecks().parents(did);
+            List<JSONObject> decks = mCol.getDecks().parents(did);
             decks.add(mCol.getDecks().get(did));
             int lim = -1;
             // for the deck and each of its parents
@@ -1149,7 +1145,7 @@ public class Sched {
     }
 
 
-    private void log(long id, int usn, int ease, int ivl, int lastIvl, int factor, long timeTaken, int type) {
+    private void log(long id, int usn, int ease, int ivl, int lastIvl, int factor, int timeTaken, int type) {
         try {
             mCol.getDb().execute("INSERT INTO revlog VALUES (?,?,?,?,?,?,?,?,?)",
                     new Object[]{Utils.now() * 1000, id, usn, ease, ivl, lastIvl, factor, timeTaken, type});
@@ -1853,7 +1849,7 @@ public class Sched {
      * This function uses GregorianCalendar so as to be sensitive to leap years, daylight savings, etc.
      */
 
-    public void _updateCutoff() {
+    private void _updateCutoff() {
         int oldToday = mToday;
         // days since col created
         mToday = (int) ((Utils.now() - mCol.getCrt()) / 86400);
@@ -1930,7 +1926,7 @@ public class Sched {
         if (haveBuried()) {
             String now;
             if (mHaveCustomStudy) {
-                now = " " + context.getString(R.string.sched_unbury_button);
+                now = " " + context.getString(R.string.sched_unbury_action);
             } else {
                 now = "";
             }
@@ -2202,12 +2198,12 @@ public class Sched {
     /**
      * Completely reset cards for export.
      */
-    public void resetCards(long[] ids) {
+    public void resetCards(Long[] ids) {
         long[] nonNew = Utils.arrayList2array(mCol.getDb().queryColumn(Long.class, String.format(Locale.US,
-                        "select id from cards where id in %s and (queue != 0 or type != 0)", Utils.ids2str(ids)), 0));
+                "select id from cards where id in %s and (queue != 0 or type != 0)", Utils.ids2str(ids)), 0));
         mCol.getDb().execute("update cards set reps=0, lapses=0 where id in " + Utils.ids2str(nonNew));
         forgetCards(nonNew);
-        mCol.log(ids);
+        mCol.log((Object[]) ids);
     }
 
 
@@ -2287,7 +2283,7 @@ public class Sched {
 
 
     public void resortConf(JSONObject conf) {
-        ArrayList<Long> dids = mCol.getDecks().didsForConf(conf);
+        List<Long> dids = mCol.getDecks().didsForConf(conf);
         try {
             for (long did : dids) {
                 if (conf.getJSONObject("new").getLong("order") == 0) {
@@ -2330,6 +2326,21 @@ public class Sched {
      * The methods below are not in LibAnki.
      * ***********************************************************
      */
+
+    public boolean haveBuried(long did) {
+        long odid = mCol.getDecks().selected();
+        mCol.getDecks().select(did);
+        boolean buried = haveBuried();
+        mCol.getDecks().select(odid);
+        return buried;
+    }
+
+    public void unburyCardsForDeck(long did) {
+        long odid = mCol.getDecks().selected();
+        mCol.getDecks().select(did);
+        unburyCardsForDeck();
+        mCol.getDecks().select(odid);
+    }
 
 
     public String getName() {
@@ -2375,102 +2386,6 @@ public class Sched {
     public int matureCount() {
         String dids = _deckLimit();
         return mCol.getDb().queryScalar("SELECT count() FROM cards WHERE type = 2 AND ivl >= 21 AND did IN " + dids);
-    }
-
-
-    /** returns today's progress
-     *
-     * @param counts (if empty, cached version will be used if any)
-     * @param card
-     * @return [progressCurrentDeck, progressAllDecks, leftCards, eta]
-     */
-    public float[] progressToday(List<DeckDueTreeNode> counts, Card card, boolean eta) {
-        try {
-            int doneCurrent = 0;
-            int[] leftCurrent = new int[]{0, 0, 0};
-            String[] cs = new String[]{"new", "lrn", "rev"};
-            long currentDid = 0;
-
-            // current selected deck
-            if (counts == null) {
-                JSONObject deck = mCol.getDecks().current();
-                currentDid = deck.getLong("id");
-                for (String s : cs) {
-                    doneCurrent += deck.getJSONArray(s + "Today").getInt(1);
-                }
-                if (card != null) {
-                    int idx = countIdx(card);
-                    leftCurrent[idx] += idx == 1 ? card.getLeft() / 1000 : 1;
-                } else {
-                    reset();
-                }
-                leftCurrent[0] += mNewCount;
-                leftCurrent[1] += mLrnCount;
-                leftCurrent[2] += mRevCount;
-            }
-
-            // refresh deck progresses with fresh counts if necessary
-            if (counts != null || mCachedDeckCounts == null) {
-                if (mCachedDeckCounts == null) {
-                    mCachedDeckCounts = new HashMap<Long, Pair<String[], long[]>>();
-                }
-                mCachedDeckCounts.clear();
-                if (counts == null) {
-                    // reload counts
-                    counts = deckDueList();
-                }
-                for (DeckDueTreeNode d : counts) {
-                    int done = 0;
-                    JSONObject deck = mCol.getDecks().get(d.did);
-                    for (String s : cs) {
-                        done += deck.getJSONArray(s + "Today").getInt(1);
-                    }
-                    mCachedDeckCounts.put(d.did, new Pair<String[], long[]> (d.names, new long[]{done, d.newCount, d.lrnCount, d.revCount}));
-                }
-            }
-
-            int doneAll = 0;
-            int[] leftAll = new int[]{0, 0, 0};
-            for (Map.Entry<Long, Pair<String[], long[]>> d : mCachedDeckCounts.entrySet()) {
-                boolean exclude = d.getKey() == currentDid; // || mCol.getDecks().isDyn(d.getKey());
-                if (d.getValue().first.length == 1) {
-                    if (exclude) {
-                        // don't count cached version of current deck
-                        continue;
-                    }
-                    long[] c = d.getValue().second;
-                    doneAll += c[0];
-                    leftAll[0] += c[1];
-                    leftAll[1] += c[2];
-                    leftAll[2] += c[3];
-                } else if (exclude) {
-                    // exclude cached values for current deck in order to avoid double count
-                    long[] c = d.getValue().second;
-                    doneAll -= c[0];
-                    leftAll[0] -= c[1];
-                    leftAll[1] -= c[2];
-                    leftAll[2] -= c[3];
-                }
-            }
-            doneAll += doneCurrent;
-            leftAll[0] += leftCurrent[0];
-            leftAll[1] += leftCurrent[1];
-            leftAll[2] += leftCurrent[2];
-            int totalAll = doneAll + leftAll[0] + leftAll[1] + leftAll[2];
-            int totalCurrent = doneCurrent + leftCurrent[0] + leftCurrent[1] + leftCurrent[2];
-
-            float progressCurrent = -1;
-            if (totalCurrent != 0) {
-                progressCurrent = (float) doneCurrent / (float) totalCurrent;
-            }
-            float progressTotal = -1;
-            if (totalAll != 0) {
-                progressTotal = (float) doneAll / (float) totalAll;
-            }
-            return new float[]{ progressCurrent, progressTotal, totalAll - doneAll, eta ? eta(leftAll, false) : -1};
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 
@@ -2634,7 +2549,23 @@ public class Sched {
          */
         @Override
         public int compareTo(Object other) {
-            return this.names[0].compareTo(((DeckDueTreeNode)other).names[0]);
+            DeckDueTreeNode rhs = (DeckDueTreeNode) other;
+            // Consider each subdeck name in the ordering
+            for (int i = 0; i < names.length && i < rhs.names.length; i++) {
+                int cmp = names[i].compareTo(rhs.names[i]);
+                if (cmp == 0) {
+                    continue;
+                }
+                return cmp;
+            }
+            // If we made it this far then the arrays are of different length. The longer one should
+            // always come after since it contains all of the sections of the shorter one inside it
+            // (i.e., the short one is an ancestor of the longer one).
+            if (rhs.names.length > names.length) {
+                return -1;
+            } else {
+                return 1;
+            }
         }
 
         @Override

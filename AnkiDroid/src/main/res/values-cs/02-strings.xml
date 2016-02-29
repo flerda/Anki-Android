@@ -53,8 +53,9 @@
   <string name="add_tag">Add tag</string>
   <string name="check_all_tags">Check/uncheck all tags</string>
   <string name="filter_tags">Filtrovat tagy</string>
-  <string name="no_tags">You haven’t added any tags yet.</string>
+  <string name="no_tags">You haven’t added any tags yet</string>
   <string name="sdcard_missing_message">SD karta je nedostupná, protože se používá jako úložiště USB. Odpojte USB pro přístup ke svým balíkům.</string>
+  <string name="updated_version">Updated to version %s</string>
   <string name="enable_whiteboard">Povolit Tabuly</string>
   <string name="disable_whiteboard">Zakázat Tabuly</string>
   <string name="show_whiteboard">Zobrazit tabuli</string>
@@ -65,7 +66,8 @@
   <string name="leech_notification">Karta byla označena jako pijavice</string>
   <string name="corrupt_font">Poškozený soubor písma %s</string>
   <string-array name="browser_column1_headings">
-    <item>Pole pro třídění</item>
+    <item>Question</item>
+    <item>Sort field</item>
   </string-array>
   <string-array name="browser_column2_headings">
     <item>Odpověď</item>
@@ -77,6 +79,13 @@
     <item>Zapomínání</item>
     <item>Opakování</item>
   </string-array>
+  <string name="custom_study_increase_new_limit">Increase today’s new card limit</string>
+  <string name="custom_study_increase_review_limit">Increase today’s review card limit</string>
+  <string name="custom_study_review_forgotten">Review forgotten cards</string>
+  <string name="custom_study_review_ahead">Review ahead</string>
+  <string name="custom_study_random_selection">Study a random selection of cards</string>
+  <string name="custom_study_preview_new">Preview new cards</string>
+  <string name="custom_study_limit_tags">Limit to particular tags</string>
   <string name="cardeditor_title_add_note">Přidat poznámku</string>
   <string name="cardeditor_title_edit_card">Upravit poznámku</string>
   <string name="discard_unsaved_changes">Zavřít a ztratit stávající vstup?</string>
@@ -109,7 +118,6 @@
   <string name="card_editor_preview_card">Náhled</string>
   <string name="error_insufficient_memory">Operace není možná z důvodu nedostatku paměti na zařízení</string>
   <string name="rename">Přejmenovat</string>
-  <string name="rename_error">Balíček %s nelze přejmenovat</string>
   <string name="default_conf_delete_error">Nelze odstranit výchozí skupinu</string>
   <plurals name="factadder_cards_added">
     <item quantity="one">přidána %d karta</item>
@@ -119,8 +127,9 @@
   <string name="help_title">Nápověda</string>
   <string name="check_db">Zkontrolovat databázi</string>
   <string name="check_media">Zkontrolovat multimédia</string>
+  <string name="empty_cards">Empty cards</string>
   <string name="check_db_message">Kontrola databáze.\nProsím čekejte...</string>
-  <string name="empty_card_warning" tools:ignore="TypographyEllipsis">Prázdná karta. Spusťte \"Nástroje&gt;Prázdné karty...\" v klientovi pro PC.</string>
+  <string name="empty_card_warning">This card is empty. Use the “Empty cards” option from the menu on the deck list screen.</string>
   <string name="unknown_type_field_warning">Zápis odpovědi: neznámé pole %s</string>
   <string name="delete_deck">Odstraňování balíčku...\nProsím čekejte.</string>
   <string name="show_hint">Zobrazit %s</string>
@@ -149,16 +158,16 @@
   <string name="upgrade_import_no_file_found">Iportvatelný soubor %1$s nebyl nenalezen</string>
   <string name="study_options">Nastavení balíčku</string>
   <string name="custom_study">Vlastní učení</string>
+  <string name="more_options">More</string>
   <string name="dyn_deck_desc">Toto je speciální balíček pro studium mimo normální plán. Karty se automaticky po opakování vrátí do svého původního balíčku. Odstraněním tohoto balíčku ze seznamu se všechny zbývající karty vrátí to jejich původního balíčku.</string>
   <string name="steps_error">Kroky musí být číslo větší než 0</string>
   <string name="steps_min_error">Je požadován alespoň jeden krok</string>
   <string name="sched_end">(konec)</string>
-  <string name="sched_unbury_button">Pro jejich zobrazení klikněte na tlačítko \'Zruš odložení\'.</string>
+  <string name="sched_unbury_action">To see them now touch the “Unbury” item in the menu</string>
   <string name="sched_has_buried">Některé související nebo pozastavené karty byly odloženy do pozdější relace.</string>
   <string name="tag_editor_add_feedback">Touch “%2$s” to confirm adding “%1$s”</string>
   <string name="tag_editor_add_feedback_existing">Existing tag “%1$s” selected</string>
   <string name="lookup_hint">Po zkopírování textu, klepněte kdekoli na kartičku pro zobrazení ikony hledání</string>
-  <string name="add_content_showcase_text">Chcete-li začít, klepněte na tlačítko + pro přidání nového studijního materiálu.\n\n Klepněte na \'Nápověda\' pro zobrazení manuálu.</string>
   <plurals name="time_span_seconds">
     <item quantity="one">%s second</item>
     <item quantity="few">%s seconds</item>
@@ -190,4 +199,7 @@
     <item quantity="other">%s years</item>
   </plurals>
   <string name="less_than_time">&lt; %s</string>
+  <string name="decks_rename_exists">That deck already exists</string>
+  <string name="decks_rename_filtered_nosubdecks">A filtered deck cannot have subdecks</string>
+  <string name="filtered_deck_name">Filtered Deck</string>
 </resources>

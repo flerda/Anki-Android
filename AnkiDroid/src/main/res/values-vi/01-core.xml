@@ -45,12 +45,13 @@
   <string name="settings">Cài đặt</string>
   <string name="help">Trợ giúp</string>
   <string name="send_feedback">Gửi phản hồi</string>
-  <string name="studyoptions_title">Các chủ điểm học</string>
+  <string name="studyoptions_title">Deck overview</string>
   <string name="studyoptions_due_today">Tới hạn hôm nay:</string>
   <string name="studyoptions_new_total">Tổng số thẻ mới:</string>
   <string name="studyoptions_total_cards">Tổng số thẻ:</string>
   <string name="studyoptions_eta">Thời gian ước tính (phút):</string>
   <string name="studyoptions_start">Bắt đầu học</string>
+  <string name="study_more">Study more</string>
   <plurals name="deckpicker_title">
     <item quantity="other">%1$d cards due (%2$s)</item>
   </plurals>
@@ -77,7 +78,7 @@
   <string name="undo_action_delete">xóa ghi chú</string>
   <string name="undo_action_mark">đánh dấu ghi chú</string>
   <string name="unbury">Sửa lại</string>
-  <string name="contextmenu_deckpicker_rename_deck">Đổi tên tập thẻ</string>
+  <string name="rename_deck">Rename deck</string>
   <string name="menu_add">Thêm</string>
   <string name="menu_add_note">Thêm ghi chú</string>
   <string name="menu_my_account">Tài khoản đồng bộ</string>
@@ -110,6 +111,10 @@
   <string name="empty_cram_deck">Thẻ bài chống. \n Đợi chút nhé...</string>
   <string name="custom_study_deck_name">Tùy chỉnh Bài học</string>
   <string name="custom_study_deck_exists">Xin đổi tên tập thẻ trước</string>
+  <string name="empty_deck">This deck is empty</string>
+  <string name="studyoptions_empty">This deck is empty. Press the + button to add new content.</string>
+  <string name="studyoptions_limit_reached">Daily study limit reached</string>
+  <string name="studyoptions_empty_schedule">No cards scheduled to study</string>
   <string name="studyoptions_congrats_finished">Chúc mừng! Bạn đã tạm thời hoàn thành.</string>
   <string name="studyoptions_congrats_more_rev">Đã tới giới hạn ôn tập của ngày hôm nay, nhưng vẫn còn có thẻ đợi được ôn tập. Để tối ưu sự ghi nhớ, cân nhắc tùy chọn tăng giới hạn hàng ngày.</string>
   <string name="studyoptions_congrats_more_new">Không có thẻ mới, nhưng bạn đã đạt giới hạn hàng ngày. Bạn có thể tăng giới hạn trong các tùy chọn, nhưng vui lòng nhớ rằng điều này sẽ làm tăng khối lượng  công việc của bạn.</string>
@@ -118,21 +123,24 @@
   <string name="sd_card_not_mounted">Device storage not mounted</string>
   <string name="button_sync">Đồng bộ</string>
   <string name="cancel_sync_confirm">Do you want to cancel the sync?</string>
+  <string name="continue_sync">Continue sync</string>
   <string name="sync_cancelled">Sync cancelled</string>
+  <string name="sync_cancel_message">Cancelling&#8230;\nThis may take some time.</string>
   <string name="export">Xuất</string>
+  <string name="export_collection">Export collection</string>
+  <string name="export_deck">Export deck</string>
   <string name="nothing">không có gì</string>
-  <string name="title_activity_template_editor">Các loại thẻ cho %s</string>
+  <string name="title_activity_template_editor">Card types</string>
   <string name="card_template_editor_front">Nền mặt trước của thẻ</string>
   <string name="card_template_editor_back">Nền mặt sau của thẻ</string>
   <string name="card_template_editor_styling">Phong cách</string>
-  <string name="card_template_editor_menu_add_reverse">Thêm vào mặt sau</string>
   <string name="card_template_editor_menu_delete">Xóa</string>
   <string name="card_template_editor_cant_delete">Tối thiểu cần có một loại thẻ.</string>
   <plurals name="card_template_editor_confirm_delete">
     <item quantity="other">Delete the “%2$s” card type, and its %1$d cards?</item>
   </plurals>
+  <string name="invalid_template">A card could not be generated</string>
   <string name="card_template_editor_would_delete_note">Việc xóa bỏ loại thẻ này có thể dẫn tới một hay nhiều ghi chú sẽ bị xóa. Trước tiên xin vui lòng tạo một loại thẻ mới.</string>
   <string name="read_write_permission_label">Read and write to the AnkiDroid database</string>
-  <string name="read_write_permission_description">Allow the application to be able to access existing notes, cards,
-        models, and decks, as well as create new ones.</string>
+  <string name="read_write_permission_description">Allow the application to access existing notes, cards, note types, and decks, as well as create new ones</string>
 </resources>

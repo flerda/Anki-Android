@@ -80,15 +80,6 @@
     <item>Последние добавленные первыми</item>
     <item>Relative overdueness</item>
   </string-array>
-  <string-array name="custom_study_options_labels">
-    <item>Увеличить сегодняшний лимит новых карт</item>
-    <item>Увеличить сегодняшний лимит старых карт</item>
-    <item>Обзор забытых карт</item>
-    <item>Обзор наперёд</item>
-    <item>Учить случайную группу карт</item>
-    <item>Новые карты в колоде</item>
-    <item>Установить ограничение по тегам</item>
-  </string-array>
   <string-array name="add_to_cur_labels">
     <item>Использовать текущую колоду</item>
     <item>Выбор по типу заметки</item>

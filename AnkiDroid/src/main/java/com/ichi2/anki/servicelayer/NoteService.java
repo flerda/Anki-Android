@@ -19,7 +19,6 @@
 
 package com.ichi2.anki.servicelayer;
 
-import com.ichi2.anki.exception.APIVersionException;
 import com.ichi2.anki.multimediacard.IMultimediaEditableNote;
 import com.ichi2.anki.multimediacard.fields.AudioField;
 import com.ichi2.anki.multimediacard.fields.IField;
@@ -191,9 +190,6 @@ public class NoteService {
                     }
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (APIVersionException e) {
-                // A useful error dialog would be a better idea here.
                 throw new RuntimeException(e);
             }
         }

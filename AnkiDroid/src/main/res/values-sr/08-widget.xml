@@ -40,19 +40,17 @@
 -->
 <resources>
   <string name="widget_minimum_cards_due_notification_ticker_title">Картице за преглед</string>
-  <string name="widget_minimum_cards_due_notification_ticker_text">%d АнкиДројд картица за преглед</string>
+  <string name="widget_minimum_cards_due_notification_ticker_text">%d AnkiDroid картица за преглед</string>
   <string name="widget_no_cards_due">Нема картица за учење</string>
   <string name="widget_loading">Виџет се учитава...</string>
   <plurals name="widget_cards_in_decks_due">
     <item quantity="one">%1$d карата следи за %2$s</item>
     <item quantity="few">%1$d cards due in %2$s</item>
-    <item quantity="many">%1$d cards due in %2$s</item>
     <item quantity="other">%1$d cards due in %2$s</item>
   </plurals>
   <plurals name="widget_decks">
     <item quantity="one">%1$d шпил</item>
     <item quantity="few">%1$d decks</item>
-    <item quantity="many">%1$d decks</item>
     <item quantity="other">%1$d decks</item>
   </plurals>
   <string name="widget_small">АнкиДројд мало</string>

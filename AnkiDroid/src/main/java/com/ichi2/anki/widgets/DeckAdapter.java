@@ -23,15 +23,17 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ichi2.anki.R;
+import com.ichi2.compat.Compat;
+import com.ichi2.compat.CompatHelper;
 import com.ichi2.libanki.Collection;
 import com.ichi2.libanki.Sched;
 
@@ -42,20 +44,13 @@ import java.util.List;
 
 public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
 
-    // Number of dp units to use for each level of deck nesting
-    private static final int INDENT_WIDTH_DIP = 14;
-
-    // The calculated pixel width for the current screen
-    private float mIndentWidth;
-
     private LayoutInflater mLayoutInflater;
     private List<Sched.DeckDueTreeNode> mDeckList;
     private int mZeroCountColor;
     private int mNewCountColor;
     private int mLearnCountColor;
     private int mReviewCountColor;
-    private int mRowDefaultColor;
-    private int mRowCurrentColor;
+    private int mRowCurrentDrawable;
     private int mDeckNameDefaultColor;
     private int mDeckNameDynColor;
     private Drawable mExpandImage;
@@ -66,6 +61,7 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
     private View.OnClickListener mDeckClickListener;
     private View.OnClickListener mDeckExpanderClickListener;
     private View.OnLongClickListener mDeckLongClickListener;
+    private View.OnClickListener mCountsClickListener;
 
     private Collection mCol;
 
@@ -74,17 +70,24 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
     private int mLrn;
     private int mRev;
 
+    // Flags
+    private boolean mHasSubdecks;
+
     // ViewHolder class to save inflated views for recycling
     public class ViewHolder extends RecyclerView.ViewHolder {
         public RelativeLayout deckLayout;
+        public LinearLayout countsLayout;
         public ImageButton deckExpander;
+        public ImageButton indentView;
         public TextView deckName;
         public TextView deckNew, deckLearn, deckRev;
 
         public ViewHolder(View v) {
             super(v);
             deckLayout = (RelativeLayout) v.findViewById(R.id.DeckPickerHoriz);
+            countsLayout = (LinearLayout) v.findViewById(R.id.counts_layout);
             deckExpander = (ImageButton) v.findViewById(R.id.deckpicker_expander);
+            indentView = (ImageButton) v.findViewById(R.id.deckpicker_indent);
             deckName = (TextView) v.findViewById(R.id.deckpicker_name);
             deckNew = (TextView) v.findViewById(R.id.deckpicker_new);
             deckLearn = (TextView) v.findViewById(R.id.deckpicker_lrn);
@@ -101,8 +104,7 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
                 R.attr.newCountColor,
                 R.attr.learnCountColor,
                 R.attr.reviewCountColor,
-                android.R.attr.colorBackground,
-                R.attr.currentDeckBackgroundColor,
+                R.attr.currentDeckBackground,
                 android.R.attr.textColor,
                 R.attr.dynDeckColor,
                 R.attr.expandRef,
@@ -113,19 +115,20 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
         mNewCountColor = ta.getColor(1, res.getColor(R.color.new_count));
         mLearnCountColor = ta.getColor(2, res.getColor(R.color.learn_count));
         mReviewCountColor = ta.getColor(3, res.getColor(R.color.review_count));
-        mRowDefaultColor = ta.getColor(4, res.getColor(R.color.black));
-        mRowCurrentColor = ta.getColor(5, res.getColor(R.color.deckadapter_row_current));
-        mDeckNameDefaultColor = ta.getColor(6, res.getColor(R.color.black));
-        mDeckNameDynColor = ta.getColor(7, res.getColor(R.color.deckadapter_deck_name_dyn));
-        mExpandImage = ta.getDrawable(8);
-        mCollapseImage = ta.getDrawable(9);
+        mRowCurrentDrawable = ta.getResourceId(4, 0);
+        mDeckNameDefaultColor = ta.getColor(5, res.getColor(R.color.black));
+        mDeckNameDynColor = ta.getColor(6, res.getColor(R.color.deckadapter_deck_name_dyn));
+        mExpandImage = ta.getDrawable(7);
+        mCollapseImage = ta.getDrawable(8);
         ta.recycle();
-        mIndentWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, INDENT_WIDTH_DIP,
-                res.getDisplayMetrics());
     }
 
     public void setDeckClickListener(View.OnClickListener listener) {
         mDeckClickListener = listener;
+    }
+
+    public void setCountsClickListener(View.OnClickListener listener) {
+        mCountsClickListener = listener;
     }
 
     public void setDeckExpanderClickListener(View.OnClickListener listener) {
@@ -144,6 +147,7 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
         mCol = col;
         mDeckList.clear();
         mNew = mLrn = mRev = 0;
+        mHasSubdecks = false;
         processNodes(nodes);
         notifyDataSetChanged();
     }
@@ -160,22 +164,34 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         // Update views for this node
         Sched.DeckDueTreeNode node = mDeckList.get(position);
-
-        // Create the right expander for this deck
-        setDeckExpander(holder.deckExpander, node);
+        // Set the expander icon and padding according to whether or not there are any subdecks
+        RelativeLayout deckLayout = holder.deckLayout;
+        int rightPadding = (int) deckLayout.getResources().getDimension(R.dimen.deck_picker_right_padding);
+        if (mHasSubdecks) {
+            int smallPadding = (int) deckLayout.getResources().getDimension(R.dimen.deck_picker_left_padding_small);
+            deckLayout.setPadding(smallPadding, 0, rightPadding, 0);
+            holder.deckExpander.setVisibility(View.VISIBLE);
+            // Create the correct expander for this deck
+            setDeckExpander(holder.deckExpander, holder.indentView, node);
+        } else {
+            holder.deckExpander.setVisibility(View.GONE);
+            int normalPadding = (int) deckLayout.getResources().getDimension(R.dimen.deck_picker_left_padding);
+            deckLayout.setPadding(normalPadding, 0, rightPadding, 0);
+        }
 
         if (node.children.size() > 0) {
             holder.deckExpander.setTag(node.did);
             holder.deckExpander.setOnClickListener(mDeckExpanderClickListener);
+        } else {
+            holder.deckExpander.setOnClickListener(null);
         }
-
+        holder.deckLayout.setBackgroundResource(mRowCurrentDrawable);
         // Set background colour. The current deck has its own color
         if (node.did == mCol.getDecks().current().optLong("id")) {
-            holder.deckLayout.setBackgroundColor(mRowCurrentColor);
+            holder.deckLayout.setBackgroundResource(mRowCurrentDrawable);
         } else {
-            holder.deckLayout.setBackgroundColor(mRowDefaultColor);
+            CompatHelper.getCompat().setSelectableBackground(holder.deckLayout);
         }
-
         // Set deck name and colour. Filtered decks have their own colour
         holder.deckName.setText(node.names[0]);
         if (mCol.getDecks().isDyn(node.did)) {
@@ -194,10 +210,12 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
 
         // Store deck ID in layout's tag for easy retrieval in our click listeners
         holder.deckLayout.setTag(node.did);
+        holder.countsLayout.setTag(node.did);
 
         // Set click listeners
         holder.deckLayout.setOnClickListener(mDeckClickListener);
         holder.deckLayout.setOnLongClickListener(mDeckLongClickListener);
+        holder.countsLayout.setOnClickListener(mCountsClickListener);
     }
 
     @Override
@@ -206,7 +224,7 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
     }
 
 
-    private void setDeckExpander(ImageButton expander, Sched.DeckDueTreeNode node) {
+    private void setDeckExpander(ImageButton expander, ImageButton indent, Sched.DeckDueTreeNode node){
         boolean collapsed = mCol.getDecks().get(node.did).optBoolean("collapsed", false);
         // Apply the correct expand/collapse drawable
         if (collapsed) {
@@ -216,19 +234,9 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
         } else {
             expander.setImageDrawable(mNoExpander);
         }
-        // Now set the padding on the left side to indent nested decks.
-        // The initial padding is the same width as an expander image. If the row requires
-        // an expander, we remove this padding. This results in aligned deck names with and
-        // without an expander.
-        int expanderWidth = mExpandImage.getIntrinsicWidth();
-        int indent = expanderWidth;
         // Add some indenting for each nested level
-        indent += mIndentWidth * node.depth;
-        if (collapsed || node.children.size() > 0) {
-            // If an expand/collapse button exists, remove the initial padding.
-            indent -= expanderWidth;
-        }
-        expander.setPadding(indent, 0, 0, 0);
+        int width = (int) indent.getResources().getDimension(R.dimen.keyline_1) * node.depth;
+        indent.setMinimumWidth(width);
     }
 
 
@@ -248,6 +256,7 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
             }
             // If any of this node's parents are collapsed, don't add it to the deck list
             for (JSONObject parent : mCol.getDecks().parents(node.did)) {
+                mHasSubdecks = true;    // If a deck has a parent it means it's a subdeck so set a flag
                 if (parent.optBoolean("collapsed")) {
                     return;
                 }
@@ -281,7 +290,7 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
             }
         }
         // If the deck is not in our list, we search again using the immediate parent
-        ArrayList<JSONObject> parents = mCol.getDecks().parents(did);
+        List<JSONObject> parents = mCol.getDecks().parents(did);
         if (parents.size() == 0) {
             return 0;
         } else {
@@ -296,5 +305,9 @@ public class DeckAdapter extends RecyclerView.Adapter<DeckAdapter.ViewHolder> {
 
     public int getDue() {
         return mNew + mLrn + mRev;
+    }
+
+    public List<Sched.DeckDueTreeNode> getDeckList() {
+        return mDeckList;
     }
 }

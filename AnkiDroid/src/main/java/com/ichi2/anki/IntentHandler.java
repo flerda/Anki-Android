@@ -48,14 +48,14 @@ public class IntentHandler extends Activity {
             // We want to go immediately to DeckPicker, clearing any history in the process
             Timber.i("IntentHandler/ User requested to view a file");
             boolean successful = false;
-            String errorMessage = getResources().getString(R.string.import_error_content_provider, AnkiDroidApp.getManualUrl()+"#importing");
+            String errorMessage = getResources().getString(R.string.import_error_content_provider, AnkiDroidApp.getManualUrl() + "#importing");
             // If the file is being sent from a content provider we need to read the content before we can open the file
             if (intent.getData().getScheme().equals("content")) {
                 // Get the original filename from the content provider URI
                 String filename = null;
                 Cursor cursor = null;
                 try {
-                    cursor = this.getContentResolver().query(intent.getData(), new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null );
+                    cursor = this.getContentResolver().query(intent.getData(), new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null);
                     if (cursor != null && cursor.moveToFirst()) {
                         filename = cursor.getString(0);
                     }
@@ -123,6 +123,12 @@ public class IntentHandler extends Activity {
                         })
                         .build().show();
             }
+        } else if ("com.ichi2.anki.DO_SYNC".equals(action)) {
+            sendDoSyncMsg();
+            reloadIntent.setAction(action);
+            reloadIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(reloadIntent);
+            finishWithFade();
         } else {
             // Launcher intents should start DeckPicker if no other task exists,
             // otherwise go to previous task
@@ -160,10 +166,21 @@ public class IntentHandler extends Activity {
         DialogHandler.storeMessage(handlerMessage);
     }
 
+    /**
+     * Send a Message to AnkiDroidApp so that the DialogMessageHandler forces a sync
+     */
+    private void sendDoSyncMsg() {
+        // Create a new message for DialogHandler
+        Message handlerMessage = Message.obtain();
+        handlerMessage.what = DialogHandler.MSG_DO_SYNC;
+        // Store the message in AnkiDroidApp message holder, which is loaded later in AnkiActivity.onResume
+        DialogHandler.storeMessage(handlerMessage);
+    }
+
     /** Finish Activity using FADE animation **/
     private void finishWithFade() {
     	finish();
-    	ActivityTransitionAnimation.slide(this, ActivityTransitionAnimation.FADE);
+    	ActivityTransitionAnimation.slide(this, ActivityTransitionAnimation.UP);
     }
 
     /**

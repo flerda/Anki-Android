@@ -53,8 +53,9 @@
   <string name="add_tag">Add tag</string>
   <string name="check_all_tags">Check/uncheck all tags</string>
   <string name="filter_tags">Filter tags</string>
-  <string name="no_tags">You haven’t added any tags yet.</string>
+  <string name="no_tags">You haven’t added any tags yet</string>
   <string name="sdcard_missing_message">एसडी कार्ड उपलब्ध नहीं है क्योंकि यह USB भंडारण के रूप में इस्तेमाल किया जा रहा है। आपके डेक तक पहुँचने के लिए USB डिस्कनेक्ट करें।</string>
+  <string name="updated_version">Updated to version %s</string>
   <string name="enable_whiteboard">Enable whiteboard</string>
   <string name="disable_whiteboard">Disable whiteboard</string>
   <string name="show_whiteboard">Whiteboard दिखाएँ</string>
@@ -65,6 +66,7 @@
   <string name="leech_notification">जोंक के रूप में के रूप में चिह्नित कार्ड</string>
   <string name="corrupt_font">दूषित फ़ॉन्ट फ़ाइल %s</string>
   <string-array name="browser_column1_headings">
+    <item>Question</item>
     <item>Sort field</item>
   </string-array>
   <string-array name="browser_column2_headings">
@@ -77,6 +79,13 @@
     <item>Lapses</item>
     <item>Reviews</item>
   </string-array>
+  <string name="custom_study_increase_new_limit">Increase today’s new card limit</string>
+  <string name="custom_study_increase_review_limit">Increase today’s review card limit</string>
+  <string name="custom_study_review_forgotten">Review forgotten cards</string>
+  <string name="custom_study_review_ahead">Review ahead</string>
+  <string name="custom_study_random_selection">Study a random selection of cards</string>
+  <string name="custom_study_preview_new">Preview new cards</string>
+  <string name="custom_study_limit_tags">Limit to particular tags</string>
   <string name="cardeditor_title_add_note">नोट जोड़ें</string>
   <string name="cardeditor_title_edit_card">नोट संपादित करें</string>
   <string name="discard_unsaved_changes">Close and lose current input?</string>
@@ -107,7 +116,6 @@
   <string name="card_editor_preview_card">Preview</string>
   <string name="error_insufficient_memory">आपकी डिवाइस पर अपर्याप्त स्मृति के कारण संभव नहीं ऑपरेशन</string>
   <string name="rename">का नाम बदलें</string>
-  <string name="rename_error">डेक %s नाम नहीं बदला जा सकता है</string>
   <string name="default_conf_delete_error">डिफ़ॉल्ट विकल्प समूह निकाला नहीं जा सकता</string>
   <plurals name="factadder_cards_added">
     <item quantity="one">%d card added</item>
@@ -116,8 +124,9 @@
   <string name="help_title">मदद</string>
   <string name="check_db">डेटाबेस की जाँच करें</string>
   <string name="check_media">Check media</string>
+  <string name="empty_cards">Empty cards</string>
   <string name="check_db_message">जाँच डेटाबेस। \nPlease रुको...</string>
-  <string name="empty_card_warning" tools:ignore="TypographyEllipsis">Empty card. Run “Tools&gt;Empty Cards...” on the desktop client.</string>
+  <string name="empty_card_warning">This card is empty. Use the “Empty cards” option from the menu on the deck list screen.</string>
   <string name="unknown_type_field_warning">Type answer: unknown field %s</string>
   <string name="delete_deck">हटाने deck...\nPlease रुको।</string>
   <string name="show_hint">Show %s</string>
@@ -146,16 +155,16 @@
   <string name="upgrade_import_no_file_found">कोई आयातयोग्य %1$s फ़ाइल मिली</string>
   <string name="study_options">Deck options</string>
   <string name="custom_study">कस्टम अध्ययन</string>
+  <string name="more_options">More</string>
   <string name="dyn_deck_desc">यह सामान्य समय के बाहर अध्ययन करने के लिए एक विशेष डेक है। तुम उन की समीक्षा करने के बाद कार्ड स्वचालित रूप से उनके मूल डेक को लौट जाएगा। इस डेक डेक सूची से हटाने के सभी शेष कार्ड उनके मूल डेक करने के लिए वापस आ जाएगी।</string>
   <string name="steps_error">कदम नंबर 0 से अधिक होना चाहिए</string>
   <string name="steps_min_error">कम से कम एक कदम की आवश्यकता है</string>
   <string name="sched_end">(अंत)</string>
-  <string name="sched_unbury_button">उन्हें अब देखने के लिए, Unbury बटन नल।</string>
+  <string name="sched_unbury_action">To see them now touch the “Unbury” item in the menu</string>
   <string name="sched_has_buried">कुछ संबंधित या दफन कार्ड एक बाद में सत्र तक देरी हो रहे थे।</string>
   <string name="tag_editor_add_feedback">Touch “%2$s” to confirm adding “%1$s”</string>
   <string name="tag_editor_add_feedback_existing">Existing tag “%1$s” selected</string>
   <string name="lookup_hint">After copying the text, tap anywhere on the flashcard to show the search icon</string>
-  <string name="add_content_showcase_text">To get started, tap the + button to add some new study material.\n\nPress “Help” to see the manual.</string>
   <plurals name="time_span_seconds">
     <item quantity="one">%s second</item>
     <item quantity="other">%s seconds</item>
@@ -181,4 +190,7 @@
     <item quantity="other">%s years</item>
   </plurals>
   <string name="less_than_time">&lt; %s</string>
+  <string name="decks_rename_exists">That deck already exists</string>
+  <string name="decks_rename_filtered_nosubdecks">A filtered deck cannot have subdecks</string>
+  <string name="filtered_deck_name">Filtered Deck</string>
 </resources>
